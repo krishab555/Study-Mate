@@ -20,7 +20,10 @@ export const registerUser = async (req, res) => {
       });
     }
 
+    console.log("Role from req body:", reqBody.role);
+    console.log("Using role name:", reqBody.role || "Student");
     const role = await RoleModel.findOne({ name: reqBody.role || "Student" });
+    console.log("Role found in DB:", role);
     if (!role) {
       return res.json({ success: false, message: "Invalid role specified" });
     }
