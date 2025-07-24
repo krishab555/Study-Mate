@@ -195,3 +195,31 @@ export const deleteUser = async (req, res) => {
     res.json({ success: false, message: error.message });
   }
 };
+
+// Get All Users (Admin only)
+export const getAllUsers = async (req, res) => {
+  try {
+    const users = await UserModel.find().select("-password");
+    res.status(200).json({ success: true, data: users });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// Get Single User by ID (Admin or Teacher)
+export const getSingleUserById = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const user = await UserModel.findById(userId)
+      .select("-password")
+      .populate("role");
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found!" });
+    }
+    res.status(200).json({ success: true, data: user });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};

@@ -1,4 +1,3 @@
-
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import Joi from "joi";
@@ -45,3 +44,14 @@ userSchema.pre("save", async function () {
 });
 
 export const UserModel = mongoose.model("users", userSchema);
+
+// Joi validation schema for input validation
+export const validateUserSchema = Joi.object({
+  name: Joi.string().required(),
+  email: Joi.string().email().required(),
+  password: Joi.string().min(6).required(),
+  address: Joi.string().optional(),
+  role: Joi.string().required(), // adjust based on how role is sent from client
+  subjects: Joi.array().items(Joi.string()).optional(),
+  enrolledCourses: Joi.array().items(Joi.string()).optional(),
+});

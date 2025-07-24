@@ -1,4 +1,5 @@
 import express from "express";
+
 import {
   loginUser,
   registerUser,
@@ -6,12 +7,13 @@ import {
   deleteUser,
   updatePassword,
   getProfile,
-//   getAllUsers, // Optional: Admin only
-//   getSingleUserById, // Optional: Admin/Teacher
+  getAllUsers, // ✅ Make sure these are defined in userController.js
+  getSingleUserById,
 } from "../controllers/userController.js";
 
-import { authenticateUser } from "../middlewares/authMiddleware.js";
-import { authorizeRoles } from "../middlewares/roleMiddleware.js";
+import { authenticateUser } from "../middleware/authenticateUser.js"; 
+import { authorizeRoles }  from "../middleware/authorizeRoles.js"; 
+ 
 
 const router = express.Router();
 
@@ -19,20 +21,20 @@ const router = express.Router();
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 
-// Authenticated user profile route
-router.post("/profile", authenticateUser, getProfile);
+// Authenticated user profile
+router.get("/profile", authenticateUser, getProfile);
 
-// Protected User Routes (for own account only)
+// Routes for user to update or delete their account
 router
   .route("/:userId")
   .put(authenticateUser, updateUser)
   .patch(authenticateUser, updatePassword)
   .delete(authenticateUser, deleteUser);
 
-// Admin-only route to view all users
+// Admin-only: Get all users
 router.get("/", authenticateUser, authorizeRoles("Admin"), getAllUsers);
 
-// Admin and Teacher can view specific user profile
+// Admin or Teacher: Get specific user
 router.get(
   "/user/:id",
   authenticateUser,
