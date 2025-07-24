@@ -1,29 +1,26 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import { connectToDB } from "./config/db.js";
+import { connectToDB } from "./config/db.js"; 
 import userRoutes from "./routes/userRoutes.js";
 
 dotenv.config();
 
 const app = express();
 
-connectToDB();
-
-app.use(cors());
+connectToDB(); 
+app.use(cors()); 
 app.use(express.json());
 
 app.use("/api/users", userRoutes);
 
 app.get("/api/test", (req, res) => {
-  res.json({
-    success: true,
-    message: "This is test route!",
-  });
+ 
+  res.json({ success: true, message: "This is test route!" });
 });
 
 const port = process.env.PORT || 5000;
 
 app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+  console.log(`Server running on port ${port}`); 
 });
