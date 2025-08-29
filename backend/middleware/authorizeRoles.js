@@ -2,7 +2,9 @@
 
 export const authorizeRoles = (...allowedRoles) => {
   return (req, res, next) => {
-    // req.user should be set by authentication middleware (e.g., authenticateUser)
+     const userRole = req.user.role?.name || req.user.role; // fallback if not populated
+
+     console.log("User role from token:", userRole);
     if (!req.user) {
         return res.status(401).json({
             success: false,
@@ -10,11 +12,11 @@ export const authorizeRoles = (...allowedRoles) => {
         });
     }
 
-    if (!allowedRoles.includes(req.user.role)) {
-        return res.status(403).json({
-            success: false,
-            message: "Access denied"
-        });
+    if (!allowedRoles.includes(userRole)) {
+      return res.status(403).json({
+        success: false,
+        message: "Access denied",
+      });
     }
 
     // If role is allowed, continue

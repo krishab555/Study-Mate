@@ -21,7 +21,9 @@ export const authenticateUser = async (req, res, next) => {
         .json({ success: false, message: "Unauthorized: Invalid token" });
     }
 
-    const user = await UserModel.findById(decoded._id).select("-password");
+    const user = await UserModel.findById(decoded._id)
+      .populate("role", "name")
+      .select("-password");
 
     if (!user) {
       return res

@@ -5,12 +5,31 @@ import {
   updateCourseController,
   deleteCourseController,
 } from "../controllers/courseController.js";
+import { authenticateUser } from "../middleware/authenticateUser.js";
+import { authorizeRoles } from "../middleware/authorizeRoles.js";
+import { uploadPDF } from "../middleware/multerMiddleware.js";
 
 const courseRoutes = express.Router();
 
-courseRoutes.get("/", getCoursesController); // GET all courses
-courseRoutes.post("/", createCourseController); // CREATE a course
-courseRoutes.put("/:id", updateCourseController); // UPDATE course by ID
-courseRoutes.delete("/:id", deleteCourseController); // DELETE course by ID
+courseRoutes.get("/", authenticateUser, getCoursesController); // GET all courses
+courseRoutes.post(
+  "/",
+  authenticateUser,
+  authorizeRoles("Instructor"),
+  uploadPDF.single("pdf"),
+  createCourseController
+); // CREATE a course
+courseRoutes.put(
+  "/:id",
+  authenticateUser,
+  authorizeRoles("Instructor", "Admin"),
+  updateCourseController
+); // UPDATE course by ID
+courseRoutes.delete(
+  "/:id",
+  authenticateUser,
+  authorizeRoles("Instructor", "Admin"),
+  deleteCourseController
+); // DELETE course by ID
 
 export default courseRoutes;

@@ -5,6 +5,8 @@ import cors from "cors";
 import { connectToDB } from "./config/db.js"; 
 import userRoutes from "./routes/userRoutes.js";
 import courseRoutes from "./routes/courseRoutes.js";
+import projectRoutes from "./routes/projectRoutes.js";
+import certificateRoutes from "./routes/certificateRoutes.js";
 
 
 const app = express();
@@ -15,6 +17,8 @@ app.use(express.json());
 
 app.use("/api/users", userRoutes);
 app.use("/api/courses", courseRoutes); 
+app.use("/api/projects", projectRoutes);
+app.use("/api/certificates", certificateRoutes);
 
 app.get("/api/test", (req, res) => {
  

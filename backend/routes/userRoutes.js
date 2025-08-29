@@ -11,9 +11,8 @@ import {
   getSingleUserById,
 } from "../controllers/userController.js";
 
-import { authenticateUser } from "../middleware/authenticateUser.js"; 
-import { authorizeRoles }  from "../middleware/authorizeRoles.js"; 
- 
+import { authenticateUser } from "../middleware/authenticateUser.js";
+import { authorizeRoles } from "../middleware/authorizeRoles.js";
 
 const router = express.Router();
 

@@ -1,6 +1,8 @@
 import { CourseModel } from "../models/courseModel.js";
 import { decodeJWT } from "../utils/generateToken.js";
 
+
+
 // Get all courses
 export const getCoursesController = async (req, res) => {
   try {
@@ -24,9 +26,22 @@ export const getCoursesController = async (req, res) => {
 // Create a course
 export const createCourseController = async (req, res) => {
   try {
-    const reqBody = req.body;
+    const { title, description, instructor, price, isPaid, category, level } =
+      req.body;
+    const pdfFile = req.file;
 
-    const course = await CourseModel.create(reqBody);
+    const pdfUrl = pdfFile ? `/uploads/pdfs/${pdfFile.filename}` : null;
+
+    const course = await CourseModel.create({
+      title,
+      description,
+      instructor,
+      price,
+      isPaid,
+      category,
+      level,
+      pdfUrl,
+    });
 
     res.status(201).json({
       success: true,
