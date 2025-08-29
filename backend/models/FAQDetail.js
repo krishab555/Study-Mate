@@ -1,3 +1,4 @@
+// backend/models/FAQDetail.js
 import mongoose from "mongoose";
 
 const FAQDetailSchema = new mongoose.Schema(
@@ -13,4 +14,5 @@ const FAQDetailSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export const FAQDetail = mongoose.model("FAQDetail", FAQDetailSchema);
+const FAQDetail = mongoose.model("FAQDetail", FAQDetailSchema);
+export default FAQDetail;

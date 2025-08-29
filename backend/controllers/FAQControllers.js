@@ -1,6 +1,7 @@
-import { FAQMaster } from "../models/FAQMaster.js";
-import { FAQDetail } from "../models/FAQDetail.js";
-import { CourseModel } from "../models/courseModel.js"; // named import
+// backend/controllers/FAQControllers.js
+import FAQMaster from "../models/FAQMaster.js";
+import FAQDetail from "../models/FAQDetail.js";
+import { CourseModel } from "../models/courseModel.js";
 
 // ---------------------------
 // Add FAQ (System or Course)
@@ -19,7 +20,7 @@ export const addFAQ = async (req, res) => {
         .json({ message: "Question and Answer are required" });
     }
 
-    // ✅ If type = Course → validate courseId
+    // ✅ Validate courseId if type is Course
     if (type === "Course") {
       if (!courseId) {
         return res
@@ -27,7 +28,7 @@ export const addFAQ = async (req, res) => {
           .json({ message: "Course ID is required for Course FAQs" });
       }
 
-      const course = await CourseModel.findById(courseId); // ✅ use CourseModel
+      const course = await CourseModel.findById(courseId);
       if (!course) {
         return res.status(404).json({ message: "Course not found" });
       }
@@ -92,7 +93,7 @@ export const getFAQs = async (req, res) => {
       return res.status(404).json({ message: "No FAQs found" });
     }
 
-    // ✅ Fetch all details under these masters
+    // ✅ Fetch all FAQ details
     const faqs = await FAQDetail.find({
       faqMaster: { $in: faqMasters.map((m) => m._id) },
     });

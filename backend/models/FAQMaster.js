@@ -1,3 +1,4 @@
+// backend/models/FAQMaster.js
 import mongoose from "mongoose";
 
 const FAQMasterSchema = new mongoose.Schema(
@@ -11,11 +12,12 @@ const FAQMasterSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Course",
       required: function () {
-        return this.type === "Course"; // Course required only if it's Course FAQ
+        return this.type === "Course"; // Required only for Course FAQs
       },
     },
   },
   { timestamps: true }
 );
 
-export const FAQMaster = mongoose.model("FAQMaster", FAQMasterSchema);
+const FAQMaster = mongoose.model("FAQMaster", FAQMasterSchema);
+export default FAQMaster;
