@@ -7,6 +7,7 @@ import {
 } from "../controllers/projectController.js";
 import { authenticateUser } from "../middleware/authenticateUser.js";
 import { authorizeRoles } from "../middleware/authorizeRoles.js";
+import { uploadProjectPDF } from "../middleware/multerProject.js";
 
 
 const projectRoutes = express.Router();
@@ -16,6 +17,7 @@ projectRoutes.post(
   "/",
   authenticateUser,
   authorizeRoles("User"),
+  uploadProjectPDF.single("projectFile"),
   submitProjectController
 );
 

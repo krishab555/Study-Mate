@@ -7,18 +7,18 @@ import { CourseModel } from "../models/courseModel.js";
 // --------------------
 export const submitProjectController = async (req, res) => {
   try {
-    const { courseId, projectFile } = req.body;
+    const { courseId } = req.body;
 
-    if (!courseId || !projectFile) {
+    if (!courseId || !req.file) {
       return res
         .status(400)
-        .json({ message: "Course ID and project file are required." });
+        .json({ message: "Course ID and PDF are required." });
     }
 
-    const newProject = await Project.create({
+    const newProject = await projectModel.create({
       course: courseId,
       student: req.user.id,
-      projectFile,
+      projectFile:req.file.path,
     });
 
     res
@@ -45,7 +45,7 @@ export const reviewProjectController = async (req, res) => {
         .json({ message: "Invalid status. Must be 'Approved' or 'Rejected'." });
     }
 
-    const project = await Project.findById(id);
+    const project = await projectModel.findById(id);
     if (!project) {
       return res.status(404).json({ message: "Project not found" });
     }
@@ -56,13 +56,14 @@ export const reviewProjectController = async (req, res) => {
 
     // ✅ Auto-generate certificate if approved
     if (status === "Approved") {
-      const certificateExists = await Certificate.findOne({
+      const certificateExists = await certificateModel.findOne({
         student: project.student,
         course: project.course,
+        
       });
 
       if (!certificateExists) {
-        await Certificate.create({
+        await certificateModel.create({
           student: project.student,
           course: project.course,
           issuedAt: new Date(),
@@ -89,11 +90,13 @@ export const reviewProjectController = async (req, res) => {
 // --------------------
 export const getAllProjectsByInstructor = async (req, res) => {
   try {
-    const courses = await Course.find({ instructor: req.user.id }).select(
+    const courses = await CourseModel.find({ instructor: req.user.id }).select(
       "_id"
     );
 
-    const projects = await Project.find({ course: { $in: courses } })
+    const projects = await projectModel
+      .find({ course: { $in: courses.map((c) => c._id) } })
+
       .populate("student", "name email")
       .populate("course", "title");
 
@@ -110,7 +113,7 @@ export const getAllProjectsByInstructor = async (req, res) => {
 // --------------------
 export const getUserProjects = async (req, res) => {
   try {
-    const projects = await Project.find({ student: req.user.id })
+    const projects = await projectModel.find({ student: req.user.id })
       .populate("course", "title")
       .sort({ submittedAt: -1 });
 

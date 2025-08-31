@@ -43,6 +43,8 @@ import courseRoutes from "./routes/courseRoutes.js";
 import projectRoutes from "./routes/projectRoutes.js";
 import certificateRoutes from "./routes/certificateRoutes.js";
 import faqRoutes from "./routes/FAQRoutes.js"; // ✅ Add FAQ
+import quizRouter from "./routes/quizRoutes.js";
+import userQuizRouter from "./routes/userQuizRoutes.js";
 
 // Load environment variables
 dotenv.config();
@@ -66,7 +68,8 @@ app.use("/api/courses", courseRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/certificates", certificateRoutes);
 app.use("/api/faqs", faqRoutes); // ✅ add FAQs
-
+app.use("/api/quiz", quizRouter);
+app.use("/api/userQuiz",userQuizRouter);
 // Health check route
 app.get("/", (req, res) => {
   res.send("🚀 Study-Mate API is running...");
