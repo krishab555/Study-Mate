@@ -55,7 +55,13 @@ const app = express();
 connectToDB();
 
 // Middlewares
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Vite dev server
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true, // if sending cookies or auth headers
+  })
+);
 app.use(express.json());
 if (process.env.NODE_ENV !== "test") {
   app.use(morgan("dev")); // log requests in dev

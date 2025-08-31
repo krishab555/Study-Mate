@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 
+
 const AuthContext = createContext();
 
 export const useAuth = () => {
@@ -29,16 +30,23 @@ export const AuthProvider = ({ children }) => {
     setError("");
 
     try {
-      // Simulate API call - replace with actual authentication logic
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+       const res = await fetch("http://localhost:5000/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+      credentials: "include", // if using cookies
+    });
 
-      // Mock validation
-      if (email === "demo@studymate.com" && password === "password123") {
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || "Login failed");
+
+
         const userData = {
-          id: "1",
-          email: email,
-          name: "Demo User",
-          avatar: null,
+           id: data.user._id,
+      email: data.user.email,
+      name: data.user.name,
+      avatar: data.user.avatar || null,
+      token: data.token, 
         };
 
         setUser(userData);
@@ -48,10 +56,7 @@ export const AuthProvider = ({ children }) => {
         }
 
         return { success: true };
-      } else {
-        throw new Error("Invalid email or password");
-      }
-    } catch (err) {
+      }  catch (err) {
       setError(err.message);
       return { success: false, error: err.message };
     } finally {
@@ -59,29 +64,30 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  ///register ko lagi
+
   const register = async (name, email, password, confirmPassword) => {
     setLoading(true);
     setError("");
 
     try {
-      // Validate passwords match
-      if (password !== confirmPassword) {
-        throw new Error("Passwords do not match");
-      }
 
-      // Validate password strength
-      if (password.length < 6) {
-        throw new Error("Password must be at least 6 characters long");
-      }
+      const res = await fetch("http://localhost:5000/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, password, confirmPassword }),
+    });
 
-      // Simulate API call - replace with actual registration logic
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || "Registration failed");
+      
 
       const userData = {
-        id: Date.now().toString(),
-        email: email,
-        name: name,
-        avatar: null,
+        id: data.user._id,
+      email: data.user.email,
+      name: data.user.name,
+      avatar: data.user.avatar || null,
+      token: data.token,
       };
 
       setUser(userData);
@@ -186,7 +192,7 @@ export const AuthProvider = ({ children }) => {
     loginWithFacebook,
     logout,
     forgotPassword,
-    isAuthenticated: !!user,
+    
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
