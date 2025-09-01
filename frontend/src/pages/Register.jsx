@@ -1,18 +1,59 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Register() {
-  const [username, setUsername] = useState("");
+    const navigate=useNavigate();
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [gender, setGender] = useState("");
   const [date, setDate] = useState("");
   const [password, setPassword] = useState("");
   const [confirmpassword, setConfirmpassword] = useState("");
+  const [message, setMessage] = useState("")
+  
 
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    console.log("Register submitted:", { username, email,gender,date,password,confirmpassword });
+     if (password !== confirmpassword) {
+      alert("Passwords do not match!");
+      return;
+    }
+
+
+    try {
+      
+      const res = await fetch("http://localhost:5000/api/users/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            name,
+          email,
+          gender,
+          date,
+          password,
+        }
+            
+        ),
+      });
+
+      const data = await res.json();
+      console.log("Server response:", data);
+
+      if (data.success) {
+        alert("Registration successful!");
+        navigate("/login"); // redirect to login after success
+      } else {
+        alert("Registration failed: " + data.message);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("An error occurred. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const containerStyle = {
@@ -72,6 +113,11 @@ export default function Register() {
   return (
     <div style={containerStyle}>
       <h2 style={{ marginBottom: "20px", color: "#333" }}>Register</h2>
+      {message && (
+        <p style={{ color: message.includes("successful") ? "green" : "red" }}>
+          {message}
+        </p>
+      )}
       <form onSubmit={handleSubmit} style={formStyle}>
         <div >
             <div>
@@ -82,8 +128,8 @@ export default function Register() {
         <input
           type="text"
           placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
           style={inputStyle}
           required
           />

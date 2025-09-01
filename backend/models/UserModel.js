@@ -50,8 +50,9 @@ export const validateUserSchema = Joi.object({
   name: Joi.string().required(),
   email: Joi.string().email().required(),
   password: Joi.string().min(6).required(),
-  address: Joi.string().optional(),
+  gender: Joi.string().valid("Male", "Female"),
   role: Joi.string().optional(), // adjust based on how role is sent from client
+  date: Joi.date(),
   subjects: Joi.array().items(Joi.string()).optional(),
   enrolledCourses: Joi.array().items(Joi.string()).optional(),
 });
