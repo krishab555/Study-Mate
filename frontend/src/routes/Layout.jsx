@@ -1,0 +1,16 @@
+import React from "react";
+import Sidebar from "../components/SideBar";
+import { Outlet } from "react-router";
+
+const Layout = () => {
+  return (
+    <div>
+      <Sidebar />
+      <div className="ml-[250px]">
+        <Outlet />
+      </div>
+    </div>
+  );
+};
+
+export default Layout;
