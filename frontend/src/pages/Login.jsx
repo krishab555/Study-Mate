@@ -14,6 +14,7 @@ export default function Login() {
   const handleSubmit = async(e) => {
     e.preventDefault();
     console.log("Login submitted:", { email, password });
+    try{
     const response = await fetch("http://localhost:5000/api/users/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -25,8 +26,23 @@ export default function Login() {
 
   if (data.success) {
     localStorage.setItem("token", data.data.token);
+    localStorage.setItem("role", data.data.role);
    
-  }
+  
+   // ✅ Redirect based on role
+        if (data.data.role === "Student") {
+          navigate("/student/Home");
+        } else if (data.data.role === "Instructor") {
+          navigate("/instructor/InstructorHome");
+        } else if (data.data.role === "Admin") {
+          navigate("/admin/adminHome");
+        }
+      } else {
+        alert(data.message || "Login failed");
+      }
+    }catch(error) {
+      console.error("Login error:", error);
+    }
     console.log("Login submitted:", { email, password });
   };
 
