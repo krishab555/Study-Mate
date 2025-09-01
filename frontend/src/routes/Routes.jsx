@@ -4,7 +4,7 @@ import Layout from './Layout';
 import ProtectedRoutes from './ProctectedRoutes';
 import Login from '../pages/Login';
 import Register from '../pages/Register';
-import Profile from '../pages/Profile';
+import Profile from '../pages/student/Profile';
 
 
 const PageRoutes = props => {

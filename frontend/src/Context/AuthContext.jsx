@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 
-// Create AuthContext
+
 const AuthContext = createContext();
 
 // Custom hook to use AuthContext easily
@@ -15,16 +15,15 @@ const AuthProvider = ({ children }) => {
 
   // Check if user is already logged in
   useEffect(() => {
+    const fetchProfile = async () => {
     const token = localStorage.getItem("token");
-    if (token) {
-      fetchProfile(token);
-    } else {
+    if(!token){
       setLoading(false);
+      return;
     }
-  }, []);
 
   // Fetch user profile from backend
-  const fetchProfile = async (token) => {
+  
     try {
       const res = await fetch("http://localhost:5000/api/users/profile", {
         headers: {
@@ -32,20 +31,26 @@ const AuthProvider = ({ children }) => {
           Authorization: `Bearer ${token}`,
         },
       });
+      if (!res.ok) throw new Error("Unauthorized");
       const data = await res.json();
-      if (data.success) setUser(data.data);
-    } catch (err) {
-      console.log(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+      setUser(data.data);
+      } catch (err) {
+        console.log("Profile fetch error:", err.message);
+        setUser(null);
+        localStorage.removeItem("token"); // remove invalid token
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, []);
 
   // Login function
   const login = async (email, password) => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/auth/login", {
+      const res = await fetch("http://localhost:5000/api/users/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -65,13 +70,13 @@ const AuthProvider = ({ children }) => {
   };
 
   // Register function
-  const register = async (name, email, password) => {
+  const register = async (name, email, gender,date,password) => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/auth/register", {
+      const res = await fetch("http://localhost:5000/api/users/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({ name, email,gender ,date, password }),
       });
       const data = await res.json();
       if (data.success) {
@@ -102,7 +107,6 @@ const AuthProvider = ({ children }) => {
 
 export default AuthProvider;
 
-// import React, { createContext, useContext, useState, useEffect } from "react";
 
 
 // const AuthContext = createContext();

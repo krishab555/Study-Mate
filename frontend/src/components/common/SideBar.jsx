@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { FiLogOut } from "react-icons/fi";
-import useAuth from "../hooks/useAuth";
+import useAuth from "../../hooks/useAuth";
 
 const SideBar = () => {
   const { user, setUser } = useAuth();

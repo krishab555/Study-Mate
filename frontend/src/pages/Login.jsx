@@ -1,15 +1,32 @@
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+
+
 
 
 export default function Login() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
+    console.log("Login submitted:", { email, password });
+    const response = await fetch("http://localhost:5000/api/users/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  });
+
+  const data = await response.json();
+  console.log("Login response:", data);
+
+  if (data.success) {
+    localStorage.setItem("token", data.data.token);
+   
+  }
     console.log("Login submitted:", { email, password });
   };
 
@@ -110,7 +127,6 @@ export default function Login() {
   );
 }
 
-// import { useState } from "react";
 // import { useAuth } from "../contexts/AuthContext";
 
 // const Login = () => {
