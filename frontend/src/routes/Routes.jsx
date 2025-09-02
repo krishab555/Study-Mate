@@ -13,45 +13,36 @@ import AdminHome from "../pages/admin/AdminHome";
 const PageRoutes = (props) => {
   return (
     <Routes>
-      {/* Common layout route */}
       <Route element={<Layout />} path="/">
         <Route element={<ProtectedRoutes />}>
           <Route path="/profile" element={<Profile />} />
         </Route>
-      </Route>
 
-      {/* Dashboard route */}
       <Route path="/dashboard" element={<Dashboard />} />
+      
 
-      {/* Auth routes */}
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-
-      {/* Role-based protected routes */}
-      <Route
-        path="/student/Home"
-        element={
-          <ProtectedRoutes allowedRole="Student">
+      
+      <Route path="/student/home" element={
+        <ProtectedRoutes allowedRole="Student">
             <Home />
           </ProtectedRoutes>
         }
-      />
-      <Route
-        path="/instructor/InstructorHome"
-        element={
-          <ProtectedRoutes allowedRole="Instructor">
+        />
+      <Route path="/instructor/home" element={
+        <ProtectedRoutes allowedRole="Instructor">
             <InstructorHome />
           </ProtectedRoutes>
         }
-      />
-      <Route
-        path="/admin/AdminHome"
-        element={
-          <ProtectedRoutes allowedRole="Admin">
+        />
+      <Route path="/admin/home" element={
+        <ProtectedRoutes allowedRole="Admin">
             <AdminHome />
           </ProtectedRoutes>
         }
-      />
+        />
+        </Route>
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
     </Routes>
   );
 };

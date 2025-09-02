@@ -1,14 +1,16 @@
 import React from "react";
 import Sidebar from "../components/common/SideBar";
 import { Outlet } from "react-router";
+import Navbar from "../components/common/Navbar";
 
 const Layout = () => {
   return (
     <div>
-      <Sidebar />
-      <div className="ml-[250px]">
-        <Outlet />
-      </div>
+      <Navbar title="StudyMate"/>
+      <main>
+        <Outlet /> 
+      </main>
+      
     </div>
   );
 };

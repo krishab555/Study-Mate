@@ -13,7 +13,7 @@ export default function Login() {
 
   const handleSubmit = async(e) => {
     e.preventDefault();
-    console.log("Login submitted:", { email, password });
+  console.log("Login submitted:", { email, password });
     try{
     const response = await fetch("http://localhost:5000/api/users/login", {
     method: "POST",
@@ -22,20 +22,22 @@ export default function Login() {
   });
 
   const data = await response.json();
+  console.log("Login submitted:", { email, password });
   console.log("Login response:", data);
 
   if (data.success) {
     localStorage.setItem("token", data.data.token);
     localStorage.setItem("role", data.data.role);
+    localStorage.setItem("userName", data.data.name);
    
   
    // ✅ Redirect based on role
         if (data.data.role === "Student") {
-          navigate("/student/Home");
+          navigate("/student/home");
         } else if (data.data.role === "Instructor") {
-          navigate("/instructor/InstructorHome");
+          navigate("/instructor/home");
         } else if (data.data.role === "Admin") {
-          navigate("/admin/adminHome");
+          navigate("/admin/home");
         }
       } else {
         alert(data.message || "Login failed");

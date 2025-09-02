@@ -1,58 +1,150 @@
-import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React,{ useState} from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
-export default function Header({ title }) {
+
+export default function Navbar({ title }) {
   const navigate = useNavigate();
-  const userName = localStorage.getItem("userName") || "Student";
+  const location =useLocation();
+  
+
+  const token = localStorage.getItem("token");
+  const userName = localStorage.getItem("userName");
+  const role = localStorage.getItem("role");
+  const loginPages = ["/dashboard", "/login", "/register"];
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("userName");
+    localStorage.removeItem("role");
     navigate("/login");
+  };
+  const styles = {
+    navbar: {
+      position:"fixed",
+      top:0,
+      left:0,
+      width: "100%",
+      backgroundColor: "#0a2a66",
+      color: "white",
+      padding: "12px 10px",
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      zIndex: 9999,
+      boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
+      
+    },
+    leftSection: {
+    display: "flex",
+    alignItems: "center",
+    gap: "20px",
+  },
+    navLinks: {
+      display: "flex",
+      gap: "40px",
+      listStyle: "none",
+      margin:0,
+      padding:0,
+    },
+    navItem: {
+      cursor: "pointer",
+      color: "white",
+      textDecoration: "none",
+      fontWeight: "500",
+    },
+    searchBar: {
+    padding: "6px 12px",
+    borderRadius: "6px",
+    border: "none",
+    outline: "none",
+    fontSize: "14px",
+  },
+    userSection: {
+      display: "flex",
+      alignItems: "center",
+      gap: "15px",
+    },
+    loginBtn: {
+      backgroundColor: "white",
+      color: "#0a2a66",
+      padding: "6px 14px",
+      border: "none",
+      borderRadius: "5px",
+      cursor: "pointer",
+      fontWeight: "bold",
+    },
+    logoutBtn: {
+      backgroundColor: "white",
+      color: "#0a2a66",
+      padding: "6px 14px",
+      border: "none",
+      borderRadius: "5px",
+      cursor: "pointer",
+      fontWeight: "bold",
+    },
   };
 
   return (
-    <header style={styles.header}>
-      <h1 style={styles.title}>{title}</h1>
-      <div style={styles.userSection}>
-        <span style={styles.userName}>Hi, {userName}</span>
-        <button style={styles.logoutButton} onClick={handleLogout}>
-          Logout
-        </button>
+    <nav style={styles.navbar}>
+      {/* Logo */}
+      <div style={{ fontSize: "22px", fontWeight: "bold" }}>
+        <Link to="/" style={{ color: "white", textDecoration: "none" }}>
+          StudyMate
+        </Link>
       </div>
-    </header>
+
+      {/* Navigation Links */}
+      <ul style={styles.navLinks}>
+        <li>
+          <Link to="/" style={styles.navItem}>Home</Link>
+        </li>
+        <li>
+          <Link to="/courses" style={styles.navItem}>Courses</Link>
+        </li>
+        <li>
+          <Link to="/faqs" style={styles.navItem}>FAQs</Link>
+        </li>
+        <li>
+          <Link to="/contact" style={styles.navItem}>Contact</Link>
+        </li>
+
+        {/* Role-Specific Links */}
+        {role === "student" && (
+          <li>
+            <Link to="/student/home" style={styles.navItem}>My Dashboard</Link>
+          </li>
+        )}
+        {role === "instructor" && (
+          <li>
+            <Link to="/instructor/home" style={styles.navItem}>Instructor Panel</Link>
+          </li>
+        )}
+        {role === "admin" && (
+          <li>
+            <Link to="/admin/home" style={styles.navItem}>Admin Panel</Link>
+          </li>
+        )}
+      </ul>
+
+      <input type="text" placeholder="Search courses..." style={styles.searchBar} />
+
+      {/* Right Side: Login / User */}
+      <div style={styles.userSection}>
+        {token && !loginPages.includes(location.pathname) ? (
+          <>
+            <span>Hi, {userName}</span>
+            <button style={styles.logoutBtn} onClick={handleLogout}>
+              Logout
+            </button>
+          </>
+        ) : (
+          <button style={styles.loginBtn} onClick={() => navigate("/login")}>
+            Login
+          </button>
+        )}
+      </div>
+    </nav>
   );
 }
 
-const styles = {
-  header: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: "15px 20px",
-    borderBottom: "1px solid #ddd",
-    background: "#f5f5f5",
-    marginBottom: "20px",
-  },
-  title: {
-    fontSize: "22px",
-    color: "#0B2C5D",
-  },
-  userSection: {
-    display: "flex",
-    alignItems: "center",
-    gap: "15px",
-  },
-  userName: {
-    fontWeight: "500",
-    fontSize: "16px",
-  },
-  logoutButton: {
-    padding: "8px 12px",
-    background: "#0B2C5D",
-    color: "white",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
-  },
-};
+  
