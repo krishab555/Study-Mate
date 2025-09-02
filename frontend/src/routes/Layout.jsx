@@ -1,3 +1,4 @@
+
 import React from "react";
 import Sidebar from "../components/common/SideBar";
 import { Outlet } from "react-router-dom";
@@ -26,3 +27,4 @@ const Layout = () => {
 };
 
 export default Layout;
+
