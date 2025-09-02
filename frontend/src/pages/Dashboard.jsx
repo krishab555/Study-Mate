@@ -1,5 +1,7 @@
 
 import React from "react";
+import FAQSection from "../components/FAQsSection";
+
 
 export default function Dashboard() {
   return (
@@ -95,7 +97,7 @@ export default function Dashboard() {
         <div style={{ flex: "1", minWidth: "300px", textAlign: "center" }}>
           <img
             src="https://img.freepik.com/free-photo/smiling-young-woman-pointing-fingers-left-isolated-grey-wall_231208-11567.jpg"
-             alt="Instructor"
+            alt="Instructor"
             style={{
               width: "100%",
               maxWidth: "400px",
@@ -200,6 +202,9 @@ export default function Dashboard() {
           </div>
         </div>
       </section>
+      {/* FAQ Section */}
+      <FAQSection />
+      
     </div>
   );
 }
