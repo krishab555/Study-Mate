@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter} from "react-router-dom";
 import PageRoutes from "./routes/Routes";
-import AuthProvider from "./context/AuthContext";
+import AuthProvider from "./Context/AuthContext";
 
 const App = () => {
   return (
@@ -15,3 +15,4 @@ const App = () => {
 };
 
 export default App;
+
