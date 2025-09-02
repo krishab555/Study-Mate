@@ -22,54 +22,56 @@ import Layout from "./Layout";
 const PageRoutes = () => {
   return (
     <Routes>
-
-      {/* Layout wraps all routes under "/" */}
-      <Route path="/" element={<Layout />}>
-        {/* ✅ Default page when visiting "/" */}
-        <Route index element={<Dashboard />} />
-
-        {/* ✅ Protected route for student profile */}
-        <Route element={<ProtectedRoutes />}>
-          <Route path="profile" element={<Profile />} />
-        </Route>
-
-        {/* ✅ Student Dashboard */}
-        <Route
-          path="student/home"
-          element={
-            <ProtectedRoutes allowedRole="Student">
-              <Home />
-            </ProtectedRoutes>
-          }
-        />
-
-        {/* ✅ Instructor Dashboard */}
-        <Route
-          path="instructor/home"
-          element={
-            <ProtectedRoutes allowedRole="Instructor">
-              <InstructorHome />
-            </ProtectedRoutes>
-          }
-        />
-
-        {/* ✅ Admin Dashboard */}
-        <Route
-          path="admin/home"
-          element={
-            <ProtectedRoutes allowedRole="Admin">
-              <AdminHome />
-            </ProtectedRoutes>
-          }
-        />
-      </Route>
-
-      {/* ✅ Public Routes */}
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
+      {/* <Route path="/" element={<Layout />}>
+        {/* ✅ Default page when visiting "/" */}
+        {/* <Route index element={<Dashboard />} /> */} 
+      <Route path="/dashboard" element={<Layout><Dashboard />
+    </Layout>} />
 
+
+      <Route element={<ProtectedRoutes allowedRole={["Student"]}/>}>
+        <Route path="/student" element={<StudentLayout />}>
+        <Route index element={<Home />} /> 
+          <Route path="home" element={<Home />} />
+          <Route path="courses" element={<Courses/>} />
+          <Route path="profile" element={<Profile />} />
+        </Route>
+      </Route>
+
+
+
+        <Route element={<ProtectedRoutes allowedRole={["Instructor"]} />
+       }>
+        <Route path="/instructor" element={<InstructorLayout />}>
+        <Route index element={<InstructorHome />} />
+
+        <Route path="home" element={<InstructorHome/>} />
+       </Route>
+          
+      </Route>
+
+
+ <Route path="/discussionForum" element={<DisscussionForum/>} />
+      
+
+  
+      
+      
+      <Route element={<ProtectedRoutes allowedRole={["Admin"]} />
+       }>
+        <Route path="/admin" element={<AdminLayout />}>
+        <Route index element={<AdminHome />} />
+        <Route path="home" element={<AdminHome/>} />
+        </Route>
+          
+      </Route>
+
+
+        
     </Routes>
   );
 };
 
-export default PageRoutes;
+
