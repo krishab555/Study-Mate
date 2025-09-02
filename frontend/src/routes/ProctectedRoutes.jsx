@@ -1,23 +1,22 @@
 import { Navigate, Outlet } from "react-router";
-import useAuth from "../hooks/useAuth";
-
-import Loader from "../components/common/Loader";
-
-const ProtectedRoutes = () => {
-  const {user,loading}=useAuth();
 
 
-  if (loading) {
-    return (
-    <Loader/>
-    );
-  }
 
-  if (user) {
-    return <Outlet />;
-  } else {
+
+const ProtectedRoutes = ({children,allowedRole}) => {
+  const token = localStorage.getItem("token");
+  const role = localStorage.getItem("role");
+
+
+  if (!token) {
     return <Navigate to="/login" replace />;
   }
+
+  // if (allowedRole && role!==allowedRole) {
+    
+  //   return <Navigate to="/unauthorized" replace />;
+  // }
+  return children;
 };
 
 export default ProtectedRoutes;
