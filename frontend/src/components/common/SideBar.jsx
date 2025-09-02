@@ -1,133 +1,89 @@
-import { NavLink } from "react-router-dom";
-import { FiLogOut } from "react-icons/fi";
-import useAuth from "../../hooks/useAuth";
+import { Link, useLocation } from "react-router-dom";
+import { FiBookOpen, FiGrid, FiMessageSquare, FiTwitch,FiUser,FiSettings } from "react-icons/fi";
+
 
 const SideBar = () => {
-  const { user, setUser } = useAuth();
+  const location = useLocation();
 
-  const activeStyle = ({ isActive }) => {
-    return isActive
-      ? {
-          backgroundColor: "#49516F",
-          color: "white",
-        }
-      : {};
+  const excludedPages = ["/dashboard", "/login", "/register"];
+
+  if (excludedPages.includes(location.pathname)) return null;
+
+  
+  const links = {
+    student: [
+      { path: "/student/home", label: "Dashboard", icon: <FiGrid /> },
+      { path: "/courses", label: "Courses", icon: <FiBookOpen /> },
+      { path: "/discussionForum", label: "Discussion Forum", icon: <FiMessageSquare /> },
+      { path: "/faqs", label: "FAQs", icon: <FiTwitch /> },
+      { path: "/student/profile", label: "Profile", icon: <FiUser /> },
+    ],
+    instructor: [
+      { path: "/instructor/home", label: "Dashboard", icon: <FiGrid /> },
+      { path: "/courses", label: "My Courses", icon: <FiBookOpen /> },
+      { path: "/discussionForum", label: "Discussion Forum", icon: <FiMessageSquare /> },
+      { path: "/instructor/profile", label: "Profile", icon: <FiUser /> },
+    ],
+    admin: [
+      { path: "/admin/home", label: "Dashboard", icon: <FiGrid /> },
+      { path: "/manage-users", label: "Users", icon: <FiUser /> },
+      { path: "/manage-courses", label: "Courses", icon: <FiBookOpen /> },
+      { path: "/faqs", label: "FAQs", icon: <FiTwitch /> },
+      { path: "/settings", label: "Settings", icon: <FiSettings /> },
+    ],
   };
+  const roleFromStorage = localStorage.getItem("role");
+  const role = roleFromStorage ? roleFromStorage.toLowerCase():null;
+  const roleLinks = (role && links[role]) ? links[role] : [];
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    setUser(null);
+  
+
+   const styles = {
+    sidebar: {
+      width: "250px",
+      height: "100vh",
+      position: "fixed",
+      top: "40px",
+      left: 0,
+      backgroundColor: "white",
+      color: "#0a2a66",
+      padding: "20px",
+      display: "flex",
+      flexDirection: "column",
+      gap: "20px",
+      boxShadow: "2px 0 6px rgba(0,0,0,0.2)",
+    },
+    link: {
+      display:"flex",
+      gap:"12px",
+      color: "#0a2a66",
+      
+      textDecoration: "none",
+      fontWeight: "500",
+      fontSize: "16px",
+      padding:"8px",
+      borderRadius: "5px",
+    },
+    
+
   };
 
   return (
-    <nav
-      style={{
-        position: "fixed",
-        width: "250px",
-        height: "100vh",
-        backgroundColor: "#f3f4f6",
-        padding: "8px",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
-      }}
-    >
-      <div>
-        <h3
-          style={{
-            fontSize: "24px",
-            fontWeight: "bold",
-            marginBottom: "16px",
-            padding: "16px",
-          }}
-        >
-          LMS
-        </h3>
-
-        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-          <NavLink
-            style={({ isActive }) => ({
-              ...activeStyle({ isActive }),
-              padding: "16px",
-              fontSize: "18px",
-              borderRadius: "8px",
-              color: "black",
-              textDecoration: "none",
-            })}
-            to="/"
-          >
-            Dashboard
-          </NavLink>
-
-          <NavLink
-            style={({ isActive }) => ({
-              ...activeStyle({ isActive }),
-              padding: "16px",
-              fontSize: "18px",
-              borderRadius: "8px",
-              color: "black",
-              textDecoration: "none",
-            })}
-            to="/transactions"
-          >
-            Transactions
-          </NavLink>
-
-          {user?.role !== "Member" && (
-            <NavLink
-              style={({ isActive }) => ({
-                ...activeStyle({ isActive }),
-                padding: "16px",
-                fontSize: "18px",
-                borderRadius: "8px",
-                color: "black",
-                textDecoration: "none",
-              })}
-              to="/members"
-            >
-              Members
-            </NavLink>
-          )}
-
-          <NavLink
-            style={({ isActive }) => ({
-              ...activeStyle({ isActive }),
-              padding: "16px",
-              fontSize: "18px",
-              borderRadius: "8px",
-              color: "black",
-              textDecoration: "none",
-            })}
-            to="/profile"
-          >
-            Profile
-          </NavLink>
-        </div>
-      </div>
-
-      <button
-        onClick={handleLogout}
-        style={{
-          marginBottom: "16px",
-          border: "1px solid #f87171",
-          color: "#f87171",
-          padding: "8px",
-          borderRadius: "8px",
-          fontWeight: "600",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          gap: "8px",
-          cursor: "pointer",
-          background: "none",
-        }}
-        onMouseOver={(e) => (e.target.style.backgroundColor = "#fee2e2")}
-        onMouseOut={(e) => (e.target.style.backgroundColor = "transparent")}
-      >
-        <FiLogOut /> Logout
-      </button>
-    </nav>
+    <div style={styles.sidebar}>
+      {roleLinks.length > 0 ? (
+        roleLinks.map((link) => (
+          <Link key={link.path} to={link.path} style={styles.link}>
+            {link.icon}
+            {link.label}
+          </Link>
+        ))
+      ) : (
+        <p style={{ color: "red" }}>No links available for your role</p>
+      )}
+    </div>
   );
-};
+}
+
+  
 
 export default SideBar;

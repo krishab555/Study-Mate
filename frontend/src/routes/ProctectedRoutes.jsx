@@ -3,7 +3,7 @@ import { Navigate, Outlet } from "react-router";
 
 
 
-const ProtectedRoutes = ({children,allowedRole}) => {
+const ProtectedRoutes = ({allowedRole}) => {
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
 
@@ -11,12 +11,12 @@ const ProtectedRoutes = ({children,allowedRole}) => {
   if (!token) {
     return <Navigate to="/login" replace />;
   }
+  if (allowedRole && !allowedRole.includes(role)) {
+    return <Navigate to="/dashboard" replace />; // or /unauthorized
+  }
 
-  // if (allowedRole && role!==allowedRole) {
-    
-  //   return <Navigate to="/unauthorized" replace />;
-  // }
-  return children;
+  return <Outlet />;
+
 };
 
 export default ProtectedRoutes;

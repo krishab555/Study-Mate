@@ -1,18 +1,20 @@
-import React from "react";
-import Sidebar from "../components/common/SideBar";
-import { Outlet } from "react-router";
-import Navbar from "../components/common/Navbar";
+import React from 'react'
+import Navbar from '../components/common/Navbar'
+import SideBar from '../components/common/SideBar'
+import Footer from '../components/common/Footer'
 
 const Layout = () => {
   return (
     <div>
-      <Navbar title="StudyMate"/>
-      <main>
-        <Outlet /> 
-      </main>
-      
-    </div>
-  );
-};
 
-export default Layout;
+    
+    <Navbar/>
+    <SideBar/>
+
+    <div>Layout</div>
+    <Footer/>
+    </div>
+  )
+}
+
+export default Layout
