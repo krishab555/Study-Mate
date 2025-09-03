@@ -1,34 +1,49 @@
 import React from "react";
+import BestSellingCourseChart from "../../components/CourseChart";
+import VisitorLineChart from "../../components/VisitorLineChart";
+
+
+import {
+  FaBook,
+  FaUserGraduate,
+  FaUsers,
+  FaProjectDiagram,
+} from "react-icons/fa";
 
 export default function AdminHome() {
   const containerStyle = {
     display: "flex",
-    height: "100vh",
     fontFamily: "Arial, sans-serif",
     backgroundColor: "#f3f4f6",
+    minHeight: "100vh",
   };
 
   const sidebarStyle = {
-    width: "220px",
-    backgroundColor: "#1e3a8a",
-    color: "#fff",
+    width: "230px",
+    backgroundColor: "#ffffff", // White sidebar
+    color: "#1e3a8a",
     padding: "20px",
+    minHeight: "100vh",
+    borderRight: "1px solid #ddd",
   };
 
   const logoStyle = {
     fontSize: "24px",
     fontWeight: "bold",
     marginBottom: "30px",
+    color: "#1e3a8a",
   };
 
   const navItemStyle = {
     margin: "20px 0",
     cursor: "pointer",
+    fontWeight: "500",
   };
 
   const contentStyle = {
     flex: 1,
     padding: "20px",
+    paddingTop: "80px", // space for navbar
     overflowY: "auto",
   };
 
@@ -36,14 +51,30 @@ export default function AdminHome() {
     display: "flex",
     gap: "20px",
     marginBottom: "30px",
+    flexWrap: "nowrap", // force all cards in a row
+    justifyContent: "space-between",
+    overflowX: "hidden",
   };
 
   const cardStyle = {
-    backgroundColor: "#fff",
+    backgroundColor: "#e8f0fe",
     padding: "20px",
-    flex: 1,
-    borderRadius: "10px",
-    boxShadow: "0 0 5px rgba(0,0,0,0.1)",
+    flex: "1",
+    minWidth: "0",
+    borderRadius: "12px",
+    boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+    textAlign: "center",
+    color: "#1e3a8a",
+  };
+
+  const iconStyle = {
+    fontSize: "30px",
+    marginBottom: "10px",
+  };
+
+  const cardTitleStyle = {
+    fontSize: "16px",
+    fontWeight: "bold",
   };
 
   const cardValueStyle = {
@@ -57,26 +88,32 @@ export default function AdminHome() {
     display: "flex",
     gap: "20px",
     marginBottom: "30px",
+    flexWrap: "wrap",
   };
 
   const chartStyle = {
-    flex: 1,
-    height: "250px",
-    backgroundColor: "#fff",
+    flex: "1 1 400px",
+    height: "300px",
+    backgroundColor: "#ffffff",
     borderRadius: "10px",
-    boxShadow: "0 0 5px rgba(0,0,0,0.1)",
+    boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    fontWeight: "500",
+    fontSize: "16px",
+    color: "#333",
+    padding: "20px",
   };
 
   const instructorSectionStyle = {
     display: "flex",
     gap: "20px",
+    flexWrap: "wrap",
   };
 
   const boxStyle = {
-    flex: 1,
+    flex: "1 1 400px",
     backgroundColor: "#fff",
     padding: "20px",
     borderRadius: "10px",
@@ -98,7 +135,7 @@ export default function AdminHome() {
             <li style={navItemStyle}>Dashboard</li>
             <li style={navItemStyle}>Manage Users</li>
             <li style={navItemStyle}>Manage Instructors</li>
-            <li style={navItemStyle}>Setting</li>
+            <li style={navItemStyle}>Settings</li>
             <li style={navItemStyle}>Manage FAQs</li>
           </ul>
         </nav>
@@ -106,26 +143,37 @@ export default function AdminHome() {
 
       {/* Main Content */}
       <main style={contentStyle}>
-        {/* Stats Cards */}
+        {/* Stat Cards */}
         <div style={cardsContainerStyle}>
           <div style={cardStyle}>
-            Total Course <span style={cardValueStyle}>8</span>
+            <FaBook style={iconStyle} />
+            <div style={cardTitleStyle}>Total Course</div>
+            <span style={cardValueStyle}>8</span>
           </div>
           <div style={cardStyle}>
-            New Students <span style={cardValueStyle}>20</span>
+            <FaUserGraduate style={iconStyle} />
+            <div style={cardTitleStyle}>New Students</div>
+            <span style={cardValueStyle}>20</span>
           </div>
           <div style={cardStyle}>
-            Total Users <span style={cardValueStyle}>40</span>
+            <FaUsers style={iconStyle} />
+            <div style={cardTitleStyle}>Total Users</div>
+            <span style={cardValueStyle}>40</span>
           </div>
           <div style={cardStyle}>
-            Project Submitted <span style={cardValueStyle}>13</span>
+            <FaProjectDiagram style={iconStyle} />
+            <div style={cardTitleStyle}>Project Submitted</div>
+            <span style={cardValueStyle}>13</span>
           </div>
         </div>
 
-        {/* Charts */}
         <div style={chartsContainerStyle}>
-          <div style={chartStyle}>Best Selling Course (Pie Chart)</div>
-          <div style={chartStyle}>Visitor in The Website (Line Chart)</div>
+          <div style={chartStyle}>
+            <BestSellingCourseChart />
+          </div>
+          <div style={chartStyle}>
+            <VisitorLineChart />
+          </div>
         </div>
 
         {/* Instructor Section */}
@@ -141,9 +189,9 @@ export default function AdminHome() {
           <div style={boxStyle}>
             <h3>Instructor Activity</h3>
             <ul style={listStyle}>
+              <li>Krisha Bhandari added quiz in Python</li>
               <li>Parinita Gautam added quiz in Python</li>
-              <li>Parinita Gautam added quiz in Python</li>
-              <li>Parinita Gautam added quiz in Python</li>
+              <li>Bijita Bhattarai added quiz in Python</li>
               <li>Parinita Gautam added quiz in Python</li>
               <li>Parinita Gautam added quiz in Python</li>
             </ul>
