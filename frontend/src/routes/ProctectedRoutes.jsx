@@ -1,22 +1,47 @@
-import { Navigate, Outlet } from "react-router";
+// import { Navigate, Outlet } from "react-router";
 
 
 
 
-const ProtectedRoutes = ({allowedRole}) => {
+// const ProtectedRoutes = ({allowedRole}) => {
+//   const token = localStorage.getItem("token");
+//   const role = localStorage.getItem("role");
+
+
+//   if (!token) {
+//     return <Navigate to="/login" replace />;
+//   }
+//   if (allowedRole && !allowedRole.includes(role)) {
+//     return <Navigate to="/dashboard" replace />; // or /unauthorized
+//   }
+
+//   return <Outlet />;
+
+// };
+
+// export default ProtectedRoutes;
+import { Navigate, Outlet } from "react-router-dom";
+
+const ProtectedRoutes = ({ allowedRole = [] }) => {
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
 
-
+  // Not logged in → go to login
   if (!token) {
     return <Navigate to="/login" replace />;
   }
-  if (allowedRole && !allowedRole.includes(role)) {
-    return <Navigate to="/dashboard" replace />; // or /unauthorized
+
+  // Normalize roles to lowercase before comparing
+  if (
+    allowedRole.length > 0 &&
+    (!role ||
+      !allowedRole.map((r) => r.toLowerCase()).includes(role.toLowerCase()))
+  ) {
+    return <Navigate to="/dashboard" replace />; // or to "/unauthorized"
   }
 
+  // If token and role are valid → allow access
   return <Outlet />;
-
 };
 
 export default ProtectedRoutes;
