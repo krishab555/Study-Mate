@@ -58,8 +58,9 @@ export default function Register() {
 
   const containerStyle = {
     maxWidth: "400px",
-    margin: "60px auto",
-    padding: "30px 25px",
+    width:"90%",
+    margin: "40px auto",
+    padding: "20px 20px",
     borderRadius: "10px",
     background: "#f9f9f9",
     boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
@@ -69,8 +70,8 @@ export default function Register() {
   const formStyle = {
     display: "flex",
     flexDirection: "column",
-    gap: "18px",
-    marginTop: "20px",
+    gap: "12px",
+    marginTop: "15px",
   };
  
 
@@ -98,7 +99,7 @@ export default function Register() {
 
   const buttonStyle = {
     padding: "12px",
-    background: "0B2C5D",
+    background: "#0056b3",
     color: "white",
     border: "none",
     borderRadius: "6px",
@@ -107,7 +108,7 @@ export default function Register() {
   };
 
   const buttonHoverStyle = {
-    background: "#0056b3",
+    background: "#08478bff",
   };
 
   return (

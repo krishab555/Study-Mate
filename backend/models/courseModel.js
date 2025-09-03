@@ -1,13 +1,13 @@
 import mongoose from "mongoose";
 
 const courseSchema = new mongoose.Schema({
-  title: String,
+  title: {type:String, required:true},
   description: String,
   category: String,
   level: String,
   instructor: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Instructor", // or "instructors" depending on your collection name
+    ref: "users", 
   },
   price: Number,
   isPaid: Boolean,

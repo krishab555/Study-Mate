@@ -8,7 +8,10 @@
     const token = localStorage.getItem("token");
     const userName = localStorage.getItem("userName");
     const role = localStorage.getItem("role");
-    const loginPages = ["/dashboard", "/login", "/register"];
+    const excludedPages = [ "/login", "/register"];
+    if (excludedPages.includes(location.pathname)) {
+    return null;
+  }
 
     const handleLogout = () => {
       localStorage.removeItem("token");
@@ -83,64 +86,46 @@
               StudyMate
             </Link>
           </div>
-
-          {/* Navigation Links */}
           <ul style={styles.navLinks}>
-            <li>
-              <Link to="/" style={styles.navItem}>
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link to="/courses" style={styles.navItem}>
-                Courses
-              </Link>
-            </li>
-            <li>
-              <Link to="/faqs" style={styles.navItem}>
-                FAQs
-              </Link>
-            </li>
-            <li>
-              <Link to="/contact" style={styles.navItem}>
-                Contact
-              </Link>
-            </li>
+  {/* Always visible links */}
+  <li><Link to="/" style={styles.navItem}>Home</Link></li>
+  <li><Link to="/courses" style={styles.navItem}>Courses</Link></li>
+  <li><Link to="/faqs" style={styles.navItem}>FAQs</Link></li>
+  <li><Link to="/contact" style={styles.navItem}>Contact</Link></li>
 
-            {role === "student" && (
-              <li>
-                <Link to="/student/home" style={styles.navItem}>
-                  My Dashboard
-                </Link>
-              </li>
-            )}
-            {role === "instructor" && (
-              <li>
-                <Link to="/instructor/home" style={styles.navItem}>
-                  Instructor Panel
-                </Link>
-              </li>
-            )}
-            {role === "admin" && (
-              <li>
-                <Link to="/admin/home" style={styles.navItem}>
-                  Admin Panel
-                </Link>
-              </li>
-            )}
-          </ul>
+  {/* Role-specific Dashboard link after login */}
+  {token && role === "student" && (
+    <li><Link to="/student/home" style={styles.navItem}>Dashboard</Link></li>
+  )}
+  {token && role === "instructor" && (
+    <li><Link to="/instructor/home" style={styles.navItem}>Dashboard</Link></li>
+  )}
+  {token && role === "admin" && (
+    <li><Link to="/admin/home" style={styles.navItem}>Dashboard</Link></li>
+  )}
+</ul>
+
+
+          
+
 
           {/* Search */}
           <input
             type="text"
-            placeholder="Search courses..."
+            placeholder="Search "
             style={styles.searchBar}
           />
 
           {/* Right Side */}
           <div style={styles.userSection}>
-            {token && !loginPages.includes(location.pathname) ? (
-              <>
+            {location.pathname.startsWith("/dashboard") ? (
+            // ✅ On dashboard → show login only
+            <button style={styles.btn} onClick={() => navigate("/login")}>
+              Login
+            </button>
+          ) : token ? (
+            // ✅ If logged in → show logout
+            <>
                 <span>Hi, {userName}</span>
                 <button style={styles.btn} onClick={handleLogout}>
                   Logout

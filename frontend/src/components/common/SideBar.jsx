@@ -13,21 +13,21 @@ const SideBar = () => {
   const links = {
     student: [
       { path: "/student/home", label: "Dashboard", icon: <FiGrid /> },
-      { path: "/courses", label: "Courses", icon: <FiBookOpen /> },
+      { path: "/student/courses", label: "Courses", icon: <FiBookOpen /> },
       { path: "/discussionForum", label: "Discussion Forum", icon: <FiMessageSquare /> },
       { path: "/faqs", label: "FAQs", icon: <FiTwitch /> },
       { path: "/student/profile", label: "Profile", icon: <FiUser /> },
     ],
     instructor: [
       { path: "/instructor/home", label: "Dashboard", icon: <FiGrid /> },
-      { path: "/courses", label: "My Courses", icon: <FiBookOpen /> },
+      { path: "/instructor/courses", label: "My Courses", icon: <FiBookOpen /> },
       { path: "/discussionForum", label: "Discussion Forum", icon: <FiMessageSquare /> },
       { path: "/instructor/profile", label: "Profile", icon: <FiUser /> },
     ],
     admin: [
       { path: "/admin/home", label: "Dashboard", icon: <FiGrid /> },
-      { path: "/manage-users", label: "Users", icon: <FiUser /> },
-      { path: "/manage-courses", label: "Courses", icon: <FiBookOpen /> },
+      { path: "/admin/manage-users", label: "Users", icon: <FiUser /> },
+      { path: "/admin/manage-courses", label: "Courses", icon: <FiBookOpen /> },
       { path: "/faqs", label: "FAQs", icon: <FiTwitch /> },
       { path: "/settings", label: "Settings", icon: <FiSettings /> },
     ],
