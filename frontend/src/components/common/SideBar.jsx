@@ -35,7 +35,6 @@ const SideBar = () => {
   const roleFromStorage = localStorage.getItem("role");
   const role = roleFromStorage ? roleFromStorage.toLowerCase():null;
   const roleLinks = (role && links[role]) ? links[role] : [];
-
   
 
    const styles = {
@@ -83,6 +82,20 @@ const SideBar = () => {
     </div>
   );
 }
+export const SidebarLayout = ({ children }) => {
+  const sidebarWidth = 250; // sidebar width
+  const gap = 220; // desired gap (~2-3 inches)
+  const totalOffset = sidebarWidth + gap;
+
+  return (
+    <div style={{ display: "flex" }}>
+      <SideBar />
+      <div style={{ marginLeft: `${totalOffset}px`, flex: 1 }}>
+        {children}
+      </div>
+    </div>
+  );
+};
 
   
 

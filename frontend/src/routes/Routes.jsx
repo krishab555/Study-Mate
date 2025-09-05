@@ -16,6 +16,7 @@ import AdminHome from "../pages/admin/AdminHome";
 import InstructorLayout from "./InstructorLayout";
 import AdminLayout from "./AdminLayout";
 import Layout from "./Layout";
+import CourseDetail from "../pages/student/CourseDetail";
 
 const PageRoutes = () => {
   return (
@@ -48,9 +49,11 @@ const PageRoutes = () => {
           <Route index element={<Home />} />
           <Route path="home" element={<Home />} />
           <Route path="courses" element={<Courses />} />
+
           <Route path="profile" element={<Profile />} />
         </Route>
       </Route>
+          <Route path="courses/:id" element={<CourseDetail/>} />
 
       {/* Instructor Routes */}
       <Route element={<ProtectedRoutes allowedRole={["Instructor"]} />}>

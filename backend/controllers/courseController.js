@@ -29,9 +29,13 @@ export const createCourseController = async (req, res) => {
   try {
     const { title, description, instructor, price, isPaid, category, level } =
       req.body;
-    const pdfFile = req.file;
+    const pdfFile =
+      req.files?.pdf || req.file?.fieldname === "pdf" ? req.file : null;
+    const imageFile =
+      req.files?.image || req.file?.fieldname === "image" ? req.file : null;
 
     const pdfUrl = pdfFile ? `/uploads/pdfs/${pdfFile.filename}` : null;
+    const imageUrl = imageFile ? `/uploads/images/${imageFile.filename}` : null;
 
     const course = await CourseModel.create({
       title,
@@ -97,4 +101,21 @@ export const deleteCourseController = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+// in controllers/courseController.js
+export const getCourseByIdController = async (req, res) => {
+  try {
+    const course = await CourseModel.findById(req.params.id).populate(
+      "instructor",
+      "name email"
+    );
+    if (!course) {
+      return res.status(404).json({ success: false, message: "Course not found" });
+    }
+    res.status(200).json({ success: true, data: course });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 

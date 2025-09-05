@@ -4,10 +4,12 @@ import {
   createCourseController,
   updateCourseController,
   deleteCourseController,
+  getCourseByIdController,
 } from "../controllers/courseController.js";
 import { authenticateUser } from "../middleware/authenticateUser.js";
 import { authorizeRoles } from "../middleware/authorizeRoles.js";
 import { uploadPDF } from "../middleware/multerMiddleware.js";
+import { uploadImage } from "../middleware/multerImage.js";
 
 const courseRoutes = express.Router();
 
@@ -17,6 +19,7 @@ courseRoutes.post(
   authenticateUser,
   authorizeRoles("Instructor"),
   uploadPDF.single("pdf"),
+  uploadImage.single("image"),
   createCourseController
 ); // CREATE a course
 courseRoutes.put(
@@ -31,5 +34,8 @@ courseRoutes.delete(
   authorizeRoles("Instructor", "Admin"),
   deleteCourseController
 ); // DELETE course by ID
+
+
+courseRoutes.get("/:id", authenticateUser, getCourseByIdController);
 
 export default courseRoutes;
