@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getToken } from "../../utils/api"; // optional if you store token in localStorage
+import { getToken } from "../../utils/api"; 
 
 export default function AddCourse() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [pdfFile, setPdfFile] = useState(null);
   const [imageFile, setImageFile] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
 
   const navigate = useNavigate();
 
@@ -18,7 +19,8 @@ export default function AddCourse() {
       return;
     }
 
-    const token = getToken(); // or localStorage.getItem("token")
+    setSubmitting(true);
+    const token = getToken();
 
     const formData = new FormData();
     formData.append("title", title);
@@ -37,20 +39,22 @@ export default function AddCourse() {
 
       const data = await res.json();
 
-      if (res.ok) {
+      if (!res.ok) {
+         alert(data.message || "Failed to create course");
+      } else {
         alert("Course created successfully!");
         navigate("/instructor/courses"); // redirect to courses list
-      } else {
-        alert(data.message || "Failed to create course");
       }
-    } catch (err) {
+     } catch (err) {
       console.error(err);
       alert("Error creating course");
+    } finally {
+      setSubmitting(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} encType="multipart/form-data">
       <input
         type="text"
         placeholder="Course Title"

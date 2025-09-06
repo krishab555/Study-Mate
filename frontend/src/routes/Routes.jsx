@@ -3,20 +3,23 @@ import { Route, Routes, Navigate } from "react-router-dom";
 import ProtectedRoutes from "./ProctectedRoutes";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
-import DisscussionForum from "../pages/DisscussionForum";
+
 import Dashboard from "../pages/Dashboard";
 
 import StudentLayout from "./StudentLayout";
 import Profile from "../pages/student/Profile";
 import Home from "../pages/student/Home";
 import Courses from "../pages/student/Courses";
+import CourseDetail from "../pages/student/CourseDetail";
+import FAQSubjects from "../pages/student/FAQSubjects";
+import FAQDetails from "../pages/student/FAQDetails";
 
 import InstructorHome from "../pages/instructor/InstructorHome";
 import AdminHome from "../pages/admin/AdminHome";
 import InstructorLayout from "./InstructorLayout";
 import AdminLayout from "./AdminLayout";
 import Layout from "./Layout";
-import CourseDetail from "../pages/student/CourseDetail";
+import DiscussionForum from "../pages/DiscussionForum";
 
 const PageRoutes = () => {
   return (
@@ -24,24 +27,22 @@ const PageRoutes = () => {
       {/* Public Routes */}
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
+      <Route element={<ProtectedRoutes allowedRole={["Student","Instructor","Admin"]} />}>
+      <Route path="/discussionForum" element={<DiscussionForum/>}/>
+      </Route>
 
       {/* Default "/" goes to dashboard */}
       <Route path="/" element={<Layout />}>
         <Route index element={<Dashboard />} />
       </Route>
 
-      {/* Or if you want redirect instead of showing Dashboard directly:
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-      */}
+      
 
-      <Route
-        path="/dashboard"
-        element={
+      <Route path="/dashboard" element={
           <Layout>
             <Dashboard />
           </Layout>
-        }
-      />
+      }/>
 
       {/* Student Routes */}
       <Route element={<ProtectedRoutes allowedRole={["Student"]} />}>
@@ -54,6 +55,8 @@ const PageRoutes = () => {
         </Route>
       </Route>
           <Route path="courses/:id" element={<CourseDetail/>} />
+          <Route path="/faqs" element={<FAQSubjects/>} />
+         <Route path="/faqs/:faqMasterId" element={<FAQDetails/>} />
 
       {/* Instructor Routes */}
       <Route element={<ProtectedRoutes allowedRole={["Instructor"]} />}>
@@ -63,9 +66,7 @@ const PageRoutes = () => {
         </Route>
       </Route>
 
-      {/* Discussion Forum */}
-      <Route path="/discussionForum" element={<DisscussionForum />} />
-
+      
       {/* Admin Routes */}
       <Route element={<ProtectedRoutes allowedRole={["Admin"]} />}>
         <Route path="/admin" element={<AdminLayout />}>

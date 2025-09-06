@@ -37,28 +37,40 @@ export default function StudentCourses() {
   };
 
   const containerStyle = {
+    
     marginLeft: "230px", // sidebar width
-    marginTop: "60px", // below navbar
+    marginTop: "60px",   // below navbar
     padding: "20px",
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+    gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
     gap: "20px",
-    marginRight: "20px",
-  };
+    width: `calc(100% - 230px)`,
+};
+
+
 
   const cardStyle = {
-    display: "flex",
-    flexDirection: "column",
-    borderRadius: "10px",
-    overflow: "hidden",
-    boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-    backgroundColor: "#f9f9f9",
-    cursor: "pointer",
-    transition: "transform 0.2s, box-shadow 0.2s",
+    
+    minHeight: "380px",
+    
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "space-between",
+  borderRadius: "10px",
+  overflow: "hidden",
+  boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+  backgroundColor: "#f9f9f9",
+  cursor: "pointer",
+  transition: "transform 0.2s, box-shadow 0.2s",
   };
 
   const imageStyle = { width: "100%", height: "150px", objectFit: "cover" };
-  const contentStyle = { padding: "15px" };
+  const contentStyle = { 
+    padding: "15px",
+    display: "flex", 
+    flexDirection: "column", 
+    flexGrow: 1 
+  };
   const titleStyle = { fontSize: "18px", fontWeight: "600", marginBottom: "8px", color: "#0B2C5D" };
   const descStyle = { fontSize: "14px", color: "#555", marginBottom: "12px" };
   const buttonStyle = {
@@ -100,7 +112,7 @@ export default function StudentCourses() {
                   e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.1)";
                 }}
               >
-                <img src={course.image || "https://via.placeholder.com/250x150"} alt={course.name} style={imageStyle} />
+                <img src={course.image || "/default-course.jpg"} alt={course.name} style={imageStyle} />
                 <div style={contentStyle}>
                   <h3 style={titleStyle}>{course.name}</h3>
                   <p style={descStyle}>{course.description}</p>

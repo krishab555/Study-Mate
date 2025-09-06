@@ -1,36 +1,4 @@
-// import dotenv from "dotenv";
-// dotenv.config();
-// import express from "express";
-// import cors from "cors";
-// import { connectToDB } from "./config/db.js"; 
-// import userRoutes from "./routes/userRoutes.js";
-// import courseRoutes from "./routes/courseRoutes.js";
-// import projectRoutes from "./routes/projectRoutes.js";
-// import certificateRoutes from "./routes/certificateRoutes.js";
 
-
-// const app = express();
-
-// connectToDB(); 
-// app.use(cors()); 
-// app.use(express.json());
-
-// app.use("/api/users", userRoutes);
-// app.use("/api/courses", courseRoutes); 
-// app.use("/api/projects", projectRoutes);
-// app.use("/api/certificates", certificateRoutes);
-
-// app.get("/api/test", (req, res) => {
- 
-//   res.json({ success: true, message: "This is test route!" });
-// });
-
-// const port = process.env.PORT || 5000;
-
-// app.listen(port, () => {
-//   console.log(`Server running on port ${port}`); 
-// });
-// index.js
 import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
@@ -45,6 +13,7 @@ import quizRouter from "./routes/quizRoutes.js";
 import userQuizRouter from "./routes/userQuizRoutes.js";
 import enrollmentRoutes from "./routes/enrollmentRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
+import discussionRouter from "./routes/discussionRoutes.js";
 
 // Load environment variables
 dotenv.config();
@@ -77,6 +46,7 @@ app.use("/api/quiz", quizRouter);
 app.use("/api/userQuiz",userQuizRouter);
 app.use("/api/enrollments",enrollmentRoutes);
 app.use("/api/payments",paymentRoutes);
+app.use("/api/discussions",discussionRouter);
 
 // Health check route
 

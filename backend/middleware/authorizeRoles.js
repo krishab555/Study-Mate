@@ -2,7 +2,7 @@
 
 export const authorizeRoles = (...allowedRoles) => {
   return (req, res, next) => {
-     const userRole = req.user.role?.name || req.user.role; // fallback if not populated
+     const userRole = req.user.role?.name || req.user.role;
 
      console.log("User role from token:", userRole);
     if (!req.user) {

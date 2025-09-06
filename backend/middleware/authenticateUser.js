@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { UserModel } from "../models/UserModel.js";
-import { authorizeRoles } from "./authorizeRoles.js";
+
 
 export const authenticateUser = async (req, res, next) => {
   try {
@@ -9,7 +9,9 @@ export const authenticateUser = async (req, res, next) => {
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return res
         .status(401)
-        .json({ success: false, message: "Unauthorized: No token provided" });
+        .json({ 
+          success: false,
+          message: "Unauthorized: No token provided" });
     }
 
     const token = authHeader.split(" ")[1];
