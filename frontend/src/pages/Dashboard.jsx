@@ -1,27 +1,94 @@
-
-import React from "react";
+import React, { useEffect, useCallback } from "react";
+import { useLocation } from "react-router-dom";
 import FAQSection from "../components/FAQsSection";
-
-
+import ContactUs from "./student/ContactUs";
 export default function Dashboard() {
+  const location = useLocation();
+
+  // Smooth scroll helper with fixed-navbar offset
+  const smoothScrollToId = useCallback((id) => {
+    if (!id) return;
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    const header = document.querySelector("nav");
+    const offset = header ? header.offsetHeight + 8 : 80;
+    const y = el.getBoundingClientRect().top + window.pageYOffset - offset;
+
+    window.scrollTo({ top: y, behavior: "smooth" });
+  }, []);
+
+  // Scroll to hash on load
+  useEffect(() => {
+    if (location.hash) {
+      const id = decodeURIComponent(location.hash.replace("#", ""));
+      requestAnimationFrame(() => setTimeout(() => smoothScrollToId(id), 0));
+    }
+  }, [location.hash, smoothScrollToId]);
+
+  // Scroll via state
+  useEffect(() => {
+    if (location.state?.scrollTo) {
+      requestAnimationFrame(() =>
+        setTimeout(() => {
+          smoothScrollToId(location.state.scrollTo);
+        }, 0)
+      );
+    }
+  }, [location.state, smoothScrollToId]);
+
+  // Courses array
+  const courses = [
+    { title: "Python", image: "/python image.jpg" },
+    { title: "Java", image: "/java image.png" },
+    { title: "NodeJS", image: "/node js image.png" },
+    { title: "ReactJS", image: "/reactjs.png" },
+    { title: "C++", image: "/cpp.webp" },
+    { title: "Python", image: "/python image.jpg" },
+    { title: "Php", image: "/php.webp" },
+    { title: "Javascript", image: "/js.webp" },
+    // add more courses here
+  ];
+
+  // Styles for course cards
+  const courseCardStyle = {
+    background: "#f9f9f9",
+    padding: "20px",
+    borderRadius: "12px",
+    textAlign: "center",
+    boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+  };
+  const courseImageStyle = {
+    width: "300px",
+    height: "250px",
+    marginBottom: "10px",
+    objectFit: "cover",
+  };
+  const courseTitleStyle = { fontWeight: "bold" };
+
   return (
     <div style={{ paddingTop: "80px", margin: 0 }}>
-      {/* Top Two Images */}
+      {/* Home Section */}
+      {/* Home Section */}
       <section
+        id="home"
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
           width: "100%",
+          gap: "7px", //
+          background: "#f9f9f9",
+          padding: "10px",
         }}
       >
         <img
           src="/image1.jpg"
-          //src="https://img.freepik.com/free-photo/online-education-home_155003-11679.jpg"
           alt="Online Learning"
           style={{
             width: "100%",
             height: "350px",
             objectFit: "cover",
+            borderRadius: "10px",
           }}
         />
         <img
@@ -31,55 +98,53 @@ export default function Dashboard() {
             width: "100%",
             height: "350px",
             objectFit: "cover",
+            borderRadius: "10px",
           }}
         />
       </section>
 
-      {/* Welcome Section
-      <section style={{ textAlign: "center", padding: "40px 20px" }}>
-        <h1 style={{ fontSize: "32px", fontWeight: "bold" }}>
-          Welcome to our E-learning platform
-        </h1>
-        <p style={{ fontSize: "18px", marginTop: "10px", color: "#555" }}>
-          Learn, Explore and Grow with StudyMate
-        </p>
-      </section> */}
       {/* Welcome Section */}
+
+      {/* Welcome Section with Full-Width Image */}
       <section
         style={{
-          display: "flex",
-          flexWrap: "wrap",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: "5px 2px",
-          gap: "5px",
+          marginTop: "5~px",
+          position: "relative",
+          textAlign: "left",
+          width: "100%", // take full width
         }}
       >
-        {/* Left Side Text */}
-        <div style={{ flex: "1", minWidth: "300px" }}>
-          <h1 style={{ fontSize: "32px", fontWeight: "bold" }}>
-            Welcome to our E-learning platform
-          </h1>
-          <p
-            style={{ fontSize: "18px", marginTop: "10px", color: "#0f0d0dff" }}
-          >
-            Learn, Explore and Grow with StudyMate
-          </p>
-        </div>
+        {/* Image */}
+        <img
+          src="project1.webp"
+          alt="E-learning Welcome"
+          style={{
+            width: "100%", // full width
+            height: "350px", // fixed height
+            objectFit: "cover", // crop neatly
+            display: "block",
+            borderRadius: "16px",
+          }}
+        />
 
-        {/* Right Side Image */}
-        <div style={{ flex: "1", minWidth: "300px", textAlign: "center" }}>
-          <img
-            src="/project1.webp"
-            // src="https://img.freepik.com/free-photo/smiley-student-girl-using-laptop_23-2148215984.jpg"
-            alt="E-learning"
-            style={{
-              width: "100%",
-              maxWidth: "400px",
-              borderRadius: "10px",
-              objectFit: "cover",
-            }}
-          />
+        {/* Text inside image */}
+        <div
+          style={{
+            position: "absolute",
+            top: "25px",
+            left: "40px",
+            color: "black", // 🔹 changed text color to black
+            background: "rgba(255,255,255,0.5)", // light overlay so black text is visible
+            padding: "10px 15px",
+            borderRadius: "6px",
+          }}
+        >
+          <h1 style={{ fontSize: "34px", fontWeight: "bold", margin: 0 }}>
+            Welcome to StudyMate
+          </h1>
+          <p style={{ fontSize: "20px", marginTop: "10px" }}>
+            Learn Anytime, Anywhere – Explore your skills with us
+          </p>
         </div>
       </section>
 
@@ -128,8 +193,8 @@ export default function Dashboard() {
         </div>
       </section>
 
-      {/* Latest Courses */}
-      <section style={{ padding: "40px 20px" }}>
+      {/* Courses Section */}
+      <section id="courses" style={{ padding: "40px 20px" }}>
         <h2
           style={{
             fontSize: "24px",
@@ -140,71 +205,34 @@ export default function Dashboard() {
         >
           Latest Courses
         </h2>
+
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+            gridTemplateColumns: "repeat(3, 1fr)", // exactly 3 per row
             gap: "20px",
           }}
         >
-          {/* Python */}
-          <div
-            style={{
-              background: "#f9f9f9",
-              padding: "20px",
-              borderRadius: "12px",
-              textAlign: "center",
-              boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-            }}
-          >
-            <img
-              src="/python image.jpg"
-              alt="Python"
-              style={{ width: "300px", height: "250px", marginBottom: "10px" }}
-            />
-            <h3 style={{ fontWeight: "bold" }}>Python</h3>
-          </div>
-
-          {/* Java */}
-          <div
-            style={{
-              background: "#f9f9f9",
-              padding: "20px",
-              borderRadius: "12px",
-              textAlign: "center",
-              boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-            }}
-          >
-            <img
-              src="/java image.png"
-              alt="Java"
-              style={{ width: "300px", height: "250px", marginBottom: "10px" }}
-            />
-            <h3 style={{ fontWeight: "bold" }}>Java</h3>
-          </div>
-
-          {/* NodeJS */}
-          <div
-            style={{
-              background: "#f9f9f9",
-              padding: "20px",
-              borderRadius: "12px",
-              textAlign: "center",
-              boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-            }}
-          >
-            <img
-              src="node js image.png"
-              alt="NodeJS"
-              style={{ width: "300px", height: "250px", marginBottom: "10px" }}
-            />
-            <h3 style={{ fontWeight: "bold" }}>NodeJS</h3>
-          </div>
+          {courses.map((course, index) => (
+            <div key={index} style={courseCardStyle}>
+              <img
+                src={course.image}
+                alt={course.title}
+                style={courseImageStyle}
+              />
+              <h3 style={courseTitleStyle}>{course.title}</h3>
+            </div>
+          ))}
         </div>
       </section>
-      {/* FAQ Section */}
-      <FAQSection />
-      
+
+      {/* FAQs Section */}
+      <section id="faqs" style={{ padding: "40px 20px" }}>
+        <FAQSection />
+      </section>
+
+      {/* Contact Section */}
+      <ContactUs />
     </div>
   );
 }

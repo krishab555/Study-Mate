@@ -1,22 +1,34 @@
+// src/routes/Routes.jsx
 import React from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 import ProtectedRoutes from "./ProctectedRoutes";
+
+// Public Pages
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import DisscussionForum from "../pages/DisscussionForum";
-import Dashboard from "../pages/Dashboard";
 
+// Landing Page
+import LandingPage from "../pages/LandingPage"; // Updated
+
+// Dashboard / Layouts
+import Dashboard from "../pages/Dashboard"; // Optional direct dashboard route
+import Layout from "./Layout";
+
+// Student
 import StudentLayout from "./StudentLayout";
-import Profile from "../pages/student/Profile";
 import Home from "../pages/student/Home";
 import Courses from "../pages/student/Courses";
-
-import InstructorHome from "../pages/instructor/InstructorHome";
-import AdminHome from "../pages/admin/AdminHome";
-import InstructorLayout from "./InstructorLayout";
-import AdminLayout from "./AdminLayout";
-import Layout from "./Layout";
+import Profile from "../pages/student/Profile";
 import CourseDetail from "../pages/student/CourseDetail";
+
+// Instructor
+import InstructorLayout from "./InstructorLayout";
+import InstructorHome from "../pages/instructor/InstructorHome";
+
+// Admin
+import AdminLayout from "./AdminLayout";
+import AdminHome from "../pages/admin/AdminHome";
 
 const PageRoutes = () => {
   return (
@@ -25,15 +37,10 @@ const PageRoutes = () => {
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
 
-      {/* Default "/" goes to dashboard */}
-      <Route path="/" element={<Layout />}>
-        <Route index element={<Dashboard />} />
-      </Route>
+      {/* Landing Page */}
+      <Route path="/" element={<LandingPage />} />
 
-      {/* Or if you want redirect instead of showing Dashboard directly:
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-      */}
-
+      {/* Optional direct dashboard */}
       <Route
         path="/dashboard"
         element={
@@ -49,11 +56,10 @@ const PageRoutes = () => {
           <Route index element={<Home />} />
           <Route path="home" element={<Home />} />
           <Route path="courses" element={<Courses />} />
-
           <Route path="profile" element={<Profile />} />
         </Route>
       </Route>
-          <Route path="courses/:id" element={<CourseDetail/>} />
+      <Route path="courses/:id" element={<CourseDetail />} />
 
       {/* Instructor Routes */}
       <Route element={<ProtectedRoutes allowedRole={["Instructor"]} />}>
@@ -74,7 +80,7 @@ const PageRoutes = () => {
         </Route>
       </Route>
 
-      {/* Fallback route for unknown URLs */}
+      {/* Fallback Route */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
