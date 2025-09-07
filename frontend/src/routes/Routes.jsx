@@ -1,18 +1,16 @@
-// src/routes/Routes.jsx
 import React from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 import ProtectedRoutes from "./ProctectedRoutes";
-
 // Public Pages
 import Login from "../pages/Login";
 import Register from "../pages/Register";
-import DisscussionForum from "../pages/DisscussionForum";
+import DiscussionForum from "../pages/DiscussionForum";
 
 // Landing Page
-import LandingPage from "../pages/LandingPage"; // Updated
+import LandingPage from "../pages/LandingPage";
 
 // Dashboard / Layouts
-import Dashboard from "../pages/Dashboard"; // Optional direct dashboard route
+import Dashboard from "../pages/Dashboard";
 import Layout from "./Layout";
 
 // Student
@@ -21,14 +19,16 @@ import Home from "../pages/student/Home";
 import Courses from "../pages/student/Courses";
 import Profile from "../pages/student/Profile";
 import CourseDetail from "../pages/student/CourseDetail";
+import FAQSubjects from "../pages/student/FAQSubjects";
+import FAQDetails from "../pages/student/FAQDetails";
 
 // Instructor
-import InstructorLayout from "./InstructorLayout";
 import InstructorHome from "../pages/instructor/InstructorHome";
+import InstructorLayout from "./InstructorLayout";
 
 // Admin
-import AdminLayout from "./AdminLayout";
 import AdminHome from "../pages/admin/AdminHome";
+import AdminLayout from "./AdminLayout";
 
 const PageRoutes = () => {
   return (
@@ -36,19 +36,21 @@ const PageRoutes = () => {
       {/* Public Routes */}
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
+      <Route
+        element={
+          <ProtectedRoutes allowedRole={["Student", "Instructor", "Admin"]} />
+        }
+      >
+        <Route path="/discussionForum" element={<DiscussionForum />} />
+      </Route>
 
       {/* Landing Page */}
       <Route path="/" element={<LandingPage />} />
 
-      {/* Optional direct dashboard */}
-      <Route
-        path="/dashboard"
-        element={
-          <Layout>
-            <Dashboard />
-          </Layout>
-        }
-      />
+      {/* Dashboard */}
+      <Route path="/dashboard" element={<Layout />}>
+        <Route index element={<Dashboard />} />
+      </Route>
 
       {/* Student Routes */}
       <Route element={<ProtectedRoutes allowedRole={["Student"]} />}>
@@ -59,7 +61,9 @@ const PageRoutes = () => {
           <Route path="profile" element={<Profile />} />
         </Route>
       </Route>
-      <Route path="courses/:id" element={<CourseDetail />} />
+      <Route path="/courses/:id" element={<CourseDetail />} />
+      <Route path="/faqs" element={<FAQSubjects />} />
+      <Route path="/faqs/:faqMasterId" element={<FAQDetails />} />
 
       {/* Instructor Routes */}
       <Route element={<ProtectedRoutes allowedRole={["Instructor"]} />}>
@@ -68,9 +72,6 @@ const PageRoutes = () => {
           <Route path="home" element={<InstructorHome />} />
         </Route>
       </Route>
-
-      {/* Discussion Forum */}
-      <Route path="/discussionForum" element={<DisscussionForum />} />
 
       {/* Admin Routes */}
       <Route element={<ProtectedRoutes allowedRole={["Admin"]} />}>

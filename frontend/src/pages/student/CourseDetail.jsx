@@ -4,16 +4,21 @@ import Navbar from "../../components/common/Navbar";
 import Footer from "../../components/common/Footer";
 import { SidebarLayout } from "../../components/common/SideBar";
 import { apiRequest } from "../../utils/api";
+ 
 
 export default function CourseDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchCourse = async () => {
+        setLoading(true);
       try {
+        const token = getToken();
+        // Make sure endpoint does NOT include a colon
         const response = await apiRequest({ endpoint: `/courses/${id}` });
 
         if (!response.success) {
@@ -38,6 +43,7 @@ export default function CourseDetail() {
 
   if (loading)
     return <p style={{ padding: "20px" }}>Loading course...</p>;
+  if (error) return <p style={{ padding: "20px", color: "red" }}>{error}</p>;
   if (!course) return <p style={{ padding: "20px" }}>Course not found</p>;
 
   return (
@@ -51,6 +57,22 @@ export default function CourseDetail() {
             margin: "0 auto",
           }}
         >
+            {/* Banner Image */}
+          {course.banner && (
+            <div style={{ textAlign: "center", marginBottom: "25px" }}>
+              <img
+                src={course.banner}
+                alt={course.title}
+                style={{
+                  maxWidth: "100%",
+                  height: "auto",
+                  borderRadius: "12px",
+                }}
+              />
+            </div>
+          )}
+
+
           <div
             style={{
               background: "white",
@@ -62,18 +84,32 @@ export default function CourseDetail() {
               gap: "15px",
             }}
           >
-            <h1 style={{ color: "#0B2C5D", fontSize: "2rem", fontWeight: "600" }}>
-              {course.name}
-            </h1>
+            <h2 style={{ color: "#0B2C5D", fontSize: "2rem", fontWeight: "600" }}>
+              Course Information
+            </h2>
 
             <div style={{ display: "flex", gap: "30px", flexWrap: "wrap" }}>
+                <div style={{ flex:"2"}}>
+                    <p>
+                  <strong>Title:</strong> {course.title}
+                  </p>
               <p><strong>Duration:</strong> {course.duration || "N/A"}</p>
-              <p><strong>Instructor:</strong> {course.instructor?.name || "N/A"}</p>
+              
             </div>
 
             <p style={{ marginTop: "15px", lineHeight: "1.6" }}>
               {course.description}
             </p>
+            {course.howToComplete?.length > 0 && (
+                  <div style={{ marginTop: "20px" }}>
+                    <h3>How to Complete this e-Course</h3>
+                    <ol style={{ marginTop: "10px", paddingLeft: "20px" }}>
+                      {course.howToComplete.map((step, idx) => (
+                        <li key={idx}>{step}</li>
+                      ))}
+                    </ol>
+                  </div>
+                )}
 
             <h3 style={{ marginTop: "20px" }}>Premium: Rs {course.price}</h3>
 
@@ -101,7 +137,36 @@ export default function CourseDetail() {
               {course.isPaid ? "Go to Course Content" : "Pay Now"}
             </button>
           </div>
-        </div>
+       {course.instructor && (
+                <div
+                  style={{
+                    flex: "1",
+                    background: "#f5f5f5",
+                    borderRadius: "8px",
+                    padding: "15px",
+                    textAlign: "center",
+                  }}
+                >
+                  {course.instructor.photo && (
+                    <img
+                      src={course.instructor.photo}
+                      alt={course.instructor.name}
+                      style={{
+                        width: "100%",
+                        borderRadius: "8px",
+                        marginBottom: "10px",
+                      }}
+                    />
+                  )}
+                  <p>
+                    <strong>Instructor</strong>
+                  </p>
+                  <p>{course.instructor.name}</p>
+                </div>
+              )}
+            </div>
+          </div>
+        
       </SidebarLayout>
       <Footer />
     </div>

@@ -29,10 +29,8 @@ export const createCourseController = async (req, res) => {
   try {
     const { title, description, instructor, price, isPaid, category, level } =
       req.body;
-    const pdfFile =
-      req.files?.pdf || req.file?.fieldname === "pdf" ? req.file : null;
-    const imageFile =
-      req.files?.image || req.file?.fieldname === "image" ? req.file : null;
+     const pdfFile = req.files?.pdf?.[0];
+     const imageFile = req.files?.image?.[0];
 
     const pdfUrl = pdfFile ? `/uploads/pdfs/${pdfFile.filename}` : null;
     const imageUrl = imageFile ? `/uploads/images/${imageFile.filename}` : null;
@@ -46,6 +44,7 @@ export const createCourseController = async (req, res) => {
       category,
       level,
       pdfUrl,
+      banner: bannerUrl,
     });
 
     res.status(201).json({
