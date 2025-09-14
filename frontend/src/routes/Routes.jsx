@@ -31,6 +31,7 @@ import AdminHome from "../pages/admin/AdminHome";
 import AdminLayout from "./AdminLayout";
 import Profile from "../pages/Profile";
 import ManageUsers from "../pages/admin/ManageUsers";
+import AdminCourses from "../pages/admin/AdminCourses";
 
 const PageRoutes = () => {
   return (
@@ -82,6 +83,7 @@ const PageRoutes = () => {
           <Route index element={<AdminHome />} />
           <Route path="home" element={<AdminHome />} />
           <Route path="manage-users" element={<ManageUsers/>}/>
+          <Route path="manage-courses" element={<AdminCourses/>}/>
         </Route>
       </Route>
 

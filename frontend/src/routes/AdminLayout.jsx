@@ -6,7 +6,7 @@ import Footer from "../components/common/Footer";
 const AdminLayout = () => {
   return (
     <div>
-      <Navbar />
+      
       <SideBar/>
       <div>
         <Outlet />

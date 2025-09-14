@@ -1,3 +1,4 @@
+
 import mongoose from "mongoose";
 
 const courseSchema = new mongoose.Schema({
@@ -8,8 +9,9 @@ const courseSchema = new mongoose.Schema({
   instructor: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "users", 
+    required:true,
   },
-  price: Number,
+  price: {type:Number, required:true, default:0},
   isPaid: Boolean,
   pdfUrl: {
     type: String,

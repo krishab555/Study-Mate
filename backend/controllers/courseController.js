@@ -1,6 +1,6 @@
 import { CourseModel } from "../models/courseModel.js";
 import { decodeJWT } from "../utils/generateToken.js";
-import { UserModel } from "../models/UserModel.js";
+
 
 
 
@@ -8,7 +8,7 @@ import { UserModel } from "../models/UserModel.js";
 export const getCoursesController = async (req, res) => {
   try {
     const user = req.user;
-    const courses = await CourseModel.find().populate({path:"instructor",selsect:"name email"}).lean();
+    const courses = await CourseModel.find().populate("instructor","name").lean();
 
     return res.status(200).json({
       success: true,
