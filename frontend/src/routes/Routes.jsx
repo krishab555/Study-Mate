@@ -17,7 +17,7 @@ import Layout from "./Layout";
 import StudentLayout from "./StudentLayout";
 import Home from "../pages/student/Home";
 import Courses from "../pages/student/Courses";
-import Profile from "../pages/student/Profile";
+
 import CourseDetail from "../pages/student/CourseDetail";
 import FAQSubjects from "../pages/student/FAQSubjects";
 import FAQDetails from "../pages/student/FAQDetails";
@@ -29,6 +29,7 @@ import InstructorLayout from "./InstructorLayout";
 // Admin
 import AdminHome from "../pages/admin/AdminHome";
 import AdminLayout from "./AdminLayout";
+import Profile from "../pages/Profile";
 
 const PageRoutes = () => {
   return (
@@ -42,6 +43,7 @@ const PageRoutes = () => {
         }
       >
         <Route path="/discussionForum" element={<DiscussionForum />} />
+        <Route path="profile" element={<Profile/>} />
       </Route>
 
       {/* Landing Page */}

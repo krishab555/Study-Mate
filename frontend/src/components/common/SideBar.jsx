@@ -22,7 +22,7 @@ const SideBar = () => {
       { path: "/instructor/home", label: "Dashboard", icon: <FiGrid /> },
       { path: "/instructor/courses", label: "My Courses", icon: <FiBookOpen /> },
       { path: "/discussionForum", label: "Discussion Forum", icon: <FiMessageSquare /> },
-      { path: "/instructor/profile", label: "Profile", icon: <FiUser /> },
+      { path: "/profile", label: "Profile", icon: <FiUser /> },
     ],
     admin: [
       { path: "/admin/home", label: "Dashboard", icon: <FiGrid /> },
@@ -30,6 +30,7 @@ const SideBar = () => {
       { path: "/admin/manage-courses", label: "Courses", icon: <FiBookOpen /> },
       { path: "/faqs", label: "FAQs", icon: <FiTwitch /> },
       { path: "/settings", label: "Settings", icon: <FiSettings /> },
+      { path: "/profile", label: "Profile", icon: <FiUser /> },
     ],
   };
   const roleFromStorage = localStorage.getItem("role");

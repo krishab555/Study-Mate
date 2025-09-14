@@ -9,47 +9,50 @@ export const createDiscussion = async (req, res) => {
 
     // Create DiscussionMaster
     const discussion = await DiscussionMaster.create({
-      course: courseId,
+      course: courseId ,
       title,
-    })
+    });
+
+    const detail = await DiscussionDetails.create({
+      discussionMaster: discussion._id,
+      user: req.user._id,
+      content,
+    });
+
+    const populatedDiscussion = await DiscussionMaster.findById(discussion._id)
       .populate("course", "title")
       .populate({
         path: "details",
         populate: { path: "user", select: "name" },
       });
 
-    // Create initial post in DiscussionDetail
-    await DiscussionDetails.create({
-      discussionMaster: discussion._id,
-      user: req.user._id,
-      content,
+    res.status(201).json({
+      success: true,
+      message: "Discussion created",
+      discussion: populatedDiscussion,
     });
-
-    res
-      .status(201)
-      .json({ success: true, message: "Discussion created", discussion });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
-
+   
 export const getAllDiscussion = async (req, res) => {
   try {
     const { courseId, filter } = req.query;
 
-    if (!courseId)
-      return res.status(400).json({ message: "Course ID is required" });
+    let query = {};
+    if (courseId) query.course = courseId;
 
-    let discussions = await DiscussionMaster.find({
-      course: courseId,
-    }).populate({
-      path: "course",
-      select: "title",
+    let discussions = await DiscussionMaster.find(query)
+      .populate( "course","title",)
+      .populate({
+        path:"details",
+        populate:{ path:"user", select:"name"},
     });
 
     // Sort by filter
     if (filter === "latest")
-      discussions.sort((a, b) => b.createdAt - a.createdAt);
+      discussions = discussions.sort((a, b) => b.createdAt - a.createdAt);
     else if (filter === "unanswered")
       discussions = discussions.filter((d) => d.details?.length === 0);
     else if (filter === "popular") {

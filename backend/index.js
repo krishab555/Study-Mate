@@ -51,6 +51,7 @@ app.use("/api/discussions",discussionRouter);
 app.get("/", (req, res) => {
   res.send("Study-Mate API is running...");
 });
+app.use("/uploads", express.static("uploads"));
 
 // Global error handler
 app.use((err, req, res, next) => {

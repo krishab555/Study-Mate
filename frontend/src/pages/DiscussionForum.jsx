@@ -9,18 +9,26 @@ export default function DiscussionForum() {
   const [newContent, setNewContent] = useState("");
   const [selectedCourse, setSelectedCourse] = useState("");
   const [courses, setCourses] = useState([]);
+  const [expandedCourse, setExpandedCourse] = useState(null);
+  const [replyText, setReplyText] = useState({});
   const user = JSON.parse(localStorage.getItem("user"));
+  const token = localStorage.getItem("token");
 
   // Fetch discussions whenever filter changes
   useEffect(() => {
     fetchDiscussions();
-  }, [filter]);
+  }, [filter, selectedCourse]);
 
   // Fetch all courses for dropdown
-  useEffect(() => {
+   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/courses");
+        const res = await fetch("http://localhost:5000/api/courses", {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
         const data = await res.json();
         if (data.success) setCourses(data.data);
       } catch (err) {
@@ -34,7 +42,12 @@ export default function DiscussionForum() {
     try {
       const courseQuery = selectedCourse ? `&courseId=${selectedCourse}` : "";
       const res = await fetch(
-        `http://localhost:5000/api/discussions?filter=${filter}${courseQuery}`
+        `http://localhost:5000/api/discussions?filter=${filter}${courseQuery}`,{
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       const data = await res.json();
       if (data.success) setDiscussions(data.data);
@@ -51,7 +64,7 @@ export default function DiscussionForum() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           title: newTitle,
@@ -79,7 +92,8 @@ export default function DiscussionForum() {
     try {
       await fetch(`http://localhost:5000/api/discussions/${id}`, {
         method: "DELETE",
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        headers: { Authorization: `Bearer ${token}`
+       },
       });
       fetchDiscussions();
     } catch (err) {
@@ -91,7 +105,7 @@ export default function DiscussionForum() {
     try {
       await fetch(`http://localhost:5000/api/discussions/${id}/pin`, {
         method: "PATCH",
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        headers: { Authorization: `Bearer ${token}` },
       });
       fetchDiscussions();
     } catch (err) {
@@ -99,35 +113,79 @@ export default function DiscussionForum() {
     }
   };
 
-  const handleReply = (id) => {
-    alert(`Replying to discussion ${id}...`);
-    // Open modal or redirect to reply form
+  const handleReply = async(discussionId) => {
+   
+    if (!replyText[discussionId]) return;
+    try {
+      const res = await fetch(
+        `http://localhost:5000/api/discussions/${discussionId}/reply`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ content: replyText[discussionId] }),
+        }
+      );
+      const data = await res.json();
+      if (data.success) {
+        setReplyText((prev) => ({ ...prev, [discussionId]: "" }));
+        fetchDiscussions();
+      } else {
+         alert(data.message || "Failed to reply");
+      }
+    } catch (err) {
+      console.error("Reply failed:", err);
+    }
   };
+  const groupedByCourse = discussions.reduce((acc, d) => {
+    const courseName = d.course?.title || "General";
+    if (!acc[courseName]) acc[courseName] = [];
+    acc[courseName].push(d);
+    return acc;
+  }, {});
+  
 
   const containerStyle = {
     marginLeft: "280px",
     marginTop: "60px",
     padding: "20px",
     fontFamily: "Arial, sans-serif",
+    maxWidth:"900px",
   };
+  const filterBtnStyle = (active) => ({ 
+     padding: "8px 16px",
+     margin: "0 8px",
+     borderRadius: "20px",
+     border: "none",
+     cursor: "pointer", 
+     fontWeight: "bold", 
+     background: active ? "#007bff" : "#f0f0f0", 
+     color: active ? "#fff" : "#333", 
+    });
 
-  const filterBtnStyle = (active) => ({
-    padding: "8px 16px",
-    margin: "0 8px",
-    borderRadius: "20px",
-    border: "none",
+  const accordionHeader = {
+    background: "#f5f5f5",
+    padding: "10px 15px",
     cursor: "pointer",
-    fontWeight: "bold",
-    background: active ? "#007bff" : "#f0f0f0",
-    color: active ? "#fff" : "#333",
-  });
-
+    borderRadius: "5px",
+    marginBottom: "8px",
+    display: "flex",
+    justifyContent: "space-between",
+  };
   const discussionCardStyle = {
     background: "#fff",
     padding: "15px",
     borderRadius: "8px",
     boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
     marginBottom: "15px",
+  };
+
+  const replyBox = {
+    marginTop: "10px",
+    display: "flex",
+    flexDirection: "column",
   };
 
   const inputStyle = {
@@ -145,6 +203,7 @@ export default function DiscussionForum() {
     border: "none",
     borderRadius: "5px",
     cursor: "pointer",
+    marginRight:"8px",
   };
 
   return (
@@ -203,39 +262,89 @@ export default function DiscussionForum() {
             </button>
           </div>
 
-          {/* Discussions List */}
-          {discussions.length === 0 ? (
+           {/* Grouped Discussions */}
+          {Object.keys(groupedByCourse).length === 0 ? (
             <p>No discussions found</p>
           ) : (
-            discussions.map((d) => (
-              <div key={d._id} style={discussionCardStyle}>
-                <h3>{d.title}</h3>
-                <p>{d.details[0]?.content}</p>
-                <small>Course: {d.course?.title || "General"}</small>
-                <br />
-                <small>By: {ddetails[0]?.user?.name}</small>
+            Object.entries(groupedByCourse).map(
+              ([courseName, courseDiscussions]) => (
+                <div key={courseName}>
+                  <div
+                    style={accordionHeader}
+                    onClick={() =>
+                      setExpandedCourse(
+                        expandedCourse === courseName ? null : courseName
+                      )
+                    }
+                  >
+                    {courseName}
+                  </div>
 
-                <div style={{ marginTop: "10px" }}>
-                  {user?.role === "User" && (
-                    <button style={buttonStyle} onClick={() => handleReply(d._id)}>Reply</button>
-                  )}
+                  {expandedCourse === courseName &&
+                    courseDiscussions.map((d) => (
+                      <div key={d._id} style={discussionCardStyle}>
+                        <h3>{d.title}</h3>
+                        <div style={{ marginBottom: "10px" }}>
+                          {d.details?.map((detail, idx) => (
+                            <div key={idx} style={{ marginBottom: "5px" }}>
+                              <strong>{detail.user?.name}:</strong>{" "}
+                              {detail.content}
+                            </div>
+                          ))}
+                        </div>
+                        <small>Course: {d.course?.title || "General"}</small>
+                        <br />
+                        <small>By: {d.details[0]?.user?.name}</small>
 
-                  {user?.role === "Instructor" && (
-                    <>
-                      <button style={buttonStyle} onClick={() => handleReply(d._id)}>Reply</button>
-                      <button style={buttonStyle} onClick={() => handlePin(d._id)}>Pin</button>
-                    </>
-                  )}
+                        {/* Actions */}
+                        <div style={{ marginTop: "10px" }}>
+                          {(user?.role === "Student" ||
+                            user?.role === "Instructor" ||
+                            user?.role === "Admin") && (
+                            <div style={replyBox}>
+                              <textarea
+                                style={inputStyle}
+                                placeholder="Write a reply..."
+                                value={replyText[d._id] || ""}
+                                onChange={(e) =>
+                                  setReplyText((prev) => ({
+                                    ...prev,
+                                    [d._id]: e.target.value,
+                                  }))
+                                }
+                              />
+                              <button
+                                style={buttonStyle}
+                                onClick={() => handleReply(d._id)}
+                              >
+                                Submit Reply
+                              </button>
+                            </div>
+                          )}
 
-                  {user?.role === "Admin" && (
-                    <>
-                      <button style={buttonStyle} onClick={() => handleReply(d._id)}>Reply</button>
-                      <button style={buttonStyle} onClick={() => handleDelete(d._id)}>Delete</button>
-                    </>
-                  )}
+                          {user?.role === "Instructor" && (
+                            <button
+                              style={buttonStyle}
+                              onClick={() => handlePin(d._id)}
+                            >
+                              Pin
+                            </button>
+                          )}
+
+                          {user?.role === "Admin" && (
+                            <button
+                              style={buttonStyle}
+                              onClick={() => handleDelete(d._id)}
+                            >
+                              Delete
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
                 </div>
-              </div>
-            ))
+              )
+            )
           )}
         </div>
       </div>

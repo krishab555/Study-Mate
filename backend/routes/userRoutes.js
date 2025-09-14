@@ -1,4 +1,7 @@
  import express from "express";
+ import { uploadImage } from "../middleware/multerImage.js";
+ import { uploadProfileImage } from "../controllers/userController.js";
+ 
 
 import {
   loginUser,
@@ -7,7 +10,7 @@ import {
   deleteUser,
   updatePassword,
   getProfile,
-  getAllUsers, // ✅ Make sure these are defined in userController.js
+  getAllUsers,
   getSingleUserById,
 } from "../controllers/userController.js";
 
@@ -16,24 +19,29 @@ import { authorizeRoles } from "../middleware/authorizeRoles.js";
 
 const router = express.Router();
 
-// Public Routes
+
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 
-// Authenticated user profile
 router.get("/profile", authenticateUser, getProfile);
 
-// Routes for user to update or delete their account
+router.post(
+  "/upload-profile",
+  authenticateUser,
+  uploadImage.single("image"),
+  uploadProfileImage
+);
+
 router
   .route("/:userId")
   .put(authenticateUser, updateUser)
   .patch(authenticateUser, updatePassword)
   .delete(authenticateUser, deleteUser);
 
-// Admin-only: Get all users
+
 router.get("/", authenticateUser, authorizeRoles("Admin"), getAllUsers);
 
-// Admin or Teacher: Get specific user
+
 router.get(
   "/user/:id",
   authenticateUser,

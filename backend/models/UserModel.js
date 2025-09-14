@@ -27,9 +27,14 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
 
-  // Optional: role-specific data
+  
   subjects: [String], // For Teachers
   enrolledCourses: [String], // For Students
+
+  image:{
+    type: String, 
+    default:"",
+  }
 });
 
 // Password methods

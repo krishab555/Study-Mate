@@ -86,11 +86,18 @@ export const loginUser = async (req, res) => {
   }
 };
 
-// Get Logged-In User Profile
+// User Profile
 export const getProfile = async (req, res) => {
   try {
-    const user = req.user.toObject();
-    delete user.password;
+    const user = await UserModel.findById(req.user._id)
+      .select("-password")
+      .populate("role", "name"); 
+
+    if (!user)
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+
 
     res.status(200).json({
       success: true,
@@ -112,7 +119,6 @@ export const updateUser = async (req, res) => {
       return res.json({ success: false, message: "User not found" });
     }
 
-    // Only owner or Admin can update
     if (
       foundUser._id.toString() !== req.user._id.toString() &&
       req.user.role.name !== "Admin"
@@ -226,3 +232,22 @@ export const getSingleUserById = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+// Upload user profile image
+export const uploadProfileImage = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+
+    const user = await UserModel.findByIdAndUpdate(
+      req.user.id,
+      { image: `/uploads/images/${req.file.filename}` }, // store relative path
+      { new: true }
+    );
+
+    res.json({ message: "Profile image uploaded successfully", user });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
