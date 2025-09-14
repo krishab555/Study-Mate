@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 
 
-
-
 const Profile = () => {
   const [profile, setProfile] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -65,7 +63,7 @@ const Profile = () => {
       const res = await fetch("http://localhost:5000/api/users/upload-profile", {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${"token"}`,
+          Authorization: `Bearer ${token}`,
         },
         body: formData,
       });

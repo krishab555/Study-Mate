@@ -1,70 +1,181 @@
-import React, { useContext } from "react";
-import { Link } from "react-router-dom";
-import { AuthContext } from "../../context/AuthContext"; // adjust path
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
 
-const Navbar = () => {
-  const { user } = useContext(AuthContext);
+export default function Navbar() {
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+  const userName = localStorage.getItem("userName");
+  const role = localStorage.getItem("role");
 
-  let navLinks = [];
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("role");
+    navigate("/login");
+  };
 
-if (user?.role === "admin") {
-  navLinks = [
-    { to: "/admin/home", label: "Dashboard" },
-    { to: "/admin/users", label: "Manage Users" },
-    { to: "/admin/courses", label: "Manage Courses" },
-    { to: "/admin/instructors", label: "Manage Instructors" },
-    { to: "/admin/faqs", label: "Manage FAQs" },
-    { to: "/admin/settings", label: "Settings" },
-  ];
-} else {
-  // Default (students/teachers/guests)
-  navLinks = [
-    { to: "/", label: "Home" },
-    { to: "/courses", label: "Courses" },
-    { to: "/faqs", label: "FAQs" },
-    { to: "/contact", label: "Contact" },
-  ];
-}
+  const scrollToSection = (id) => {
+    const element = document.getElementById(id);
+    if (element) element.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const styles = {
+    navbar: {
+      position: "fixed",
+      top: 0,
+      left: 0,
+      width: "100%",
+      backgroundColor: "#0a2a66",
+      color: "white",
+      zIndex: 9999,
+      boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
+      height: "60px",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      padding: "0 10px",
+    },
+    container: {
+      width: "100%",
+      maxWidth: "1200px",
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+    },
+    logoContainer: {
+      display: "flex",
+      alignItems: "center",
+      gap: "10px",
+      marginLeft: "-70px",
+    },
+    logoImage: {
+      width: "180px",
+      height: "90px",
+      objectFit: "contain",
+    },
+    navLinks: {
+      display: "flex",
+      gap: "30px",
+      listStyle: "none",
+      margin: 0,
+      padding: 0,
+    },
+    navItem: {
+      cursor: "pointer",
+      color: "white",
+      textDecoration: "none",
+      fontWeight: "500",
+    },
+    searchBar: {
+      padding: "6px 12px",
+      borderRadius: "6px",
+      border: "none",
+      outline: "none",
+      fontSize: "14px",
+      marginRight: "20px",
+    },
+    userSection: {
+      display: "flex",
+      alignItems: "center",
+      gap: "10px",
+    },
+    btn: {
+      backgroundColor: "white",
+      color: "#0a2a66",
+      padding: "6px 14px",
+      border: "none",
+      borderRadius: "5px",
+      cursor: "pointer",
+      fontWeight: "bold",
+    },
+    avatar: {
+      width: "36px",
+      height: "36px",
+      borderRadius: "50%",
+      backgroundColor: "#1e3a8a",
+      color: "white",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      fontWeight: "bold",
+      fontSize: "16px",
+    },
+  };
 
   return (
-    <nav className="bg-gray-900 text-white px-6 py-3 flex items-center justify-between fixed top-0 left-0 right-0 z-[1000]">
-      {/* Logo */}
-      <div className="text-xl font-bold">
-        {user?.role === "admin" ? "StudyMate Admin" : "StudyMate"}
-      </div>
+    <nav style={styles.navbar}>
+      <div style={styles.container}>
+        {/* Logo */}
+        <div style={styles.logoContainer}>
+          <Link to="/">
+            <img
+              src="/Design.png"
+              alt="StudyMate Logo"
+              style={styles.logoImage}
+            />
+          </Link>
+        </div>
 
-      {/* Search Bar */}
-      <div className="flex-1 mx-6">
-        <input
-          type="text"
-          placeholder="Search..."
-          className="w-full px-3 py-1 rounded-md text-black"
-        />
-      </div>
+        {/* Navigation Links */}
+        <ul style={styles.navLinks}>
+          <li style={styles.navItem} onClick={() => scrollToSection("home")}>
+            Home
+          </li>
+          <li style={styles.navItem} onClick={() => scrollToSection("courses")}>
+            Courses
+          </li>
+          <li style={styles.navItem} onClick={() => scrollToSection("faqs")}>
+            FAQs
+          </li>
+          <li style={styles.navItem} onClick={() => scrollToSection("contact")}>
+            Contact
+          </li>
 
-      {/* Menu Items */}
-      <ul className="flex gap-6 items-center">
-        {navLinks.map((link, idx) => (
-          <li key={idx}>
-            <Link to={link.to}>{link.label}</Link>
-          </li>
-        ))}
-        {user ? (
-          <li>
-            <Link to="/logout" className="bg-red-600 px-3 py-1 rounded-md">
-              Logout
-            </Link>
-          </li>
-        ) : (
-          <li>
-            <Link to="/login" className="bg-blue-600 px-3 py-1 rounded-md">
-              Login
-            </Link>
-          </li>
-        )}
-      </ul>
+          {token && role === "student" && (
+            <li>
+              <Link to="/student/home" style={styles.navItem}>
+                Dashboard
+              </Link>
+            </li>
+          )}
+          {token && role === "instructor" && (
+            <li>
+              <Link to="/instructor/home" style={styles.navItem}>
+                Dashboard
+              </Link>
+            </li>
+          )}
+          {token && role === "admin" && (
+            <li>
+              <Link to="/admin/home" style={styles.navItem}>
+                Dashboard
+              </Link>
+            </li>
+          )}
+        </ul>
+
+        {/* Search & User Section */}
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <input type="text" placeholder="Search" style={styles.searchBar} />
+          <div style={styles.userSection}>
+            {token ? (
+              <>
+                <div style={styles.avatar}>
+                  {userName ? userName.charAt(0).toUpperCase() : "U"}
+                </div>
+                <button style={styles.btn} onClick={handleLogout}>
+                  Logout
+                </button>
+              </>
+            ) : (
+              <button style={styles.btn} onClick={() => navigate("/login")}>
+                Login
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
     </nav>
   );
-};
+}
 
-export default Navbar;

@@ -17,7 +17,8 @@ export default function CourseDetail() {
     const fetchCourse = async () => {
         setLoading(true);
       try {
-        const token = getToken();
+        const token = localStorage.getItem("token");
+
         // Make sure endpoint does NOT include a colon
         const response = await apiRequest({ endpoint: `/courses/${id}` });
 
