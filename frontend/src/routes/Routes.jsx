@@ -30,6 +30,7 @@ import InstructorLayout from "./InstructorLayout";
 import AdminHome from "../pages/admin/AdminHome";
 import AdminLayout from "./AdminLayout";
 import Profile from "../pages/Profile";
+import ManageUsers from "../pages/admin/ManageUsers";
 
 const PageRoutes = () => {
   return (
@@ -80,6 +81,7 @@ const PageRoutes = () => {
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminHome />} />
           <Route path="home" element={<AdminHome />} />
+          <Route path="manage-users" element={<ManageUsers/>}/>
         </Route>
       </Route>
 

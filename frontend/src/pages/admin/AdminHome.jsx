@@ -1,5 +1,6 @@
-import React from "react";
-import Navbar from "../../components/common/Navbar"; // import your global Navbar
+import React, {useState, useEffect}from "react";
+
+import Navbar from "../../components/common/Navbar"; 
 import BestSellingCourseChart from "../../components/CourseChart";
 import VisitorLineChart from "../../components/VisitorLineChart";
 import {
@@ -10,11 +11,92 @@ import {
 } from "react-icons/fa";
 
 export default function AdminHome() {
+  const [stats, setStats] = useState({
+    totalCourses: 0,
+    newStudents: 0,
+    totalUsers: 0,
+    projectSubmitted: 0,
+  });
+
+  const token = localStorage.getItem("token");
+
+   useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        // Fetch all courses
+        const courseRes = await fetch("http://localhost:5000/api/courses", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (!courseRes.ok) {
+          console.error("Failed to fetch courses:", courseRes.status);
+          return;
+        }
+
+        const courseData = await courseRes.json();
+        const totalCourses = Array.isArray(courseData)
+          ? courseData.length
+          : courseData.data?.length || 0;
+
+        // Fetch all users
+        const userRes = await fetch("http://localhost:5000/api/users", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+         if (!userRes.ok) {
+          console.error("Failed to fetch users:", userRes.status);
+          return;
+        }
+        const userData = await userRes.json();
+        const usersArray = Array.isArray(userData)
+          ? userData
+          : userData.data || [];
+        const totalUsers = usersArray.length;
+        //new std in 7 days
+        const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+        const newStudents = usersArray.filter(
+          (u) => u.role?.name === "Student" && new Date(u.createdAt) >= sevenDaysAgo
+        ).length;
+
+        // Fetch all projects/submissions
+        const projectRes = await fetch("http://localhost:5000/api/projects", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        let projectSubmitted = 0;
+        if (projectRes.ok) {
+          const projectData = await projectRes.json();
+          projectSubmitted = Array.isArray(projectData)
+            ? projectData.length
+            : projectData.data?.length || 0;
+        } else if (projectRes.status !== 404) {
+          console.error("Failed to fetch projects:", projectRes.status);
+        }
+
+        
+
+        setStats({
+          totalCourses,
+          newStudents,
+          totalUsers,
+          projectSubmitted,
+        });
+      } catch (err) {
+        console.error("Failed to fetch stats", err);
+      }
+    };
+
+    if (token) fetchStats();
+  }, [token]);
+
+
+
+
   const contentStyle = {
     padding: "20px",
-    paddingTop: "80px", // leave space for top navbar
+    paddingTop: "80px", 
     backgroundColor: "#f3f4f6",
     minHeight: "100vh",
+    marginLeft:"280px",
   };
 
   const cardsContainerStyle = {
@@ -62,29 +144,29 @@ export default function AdminHome() {
 
   return (
     <>
-      <Navbar /> {/* ✅ Top navbar */}
+      <Navbar /> 
       <main style={contentStyle}>
         {/* Stat Cards */}
         <div style={cardsContainerStyle}>
           <div style={cardStyle}>
             <FaBook style={iconStyle} />
             <div style={cardTitleStyle}>Total Course</div>
-            <span style={cardValueStyle}>8</span>
+            <span style={cardValueStyle}>{stats.totalCourses}</span>
           </div>
           <div style={cardStyle}>
             <FaUserGraduate style={iconStyle} />
             <div style={cardTitleStyle}>New Students</div>
-            <span style={cardValueStyle}>20</span>
+            <span style={cardValueStyle}>{stats.newStudents}</span>
           </div>
           <div style={cardStyle}>
             <FaUsers style={iconStyle} />
             <div style={cardTitleStyle}>Total Users</div>
-            <span style={cardValueStyle}>40</span>
+            <span style={cardValueStyle}>{stats.totalUsers}</span>
           </div>
           <div style={cardStyle}>
             <FaProjectDiagram style={iconStyle} />
             <div style={cardTitleStyle}>Project Submitted</div>
-            <span style={cardValueStyle}>13</span>
+            <span style={cardValueStyle}>{stats.projectSubmitted}</span>
           </div>
         </div>
 

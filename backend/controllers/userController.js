@@ -208,7 +208,7 @@ export const deleteUser = async (req, res) => {
 // Get All Users (Admin only)
 export const getAllUsers = async (req, res) => {
   try {
-    const users = await UserModel.find().select("-password");
+    const users = await UserModel.find().select("-password").populate("role","name").populate("enrolledCourses","title");
     res.status(200).json({ success: true, data: users });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -248,6 +248,34 @@ export const uploadProfileImage = async (req, res) => {
     res.json({ message: "Profile image uploaded successfully", user });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+// Create Instructor (Admin only)
+export const createInstructor = async (req, res) => {
+  try {
+    const { name, email, password, subjects } = req.body;
+
+    const existing = await UserModel.findOne({ email });
+    if (existing)
+      return res.json({ success: false, message: "Email already exists" });
+
+    const role = await RoleModel.findOne({ name: "Instructor" });
+    if (!role)
+      return res.json({ success: false, message: "Instructor role not found" });
+
+    const newInstructor = await UserModel.create({
+      name,
+      email,
+      password,
+      subjects,
+      role: role._id,
+    });
+
+    res.json({ success: true, data: newInstructor });
+  } catch (err) {
+    console.error("Create instructor error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };
 

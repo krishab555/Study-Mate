@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema({
 
   
   subjects: [String], // For Teachers
-  enrolledCourses: [String], // For Students
+  enrolledCourses: [{type: mongoose.Schema.Types.ObjectId,ref:"courses"}], 
 
   image:{
     type: String, 

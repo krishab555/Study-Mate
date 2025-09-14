@@ -26,9 +26,9 @@ const SideBar = () => {
     ],
     admin: [
       { path: "/admin/home", label: "Dashboard", icon: <FiGrid /> },
-      { path: "/admin/manage-users", label: "Users", icon: <FiUser /> },
+      { path: "/admin/manage-users", label: "Manage Users", icon: <FiUser /> },
       { path: "/admin/manage-courses", label: "Courses", icon: <FiBookOpen /> },
-      { path: "/faqs", label: "FAQs", icon: <FiTwitch /> },
+      { path: "/faqs", label: " Manage FAQs", icon: <FiTwitch /> },
       { path: "/settings", label: "Settings", icon: <FiSettings /> },
       { path: "/profile", label: "Profile", icon: <FiUser /> },
     ],

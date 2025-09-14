@@ -1,6 +1,6 @@
  import express from "express";
  import { uploadImage } from "../middleware/multerImage.js";
- import { uploadProfileImage } from "../controllers/userController.js";
+ import { createInstructor, uploadProfileImage } from "../controllers/userController.js";
  
 
 import {
@@ -47,6 +47,12 @@ router.get(
   authenticateUser,
   authorizeRoles("Admin", "Teacher"),
   getSingleUserById
+);
+router.post(
+  "/create-instructor",
+  authenticateUser,
+  authorizeRoles("Admin"),
+  createInstructor
 );
 
 export default router;

@@ -146,18 +146,11 @@ export default function LandingNavbar() {
         <div style={{ display: "flex", alignItems: "center" }}>
           <input type="text" placeholder="Search" style={styles.searchBar} />
           <div style={styles.userSection}>
-            {token ? (
-              <>
-                <span>Hi, {userName}</span>
-                <button style={styles.btn} onClick={handleLogout}>
-                  Logout
-                </button>
-              </>
-            ) : (
+            
               <button style={styles.btn} onClick={() => navigate("/login")}>
                 Login
               </button>
-            )}
+            
           </div>
         </div>
       </div>
