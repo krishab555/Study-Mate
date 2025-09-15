@@ -1,11 +1,10 @@
-import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function Navbar() {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const userName = localStorage.getItem("userName");
-  const role = localStorage.getItem("role");
+  const role = localStorage.getItem("role")?.toLowerCase();
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -18,6 +17,23 @@ export default function Navbar() {
     const element = document.getElementById(id);
     if (element) element.scrollIntoView({ behavior: "smooth" });
   };
+
+  const links = {
+    student: [
+      { label: "Home", path: "/student/home" },
+      { label: "Contact", path: "/student/contact" },
+    ],
+    instructor: [
+      { label: "Home", path: "/instructor/home" },
+      { label: "Contact", path: "/instructor/contact" },
+    ],
+    admin: [
+      { label: "Home", path: "/admin/home" },
+      { label: "Contact", path: "/admin/contact" },
+    ],
+  };
+
+  const roleLinks = links[role] || [];
 
   const styles = {
     navbar: {
@@ -106,76 +122,71 @@ export default function Navbar() {
     <nav style={styles.navbar}>
       <div style={styles.container}>
         {/* Logo */}
-        <div style={styles.logoContainer}>
-          <Link to="/">
-            <img
-              src="/Design.png"
-              alt="StudyMate Logo"
-              style={styles.logoImage}
-            />
-          </Link>
-        </div>
+        <Link to="/">
+          <img
+            src="/Design.png"
+            alt="StudyMate Logo"
+            style={styles.logoImage}
+          />
+        </Link>
 
-        {/* Navigation Links */}
+        {/* Links */}
         <ul style={styles.navLinks}>
-          <li style={styles.navItem} onClick={() => scrollToSection("home")}>
-            Home
-          </li>
-          <li style={styles.navItem} onClick={() => scrollToSection("courses")}>
-            Courses
-          </li>
-          <li style={styles.navItem} onClick={() => scrollToSection("faqs")}>
-            FAQs
-          </li>
-          <li style={styles.navItem} onClick={() => scrollToSection("contact")}>
-            Contact
-          </li>
-
-          {token && role === "student" && (
-            <li>
-              <Link to="/student/home" style={styles.navItem}>
-                Dashboard
-              </Link>
-            </li>
-          )}
-          {token && role === "instructor" && (
-            <li>
-              <Link to="/instructor/home" style={styles.navItem}>
-                Dashboard
-              </Link>
-            </li>
-          )}
-          {token && role === "admin" && (
-            <li>
-              <Link to="/admin/home" style={styles.navItem}>
-                Dashboard
-              </Link>
-            </li>
+          {roleLinks.map((link, idx) =>
+            link.path ? (
+              <li key={idx}>
+                <Link to={link.path} style={styles.navItem}>
+                  {link.label}
+                </Link>
+              </li>
+            ) : (
+              <li key={idx} style={styles.navItem} onClick={link.onClick}>
+                {link.label}
+              </li>
+            )
           )}
         </ul>
 
-        {/* Search & User Section */}
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <input type="text" placeholder="Search" style={styles.searchBar} />
-          <div style={styles.userSection}>
-            {token ? (
-              <>
-                <div style={styles.avatar}>
-                  {userName ? userName.charAt(0).toUpperCase() : "U"}
-                </div>
-                <button style={styles.btn} onClick={handleLogout}>
-                  Logout
-                </button>
-              </>
-            ) : (
-              <button style={styles.btn} onClick={() => navigate("/login")}>
-                Login
-              </button>
-            )}
-          </div>
-        </div>
+        {/* Search + User */}
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+  {/* Search bar */}
+  <input
+    type="text"
+    placeholder="Search"
+    style={styles.searchBar}
+    onKeyDown={(e) => {
+      if (e.key === "Enter") {
+        // Implement search logic here
+        console.log("Search for:", e.target.value);
+      }
+    }}
+  />
+
+  {/* User Profile Image */}
+  <div style={{ display: "flex", alignItems: "center" }}>
+    <img
+      src={localStorage.getItem("profileImage") || "/defaultProfile.jpg"}
+      alt="Profile"
+      style={{
+        width: "36px",
+        height: "36px",
+        borderRadius: "50%",
+        objectFit: "cover",
+        border: "2px solid white",
+        cursor: "pointer",
+      }}
+      onClick={() => window.location.href = "/profile"} // optional: redirect to profile page
+    />
+  </div>
+
+  {/* Logout button */}
+  <button style={styles.btn} onClick={handleLogout}>
+    Logout
+  </button>
+</div>
+
+        
       </div>
     </nav>
   );
 }
-

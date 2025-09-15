@@ -11,7 +11,7 @@ import {
 const SideBar = () => {
   const location = useLocation();
 
-  const excludedPages = ["/dashboard", "/login", "/register"];
+  const excludedPages = ["/dashboard", "/login", "/register","/"];
 
   if (excludedPages.includes(location.pathname)) return null;
 
@@ -25,10 +25,11 @@ const SideBar = () => {
         icon: <FiMessageSquare />,
       },
       { path: "/faqs", label: "FAQs", icon: <FiTwitch /> },
-      { path: "/student/profile", label: "Profile", icon: <FiUser /> },
+      
     ],
     instructor: [
       { path: "/instructor/home", label: "Dashboard", icon: <FiGrid /> },
+<<<<<<< HEAD
       
       {
         path: "/instructor/addcourse",
@@ -41,6 +42,12 @@ const SideBar = () => {
         icon: <FiMessageSquare />,
       },
       { path: "/profile", label: "Profile", icon: <FiUser /> },
+=======
+      // { path: "/instructor/courses", label: "Add Courses", icon: <FiBookOpen /> },
+      { path: "/instructor/addcourse", label: "Add Courses", icon: <FiBookOpen /> },
+      { path: "/discussionForum", label: "Discussion Forum", icon: <FiMessageSquare /> },
+      
+>>>>>>> 2c80ac09b38e77d85777743aa9ca77c1315793a5
     ],
     admin: [
       { path: "/admin/home", label: "Dashboard", icon: <FiGrid /> },
@@ -48,7 +55,7 @@ const SideBar = () => {
       { path: "/admin/manage-courses", label: "Courses", icon: <FiBookOpen /> },
       { path: "/faqs", label: " Manage FAQs", icon: <FiTwitch /> },
       { path: "/settings", label: "Settings", icon: <FiSettings /> },
-      { path: "/profile", label: "Profile", icon: <FiUser /> },
+     
     ],
   };
   const roleFromStorage = localStorage.getItem("role");

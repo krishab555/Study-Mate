@@ -14,7 +14,11 @@ import quizRouter from "./routes/quizRoutes.js";
 import userQuizRouter from "./routes/userQuizRoutes.js";
 import enrollmentRoutes from "./routes/enrollmentRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
+<<<<<<< HEAD
 // import contactRoutes from "./routes/contact.js"; 
+=======
+import messageRouter from "./routes/messageRoutes.js";
+>>>>>>> 2c80ac09b38e77d85777743aa9ca77c1315793a5
 import discussionRouter from "./routes/discussionRoutes.js";
 
 dotenv.config();
@@ -46,7 +50,11 @@ app.use("/api/quiz", quizRouter);
 app.use("/api/userQuiz", userQuizRouter);
 app.use("/api/enrollments", enrollmentRoutes);
 app.use("/api/payments", paymentRoutes);
+<<<<<<< HEAD
 // app.use("/api/contact", contactRoutes); 
+=======
+app.use("/api/contact", messageRouter); 
+>>>>>>> 2c80ac09b38e77d85777743aa9ca77c1315793a5
 app.use("/api/discussions",discussionRouter);
 app.get("/", (req, res) => {
   res.send("Study-Mate API is running...");
