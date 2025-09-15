@@ -22,15 +22,19 @@ import Courses from "../pages/student/Courses";
 import CourseDetail from "../pages/student/CourseDetail";
 import FAQSubjects from "../pages/student/FAQSubjects";
 import FAQDetails from "../pages/student/FAQDetails";
+import CoursePayment from "../pages/student/CoursePayment"; // ✅ Add this line
+
 
 // Student Certificates (NEW)
 import Certificate from "../pages/student/Certificate";
 import CertificateDetail from "../pages/student/certificateDetail";
+import TakeQuizze from "../pages/student/TakeQuizze"; // <-- Add this
 
 // Instructor
 import InstructorHome from "../pages/instructor/InstructorHome";
 import InstructorLayout from "./InstructorLayout";
 import AddCourse from "../pages/instructor/AddCourse";
+import CreateQuizze from "../pages/instructor/CreateQuizze"; // <-- Add this
 
 // Admin
 import AdminHome from "../pages/admin/AdminHome";
@@ -57,7 +61,6 @@ const PageRoutes = () => {
         <Route path="profile" element={<Profile />} />
       </Route>
 
-
       {/* Student Routes */}
       <Route element={<ProtectedRoutes allowedRole={["Student"]} />}>
         <Route path="/student" element={<StudentLayout />}>
@@ -65,7 +68,13 @@ const PageRoutes = () => {
           <Route path="home" element={<Home />} />
           <Route path="courses" element={<Courses />} />
           <Route path="profile" element={<Profile />} />
-
+          {/* ✅ New Certificate Routes */}
+          <Route path="certificate" element={<Certificate />} />
+          {/* <Route path="certificate/detail" element={<CertificateDetail />} /> */}
+          <Route path="certificate/:id" element={<CertificateDetail />} />
+          <Route path="take-quiz/:quizId" element={<TakeQuizze />} />{" "}
+          {/* ✅ ADD THIS */}
+          <Route path="courses/:id/payment" element={<CoursePayment />} />
         </Route>
       </Route>
 
@@ -81,7 +90,8 @@ const PageRoutes = () => {
         <Route path="/instructor" element={<InstructorLayout />}>
           <Route index element={<InstructorHome />} />
           <Route path="home" element={<InstructorHome />} />
-
+          <Route path="create-quiz" element={<CreateQuizze />} />{" "}
+          {/* <-- ✅ ADD THIS */}
         </Route>
       </Route>
 
@@ -92,7 +102,7 @@ const PageRoutes = () => {
           <Route path="home" element={<AdminHome />} />
           <Route path="manage-users" element={<ManageUsers />} />
           <Route path="manage-courses" element={<AdminCourses />} />
-          <Route path="contact" element={<AdminContact/>} />
+          <Route path="contact" element={<AdminContact />} />
         </Route>
       </Route>
 
