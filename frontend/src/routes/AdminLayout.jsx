@@ -1,17 +1,18 @@
-import Navbar from "../components/common/Navbar";
-import SideBar from "../components/common/SideBar";
+import React from "react";
 import { Outlet } from "react-router-dom";
-import Footer from "../components/common/Footer";
+import Sidebar from "../components/common/SideBar"; 
+import Navbar from "../components/common/Navbar";
 
 const AdminLayout = () => {
   return (
-    <div>
-      
-      <SideBar/>
-      <div>
-        <Outlet />
+    <div style={{ display: "flex" }}>
+      <Sidebar />
+      <div style={{ flex: 1, }}>
+        <Navbar />
+        <main style={{ padding: "20px" }}>
+          <Outlet /> {/* Nested admin routes render here */}
+        </main>
       </div>
-      <Footer/>
     </div>
   );
 };
