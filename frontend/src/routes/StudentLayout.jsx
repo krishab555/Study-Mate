@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Outlet } from "react-router";
+import { Outlet } from "react-router-dom";
 import Navbar from "../components/common/Navbar";
 import SideBar from "../components/common/SideBar";
 import Footer from "../components/common/Footer";

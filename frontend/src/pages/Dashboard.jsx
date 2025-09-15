@@ -1,4 +1,5 @@
 import React, { useEffect, useCallback } from "react";
+import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import FAQSection from "../components/FAQsSection";
 import ContactUs from "./student/ContactUs";
@@ -38,17 +39,16 @@ export default function Dashboard() {
   }, [location.state, smoothScrollToId]);
 
   // Courses array
-  const courses = [
-    { title: "Python", image: "/python image.jpg" },
-    { title: "Java", image: "/java image.png" },
-    { title: "NodeJS", image: "/node js image.png" },
-    { title: "ReactJS", image: "/reactjs.png" },
-    { title: "C++", image: "/cpp.webp" },
-    { title: "Python", image: "/python image.jpg" },
-    { title: "Php", image: "/php.webp" },
-    { title: "Javascript", image: "/js.webp" },
-    // add more courses here
-  ];
+ const courses = [
+   { id: 1, title: "Python", image: "/python image.jpg" },
+   { id: 2, title: "Java", image: "/java image.png" },
+   { id: 3, title: "NodeJS", image: "/node js image.png" },
+   { id: 4, title: "ReactJS", image: "/reactjs.png" },
+   { id: 5, title: "C++", image: "/cpp.webp" },
+   { id: 6, title: "Python", image: "/python image.jpg" },
+   { id: 7, title: "Php", image: "/php.webp" },
+   { id: 8, title: "Javascript", image: "/js.webp" },
+ ];
 
   // Styles for course cards
   const courseCardStyle = {
@@ -57,7 +57,10 @@ export default function Dashboard() {
     borderRadius: "12px",
     textAlign: "center",
     boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+    transition: "transform 0.3s ease, box-shadow 0.3s ease", // smooth animation
+    cursor: "pointer", // hand cursor
   };
+
   const courseImageStyle = {
     width: "300px",
     height: "250px",
@@ -213,15 +216,33 @@ export default function Dashboard() {
             gap: "20px",
           }}
         >
-          {courses.map((course, index) => (
-            <div key={index} style={courseCardStyle}>
-              <img
-                src={course.image}
-                alt={course.title}
-                style={courseImageStyle}
-              />
-              <h3 style={courseTitleStyle}>{course.title}</h3>
-            </div>
+          {courses.map((course) => (
+            <Link
+              key={course.id}
+              to="/login"
+              state={{ courseId: course.id }}
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <div
+                style={courseCardStyle}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "scale(1.05)";
+                  e.currentTarget.style.boxShadow =
+                    "0 6px 16px rgba(0,0,0,0.2)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "scale(1)";
+                  e.currentTarget.style.boxShadow = "0 2px 6px rgba(0,0,0,0.1)";
+                }}
+              >
+                <img
+                  src={course.image}
+                  alt={course.title}
+                  style={courseImageStyle}
+                />
+                <h3 style={courseTitleStyle}>{course.title}</h3>
+              </div>
+            </Link>
           ))}
         </div>
       </section>
