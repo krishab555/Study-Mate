@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 export default function AddCourse() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("Basic");
   const [pdfFile, setPdfFile] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [videoFile, setVideoFile] = useState(null); // New video upload
@@ -13,7 +14,7 @@ export default function AddCourse() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!title || !description || !pdfFile || !imageFile) {
+    if (!title || !description || !category || !pdfFile || !imageFile) {
       alert("Please fill all required fields and select files");
       return;
     }
@@ -24,6 +25,7 @@ export default function AddCourse() {
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
+    formData.append("category", category);
     formData.append("pdf", pdfFile);
     formData.append("image", imageFile);
     if (videoFile) formData.append("video", videoFile);
@@ -87,6 +89,15 @@ export default function AddCourse() {
     },
     inputFocus: {
       borderColor: "#0a2a66",
+    },
+    select: {
+      padding: "12px 15px",
+      borderRadius: "8px",
+      border: "1.5px solid #ccc",
+      fontSize: "1rem",
+      outline: "none",
+      backgroundColor: "#fff",
+      cursor: "pointer",
     },
     textarea: {
       padding: "12px 15px",
@@ -156,6 +167,22 @@ export default function AddCourse() {
             style={styles.textarea}
             required
           />
+        </div>
+        {/* Category */}
+        <div style={styles.formGroup}>
+          <label htmlFor="category" style={styles.label}>
+            Course Category <span style={{ color: "red" }}>*</span>
+          </label>
+          <select
+            id="category"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            style={styles.select}
+            required
+          >
+            <option value="Basic">Basic</option>
+            <option value="Advanced">Advanced</option>
+          </select>
         </div>
 
         {/* Upload PDF */}

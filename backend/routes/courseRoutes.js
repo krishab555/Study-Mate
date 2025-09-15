@@ -13,9 +13,11 @@ import { authorizeRoles } from "../middleware/authorizeRoles.js";
 import { uploadPDF } from "../middleware/multerMiddleware.js"; // Your multer config for PDFs
 import { uploadImage } from "../middleware/multerImage.js"; // Your multer config for images
 
-const upload = multer().fields([
+const upload = multer();
+const courseUploads = upload.fields([
   { name: "pdf", maxCount: 1 },
   { name: "image", maxCount: 1 },
+  { name: "video", maxCount: 1 },
 ]);
 
 const courseRoutes = express.Router();
@@ -26,17 +28,8 @@ courseRoutes.post(
   "/",
   authenticateUser,
   authorizeRoles("Instructor"),
-  (req, res, next) => {
-    const uploadPdfMiddleware = uploadPDF.single("pdf");
-    uploadPdfMiddleware(req, res, function (err) {
-      if (err) return next(err);
-      const uploadImgMiddleware = uploadImage.single("image");
-      uploadImgMiddleware(req, res, function (err) {
-        if (err) return next(err);
-        next();
-      });
-    });
-  },
+  courseUploads,
+
   createCourseController
 );
 
@@ -44,6 +37,7 @@ courseRoutes.put(
   "/:id",
   authenticateUser,
   authorizeRoles("Instructor", "Admin"),
+  
   updateCourseController
 );
 
@@ -52,7 +46,9 @@ courseRoutes.delete(
   authenticateUser,
   authorizeRoles("Instructor", "Admin"),
   deleteCourseController
+
 );
+
 
 courseRoutes.get("/:id", authenticateUser, getCourseByIdController);
 

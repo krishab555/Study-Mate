@@ -1,9 +1,9 @@
-// middleware/upload.js
+
 import multer from "multer";
 import path from "path";
 import fs from "fs";
 
-// Ensure upload folder exists
+
 const uploadPath = "uploads/pdfs";
 if (!fs.existsSync(uploadPath)) {
   fs.mkdirSync(uploadPath, { recursive: true });

@@ -23,41 +23,21 @@ export const getCoursesController = async (req, res) => {
 // Create a new course
 export const createCourseController = async (req, res) => {
   try {
-    const {
-      title,
-      description,
-      price,
-      isPaid,
-      category,
-      level,
-      howToComplete,
-    } = req.body;
 
-    // Files uploaded by multer middleware
-    const pdfFile = req.files?.pdf?.[0];
-    const imageFile = req.files?.image?.[0];
+    const { title, description, instructor, price, isPaid, category, level } =
+      req.body;
+     const pdfFile = req.files?.pdf?.[0];
+     const imageFile = req.files?.image?.[0];
+     const videoFile = req.files?.video?.[0];
+
+
 
     const pdfUrl = pdfFile ? `/uploads/pdfs/${pdfFile.filename}` : null;
     const imageUrl = imageFile ? `/uploads/images/${imageFile.filename}` : null;
+    const videoUrl = videoFile ? `/uploads/videos/${videoFile.filename}` : null;
 
-    // Important: howToComplete might come as JSON string; parse it if necessary
-    let howToCompleteArray = [];
-    if (howToComplete) {
-      if (typeof howToComplete === "string") {
-        // try parse JSON string into array
-        try {
-          howToCompleteArray = JSON.parse(howToComplete);
-          if (!Array.isArray(howToCompleteArray)) {
-            howToCompleteArray = [howToCompleteArray];
-          }
-        } catch {
-          // fallback: if not JSON, treat as comma separated string
-          howToCompleteArray = howToComplete.split(",").map((s) => s.trim());
-        }
-      } else if (Array.isArray(howToComplete)) {
-        howToCompleteArray = howToComplete;
-      }
-    }
+
+    
 
     const course = await CourseModel.create({
       title,
@@ -69,7 +49,8 @@ export const createCourseController = async (req, res) => {
       level,
       pdfUrl,
       banner: imageUrl,
-      howToComplete: howToCompleteArray,
+
+      videoUrl,
     });
 
     res.status(201).json({ success: true, data: course });

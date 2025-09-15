@@ -2,11 +2,8 @@
 import mongoose from "mongoose";
 
 const courseSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: true,
-  },
-  description: String,
+  title: { type: String, required: true },
+  description: { type: String, required: true },
   category: String,
   level: String,
   instructor: {
@@ -19,23 +16,13 @@ const courseSchema = new mongoose.Schema({
     required: true,
     default: 0,
   },
-  isPaid: {
-    type: Boolean,
-    default: false,
-  },
-  pdfUrl: {
-    type: String,
-    default: null,
-  },
-  banner: {
-    type: String,
-    default: null,
-  },
-  howToComplete: [{ type: String }], // <-- New field
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
+
+  isPaid: { type: Boolean, default: false },
+  pdfUrl: { type: String, default: null },
+  banner: { type: String, default: null },
+  createdAt: { type: Date, default: Date.now },
+  video: { type: String, default: null },
+
 });
 
 export const CourseModel = mongoose.model("courses", courseSchema);
