@@ -1,6 +1,12 @@
 import { Link, useLocation } from "react-router-dom";
-import { FiBookOpen, FiGrid, FiMessageSquare, FiTwitch,FiUser,FiSettings } from "react-icons/fi";
-
+import {
+  FiBookOpen,
+  FiGrid,
+  FiMessageSquare,
+  FiTwitch,
+  FiUser,
+  FiSettings,
+} from "react-icons/fi";
 
 const SideBar = () => {
   const location = useLocation();
@@ -9,20 +15,31 @@ const SideBar = () => {
 
   if (excludedPages.includes(location.pathname)) return null;
 
-  
   const links = {
     student: [
       { path: "/student/home", label: "Dashboard", icon: <FiGrid /> },
-      // { path: "/student/courses", label: "Courses", icon: <FiBookOpen /> },
-      { path: "/discussionForum", label: "Discussion Forum", icon: <FiMessageSquare /> },
+      { path: "/student/courses", label: "Courses", icon: <FiBookOpen /> },
+      {
+        path: "/discussionForum",
+        label: "Discussion Forum",
+        icon: <FiMessageSquare />,
+      },
       { path: "/faqs", label: "FAQs", icon: <FiTwitch /> },
       { path: "/student/profile", label: "Profile", icon: <FiUser /> },
     ],
     instructor: [
       { path: "/instructor/home", label: "Dashboard", icon: <FiGrid /> },
-      // { path: "/instructor/courses", label: "Add Courses", icon: <FiBookOpen /> },
-      { path: "/instructor/addcourse", label: "Add Courses", icon: <FiBookOpen /> },
-      { path: "/discussionForum", label: "Discussion Forum", icon: <FiMessageSquare /> },
+      
+      {
+        path: "/instructor/addcourse",
+        label: "Add Courses",
+        icon: <FiBookOpen />,
+      },
+      {
+        path: "/discussionForum",
+        label: "Discussion Forum",
+        icon: <FiMessageSquare />,
+      },
       { path: "/profile", label: "Profile", icon: <FiUser /> },
     ],
     admin: [
@@ -35,11 +52,10 @@ const SideBar = () => {
     ],
   };
   const roleFromStorage = localStorage.getItem("role");
-  const role = roleFromStorage ? roleFromStorage.toLowerCase():null;
-  const roleLinks = (role && links[role]) ? links[role] : [];
-  
+  const role = roleFromStorage ? roleFromStorage.toLowerCase() : null;
+  const roleLinks = role && links[role] ? links[role] : [];
 
-   const styles = {
+  const styles = {
     sidebar: {
       width: "250px",
       height: "100vh",
@@ -55,18 +71,16 @@ const SideBar = () => {
       boxShadow: "2px 0 6px rgba(0,0,0,0.2)",
     },
     link: {
-      display:"flex",
-      gap:"12px",
+      display: "flex",
+      gap: "12px",
       color: "#0a2a66",
-      
+
       textDecoration: "none",
       fontWeight: "500",
       fontSize: "16px",
-      padding:"8px",
+      padding: "8px",
       borderRadius: "5px",
     },
-    
-
   };
 
   return (
@@ -83,7 +97,7 @@ const SideBar = () => {
       )}
     </div>
   );
-}
+};
 export const SidebarLayout = ({ children }) => {
   const sidebarWidth = 250; // sidebar width
   const gap = 220; // desired gap (~2-3 inches)
@@ -92,13 +106,9 @@ export const SidebarLayout = ({ children }) => {
   return (
     <div style={{ display: "flex" }}>
       <SideBar />
-      <div style={{ marginLeft: `${totalOffset}px`, flex: 1 }}>
-        {children}
-      </div>
+      <div style={{ marginLeft: `${totalOffset}px`, flex: 1 }}>{children}</div>
     </div>
   );
 };
-
-  
 
 export default SideBar;

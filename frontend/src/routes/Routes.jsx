@@ -1,6 +1,8 @@
-import React from "react";
+// src/routes/Routes.jsx
+
 import { Route, Routes, Navigate } from "react-router-dom";
 import ProtectedRoutes from "./ProctectedRoutes";
+
 // Public Pages
 import Login from "../pages/Login";
 import Register from "../pages/Register";
@@ -17,16 +19,18 @@ import Layout from "./Layout";
 import StudentLayout from "./StudentLayout";
 import Home from "../pages/student/Home";
 import Courses from "../pages/student/Courses";
-
 import CourseDetail from "../pages/student/CourseDetail";
 import FAQSubjects from "../pages/student/FAQSubjects";
 import FAQDetails from "../pages/student/FAQDetails";
 
+// Student Certificates (NEW)
+import Certificate from "../pages/student/Certificate";
+import CertificateDetail from "../pages/student/certificateDetail";
+
 // Instructor
 import InstructorHome from "../pages/instructor/InstructorHome";
 import InstructorLayout from "./InstructorLayout";
-import AddCourse from "../pages/instructor/AddCourse"; // ✅ NEW LINE HERE
-
+import AddCourse from "../pages/instructor/AddCourse";
 
 // Admin
 import AdminHome from "../pages/admin/AdminHome";
@@ -65,9 +69,17 @@ const PageRoutes = () => {
           <Route path="home" element={<Home />} />
           <Route path="courses" element={<Courses />} />
           <Route path="profile" element={<Profile />} />
+
+          {/* Certificates */}
+          <Route path="certificates" element={<Certificate />} />
+          <Route path="certificate/:id" element={<CertificateDetail />} />
         </Route>
       </Route>
+
+      {/* Course Detail (public or protected?) */}
       <Route path="/courses/:id" element={<CourseDetail />} />
+
+      {/* FAQ */}
       <Route path="/faqs" element={<FAQSubjects />} />
       <Route path="/faqs/:faqMasterId" element={<FAQDetails />} />
 
@@ -76,7 +88,7 @@ const PageRoutes = () => {
         <Route path="/instructor" element={<InstructorLayout />}>
           <Route index element={<InstructorHome />} />
           <Route path="home" element={<InstructorHome />} />
-          <Route path="addcourse" element={<AddCourse />} /> // ✅ NEW LINE HERE
+          <Route path="addcourse" element={<AddCourse />} />
         </Route>
       </Route>
 

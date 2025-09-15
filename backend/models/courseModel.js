@@ -1,3 +1,4 @@
+
 import mongoose from "mongoose";
 
 const courseSchema = new mongoose.Schema({
@@ -28,8 +29,9 @@ const courseSchema = new mongoose.Schema({
   },
   banner: {
     type: String,
-    default: null, 
+    default: null,
   },
+  howToComplete: [{ type: String }], // <-- New field
   createdAt: {
     type: Date,
     default: Date.now,
