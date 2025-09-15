@@ -1,7 +1,8 @@
 // utils/api.js
+export const getToken = () => localStorage.getItem("token");
 export const apiRequest = async ({ endpoint, method = "GET", body }) => {
   try {
-    const token = localStorage.getItem("token");
+    const token = getToken(); 
 
     if (!token) {
       return { success: false, message: "You must be logged in" };

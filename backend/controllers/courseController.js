@@ -44,7 +44,7 @@ export const createCourseController = async (req, res) => {
       category,
       level,
       pdfUrl,
-      banner: bannerUrl,
+      banner: imageUrl,
     });
 
     res.status(201).json({

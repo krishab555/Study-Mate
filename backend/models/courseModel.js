@@ -1,21 +1,34 @@
-
 import mongoose from "mongoose";
 
 const courseSchema = new mongoose.Schema({
-  title: {type:String, required:true},
+  title: {
+    type: String,
+    required: true,
+  },
   description: String,
   category: String,
   level: String,
   instructor: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "users", 
-    required:true,
+    ref: "users",
+    required: true,
   },
-  price: {type:Number, required:true, default:0},
-  isPaid: Boolean,
+  price: {
+    type: Number,
+    required: true,
+    default: 0,
+  },
+  isPaid: {
+    type: Boolean,
+    default: false,
+  },
   pdfUrl: {
     type: String,
     default: null,
+  },
+  banner: {
+    type: String,
+    default: null, 
   },
   createdAt: {
     type: Date,
@@ -24,4 +37,3 @@ const courseSchema = new mongoose.Schema({
 });
 
 export const CourseModel = mongoose.model("courses", courseSchema);
-

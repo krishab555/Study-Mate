@@ -25,6 +25,8 @@ import FAQDetails from "../pages/student/FAQDetails";
 // Instructor
 import InstructorHome from "../pages/instructor/InstructorHome";
 import InstructorLayout from "./InstructorLayout";
+import AddCourse from "../pages/instructor/AddCourse"; // ✅ NEW LINE HERE
+
 
 // Admin
 import AdminHome from "../pages/admin/AdminHome";
@@ -45,7 +47,7 @@ const PageRoutes = () => {
         }
       >
         <Route path="/discussionForum" element={<DiscussionForum />} />
-        <Route path="profile" element={<Profile/>} />
+        <Route path="profile" element={<Profile />} />
       </Route>
 
       {/* Landing Page */}
@@ -74,6 +76,7 @@ const PageRoutes = () => {
         <Route path="/instructor" element={<InstructorLayout />}>
           <Route index element={<InstructorHome />} />
           <Route path="home" element={<InstructorHome />} />
+          <Route path="addcourse" element={<AddCourse />} /> // ✅ NEW LINE HERE
         </Route>
       </Route>
 
@@ -82,8 +85,8 @@ const PageRoutes = () => {
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminHome />} />
           <Route path="home" element={<AdminHome />} />
-          <Route path="manage-users" element={<ManageUsers/>}/>
-          <Route path="manage-courses" element={<AdminCourses/>}/>
+          <Route path="manage-users" element={<ManageUsers />} />
+          <Route path="manage-courses" element={<AdminCourses />} />
         </Route>
       </Route>
 

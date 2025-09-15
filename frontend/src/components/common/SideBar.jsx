@@ -13,14 +13,15 @@ const SideBar = () => {
   const links = {
     student: [
       { path: "/student/home", label: "Dashboard", icon: <FiGrid /> },
-      { path: "/student/courses", label: "Courses", icon: <FiBookOpen /> },
+      // { path: "/student/courses", label: "Courses", icon: <FiBookOpen /> },
       { path: "/discussionForum", label: "Discussion Forum", icon: <FiMessageSquare /> },
       { path: "/faqs", label: "FAQs", icon: <FiTwitch /> },
       { path: "/student/profile", label: "Profile", icon: <FiUser /> },
     ],
     instructor: [
       { path: "/instructor/home", label: "Dashboard", icon: <FiGrid /> },
-      { path: "/instructor/courses", label: "My Courses", icon: <FiBookOpen /> },
+      // { path: "/instructor/courses", label: "Add Courses", icon: <FiBookOpen /> },
+      { path: "/instructor/addcourse", label: "Add Courses", icon: <FiBookOpen /> },
       { path: "/discussionForum", label: "Discussion Forum", icon: <FiMessageSquare /> },
       { path: "/profile", label: "Profile", icon: <FiUser /> },
     ],
