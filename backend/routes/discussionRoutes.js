@@ -4,13 +4,14 @@ import {
   getAllDiscussion,
   deleteDiscussion,
   pinDiscussion,
+  createReply,
 } from "../controllers/discussionControllers.js";
 import { authenticateUser } from "../middleware/authenticateUser.js";
 import { authorizeRoles } from "../middleware/authorizeRoles.js";
 
 const discussionRouter = express.Router();
 
-discussionRouter.get("/", getAllDiscussion); 
+discussionRouter.get("/", authenticateUser,getAllDiscussion); 
 discussionRouter.post("/", authenticateUser, createDiscussion);
 discussionRouter.delete(
   "/:id",
@@ -24,5 +25,6 @@ discussionRouter.patch(
   authorizeRoles("Instructor"),
   pinDiscussion
 );
+discussionRouter.post("/:id/reply", authenticateUser, createReply);
 
 export default discussionRouter;

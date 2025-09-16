@@ -9,7 +9,7 @@ export const createDiscussion = async (req, res) => {
 
     // Create DiscussionMaster
     const discussion = await DiscussionMaster.create({
-      course: courseId ,
+      course: courseId,
       title,
     });
 
@@ -35,7 +35,7 @@ export const createDiscussion = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
-   
+
 export const getAllDiscussion = async (req, res) => {
   try {
     const { courseId, filter } = req.query;
@@ -44,11 +44,11 @@ export const getAllDiscussion = async (req, res) => {
     if (courseId) query.course = courseId;
 
     let discussions = await DiscussionMaster.find(query)
-      .populate( "course","title",)
+      .populate("course", "title")
       .populate({
-        path:"details",
-        populate:{ path:"user", select:"name"},
-    });
+        path: "details",
+        populate: { path: "user", select: "name" },
+      });
 
     // Sort by filter
     if (filter === "latest")
@@ -87,6 +87,42 @@ export const pinDiscussion = async (req, res) => {
     res
       .status(200)
       .json({ success: true, message: "Discussion pinned/unpinned" });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+// 5. Add reply to discussion
+export const createReply = async (req, res) => {
+  try {
+    const discussionId = req.params.id;
+    const { content } = req.body;
+
+    if (!content)
+      return res.status(400).json({ message: "Content is required" });
+
+    // Check if discussion exists
+    const discussion = await DiscussionMaster.findById(discussionId);
+    if (!discussion)
+      return res.status(404).json({ message: "Discussion not found" });
+
+    // Create a new detail (reply)
+    const reply = await DiscussionDetails.create({
+      discussionMaster: discussionId,
+      user: req.user._id,
+      content,
+    });
+
+    // Optional: populate user in reply
+    const populatedReply = await DiscussionDetails.findById(reply._id).populate(
+      "user",
+      "name"
+    );
+
+    res.status(201).json({
+      success: true,
+      message: "Reply added",
+      reply: populatedReply,
+    });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

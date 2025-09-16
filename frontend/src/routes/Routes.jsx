@@ -90,8 +90,8 @@ const PageRoutes = () => {
         <Route path="/instructor" element={<InstructorLayout />}>
           <Route index element={<InstructorHome />} />
           <Route path="home" element={<InstructorHome />} />
-          <Route path="create-quiz" element={<CreateQuizze />} />{" "}
-          {/* <-- ✅ ADD THIS */}
+          <Route path="create-quiz" element={<CreateQuizze />} />
+          <Route path="addcourse" element={<AddCourse />} />
         </Route>
       </Route>
 

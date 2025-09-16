@@ -40,7 +40,7 @@ export default function AddCourse() {
       if (!res.ok) alert(data.message || "Failed to create course");
       else {
         alert("Course created successfully!");
-        navigate("/instructor/courses");
+       
       }
     } catch (err) {
       console.error(err);
