@@ -17,23 +17,10 @@ export default function StudentCourses() {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
-        // IMPORTANT: log raw response so you can inspect shape in DevTools
+       
         console.log("raw courses response:", data);
+        setCourses(data.data || []);
 
-        // Handle several common API shapes:
-        // - { success: true, data: [...] }
-        // - { success: true, courses: [...] }
-        // - [...] (direct array)
-        // - { data: { courses: [...] } } (less common)
-        let items = [];
-        if (Array.isArray(data)) items = data;
-        else if (data && data.success) items = data.data || data.courses || [];
-        else if (data && (data.data || data.courses))
-          items = data.data || data.courses;
-        else if (data && data.rows) items = data.rows; // some APIs
-        else items = [];
-
-        setCourses(Array.isArray(items) ? items : []);
       } catch (err) {
         console.error(err);
         alert("Error fetching courses — check console for details");
@@ -47,22 +34,11 @@ export default function StudentCourses() {
   // helper to decide if course is premium
   const isPremium = (c) => {
     if (!c) return false;
-    if (typeof c.price !== "undefined" && c.price !== null) {
-      // price could be number or string
-      const p = Number(c.price);
-      if (!Number.isNaN(p)) return p > 0;
-    }
-    if (typeof c.isPaid !== "undefined") return !!c.isPaid;
-    if (typeof c.isPremium !== "undefined") return !!c.isPremium;
-    if (typeof c.premium !== "undefined") return !!c.premium;
-    if (typeof c.type === "string") {
-      const t = c.type.toLowerCase();
-      return t.includes("premium") || t.includes("paid");
-    }
-    // default unknown -> treat as free (will be rebalanced below)
+    if (c.price && Number(c.price) > 0) return true;
+    if (c.isPaid) return true;
     return false;
-  };
-
+    }
+    
   // build groups, with fallback if none detected as premium
   let basicCourses = courses.filter((c) => !isPremium(c));
   let advanceCourses = courses.filter((c) => isPremium(c));
@@ -165,106 +141,74 @@ export default function StudentCourses() {
     fontWeight: 700,
   };
 
-  // Ensure there's always something visible while debugging
-  if (loading) {
-    return (
-      <div>
-        <Navbar />
-        <div style={layoutStyle}>
-          <SideBar />
-          <div style={containerStyle}>
-            <p style={{ color: "#555", textAlign: "center" }}>
-              Loading courses...
-            </p>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
-  // When there are zero courses, show friendly message
-  if (!loading && courses.length === 0) {
-    return (
-      <div>
-        <Navbar />
-        <div style={layoutStyle}>
-          <SideBar />
-          <div style={containerStyle}>
-            <p style={{ color: "#555", textAlign: "center", marginTop: 60 }}>
-              No courses available right now.
-            </p>
-          </div>
-        </div>
-        <Footer />
-      </div>
-    );
-  }
 
   const renderCard = (course) => {
-    const premium = isPremium(course);
-    return (
-      <div
-        key={course._id || course.id || course.name}
-        style={cardStyle}
-        onClick={() => navigate(`/courses/${course._id || course.id}`)}
-        onMouseOver={(e) => {
-          e.currentTarget.style.transform = "translateY(-6px)";
-          e.currentTarget.style.boxShadow = "0 12px 24px rgba(2,10,40,0.08)";
+  const premium = isPremium(course);
+  return (
+    <div
+      key={course._id }
+      style={cardStyle}
+      onClick={() => navigate(`/courses/${course._id}`)}
+      onMouseOver={(e) => {
+        e.currentTarget.style.transform = "translateY(-6px)";
+        e.currentTarget.style.boxShadow = "0 12px 24px rgba(2,10,40,0.08)";
+      }}
+      onMouseOut={(e) => {
+        e.currentTarget.style.transform = "translateY(0)";
+        e.currentTarget.style.boxShadow = "0 4px 12px rgba(2,10,40,0.06)";
+      }}
+    >
+      <img
+        src={course.banner?
+             `http://localhost:5000${course.banner}`:""}
+            
+        
+        alt={course.title || "Course"}
+        style={imageStyle}
+        onError={(ev) => {
+          ev.currentTarget.onerror = null;
+          ev.currentTarget.src = "/default-course.jpg";
         }}
-        onMouseOut={(e) => {
-          e.currentTarget.style.transform = "translateY(0)";
-          e.currentTarget.style.boxShadow = "0 4px 12px rgba(2,10,40,0.06)";
-        }}
-      >
-        <img
-          src={course.image || course.thumbnail || "/default-course.jpg"}
-          alt={course.name || "Course"}
-          style={imageStyle}
-          onError={(ev) => {
-            ev.currentTarget.onerror = null;
-            ev.currentTarget.src = "/default-course.jpg";
-          }}
-        />
-        <div style={contentStyle}>
-          <h3 style={titleStyle}>{course.name || "Untitled course"}</h3>
-          <p style={descStyle}>
-            {(course.description &&
-              course.description.length > 0 &&
-              course.description) ||
-              "No description provided."}
-          </p>
+      />
+      <div style={contentStyle}>
+        <h3 style={titleStyle}>{course.title || "Untitled course"}</h3>
+        <p style={descStyle}>{course.description || "No description provided."}</p>
 
-          <div
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginTop: "auto",
+          }}
+        >
+          <span
             style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginTop: "auto",
+              ...tagBase,
+              background: premium ? "#c93c3c" : "#2d9f40",
             }}
           >
-            <span
-              style={{
-                ...tagBase,
-                background: premium ? "#c93c3c" : "#2d9f40",
-              }}
-            >
-              {premium ? "Premium" : "Free"}
-            </span>
+            {premium ? "Premium" : "Free"}
+          </span>
 
-            <button
-              style={buttonStyle}
-              onClick={(e) => {
-                e.stopPropagation();
-                navigate(`/courses/${course._id || course.id}`);
-              }}
-            >
-              View Course
-            </button>
-          </div>
+          <button
+            style={buttonStyle}
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`/courses/${course._id}`);
+            }}
+          >
+            View Course
+          </button>
         </div>
       </div>
-    );
-  };
+    </div>
+  );
+};
+
+if (loading) return <p style={{ textAlign: "center", marginTop: 50 }}>Loading courses...</p>;
+  if (!loading && courses.length === 0) return <p style={{ textAlign: "center", marginTop: 50 }}>No courses available right now.</p>;
 
   return (
     <div>
@@ -272,31 +216,21 @@ export default function StudentCourses() {
       <div style={layoutStyle}>
         <SideBar />
         <div style={containerStyle}>
-          {/* Basic */}
+          {/* Basic Courses */}
           <div style={sectionHeader}>
             <div style={sectionTitle}>Basic Courses</div>
           </div>
           <div style={gridStyle}>
-            {basicCourses.length > 0 ? (
-              basicCourses.map((c) => renderCard(c))
-            ) : (
-              <p style={{ color: "#555" }}>No basic courses</p>
-            )}
+            {basicCourses.length > 0 ? basicCourses.map((c) => renderCard(c)) : <p>No basic courses</p>}
           </div>
 
-          {/* Advance */}
+          {/* Advance Courses */}
           <div style={sectionHeader}>
             <div style={sectionTitle}>Advance Courses</div>
-            <button style={seeAllBtn} onClick={() => navigate("/courses")}>
-              See All
-            </button>
+            <button style={seeAllBtn} onClick={() => navigate("/courses")}>See All</button>
           </div>
           <div style={gridStyle}>
-            {advanceCourses.length > 0 ? (
-              advanceCourses.map((c) => renderCard(c))
-            ) : (
-              <p style={{ color: "#555" }}>No advance courses</p>
-            )}
+            {advanceCourses.length > 0 ? advanceCourses.map((c) => renderCard(c)) : <p>No advance courses</p>}
           </div>
         </div>
       </div>

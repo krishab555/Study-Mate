@@ -1,306 +1,49 @@
-// import React, { useState } from "react";
-
-// const CreateQuizze = () => {
-//   const [questions, setQuestions] = useState([
-//     {
-//       id: Date.now(),
-//       questionText: "",
-//       options: ["", ""],
-//       correctAnswerIndex: null,
-//     },
-//   ]);
-
-//   const addQuestion = () => {
-//     setQuestions((prev) => [
-//       ...prev,
-//       {
-//         id: Date.now(),
-//         questionText: "",
-//         options: ["", ""],
-//         correctAnswerIndex: null,
-//       },
-//     ]);
-//   };
-
-//   const removeQuestion = (id) => {
-//     setQuestions((prev) => prev.filter((q) => q.id !== id));
-//   };
-
-//   const updateQuestionText = (id, text) => {
-//     setQuestions((prev) =>
-//       prev.map((q) => (q.id === id ? { ...q, questionText: text } : q))
-//     );
-//   };
-
-//   const addOption = (questionId) => {
-//     setQuestions((prev) =>
-//       prev.map((q) =>
-//         q.id === questionId ? { ...q, options: [...q.options, ""] } : q
-//       )
-//     );
-//   };
-
-//   const updateOptionText = (questionId, index, text) => {
-//     setQuestions((prev) =>
-//       prev.map((q) => {
-//         if (q.id === questionId) {
-//           const newOptions = [...q.options];
-//           newOptions[index] = text;
-//           return { ...q, options: newOptions };
-//         }
-//         return q;
-//       })
-//     );
-//   };
-
-//   const removeOption = (questionId, index) => {
-//     setQuestions((prev) =>
-//       prev.map((q) => {
-//         if (q.id === questionId) {
-//           const newOptions = q.options.filter((_, i) => i !== index);
-//           let newCorrectIndex = q.correctAnswerIndex;
-//           // Adjust correctAnswerIndex if needed
-//           if (q.correctAnswerIndex === index) {
-//             newCorrectIndex = null;
-//           } else if (q.correctAnswerIndex > index) {
-//             newCorrectIndex = q.correctAnswerIndex - 1;
-//           }
-//           return {
-//             ...q,
-//             options: newOptions,
-//             correctAnswerIndex: newCorrectIndex,
-//           };
-//         }
-//         return q;
-//       })
-//     );
-//   };
-
-//   const setCorrectAnswer = (questionId, index) => {
-//     setQuestions((prev) =>
-//       prev.map((q) =>
-//         q.id === questionId ? { ...q, correctAnswerIndex: index } : q
-//       )
-//     );
-//   };
-
-//   const handleSubmit = () => {
-//     // Basic validation: all questions must have text, at least 2 options,
-//     // and a selected correct answer
-//     for (let q of questions) {
-//       if (!q.questionText.trim()) {
-//         alert("Please fill all question texts.");
-//         return;
-//       }
-//       if (q.options.length < 2) {
-//         alert("Each question must have at least 2 options.");
-//         return;
-//       }
-//       if (q.options.some((opt) => !opt.trim())) {
-//         alert("Please fill all options.");
-//         return;
-//       }
-//       if (q.correctAnswerIndex === null) {
-//         alert("Please select a correct answer for every question.");
-//         return;
-//       }
-//     }
-
-//     // You can send questions to your API here
-//     console.log("Quiz to submit:", questions);
-//     alert("Quiz saved! (Check console log)");
-//   };
-
-//   return (
-//     <div style={{ maxWidth: "800px", margin: "40px auto", padding: "20px" }}>
-//       <h2 style={{ marginBottom: "20px" }}>Create Quiz</h2>
-
-//       {questions.map((q, qIndex) => (
-//         <div
-//           key={q.id}
-//           style={{
-//             marginBottom: "30px",
-//             padding: "20px",
-//             border: "1px solid #ccc",
-//             borderRadius: "8px",
-//             backgroundColor: "#f9f9f9",
-//           }}
-//         >
-//           <div style={{ display: "flex", justifyContent: "space-between" }}>
-//             <h4>Question {qIndex + 1}</h4>
-//             {questions.length > 1 && (
-//               <button
-//                 onClick={() => removeQuestion(q.id)}
-//                 style={{
-//                   background: "transparent",
-//                   border: "none",
-//                   color: "red",
-//                   cursor: "pointer",
-//                   fontSize: "18px",
-//                 }}
-//                 title="Remove question"
-//               >
-//                 &times;
-//               </button>
-//             )}
-//           </div>
-
-//           <textarea
-//             value={q.questionText}
-//             onChange={(e) => updateQuestionText(q.id, e.target.value)}
-//             placeholder="Enter question text"
-//             style={{
-//               width: "100%",
-//               minHeight: "60px",
-//               fontSize: "16px",
-//               padding: "10px",
-//               marginBottom: "15px",
-//               borderRadius: "6px",
-//               border: "1px solid #ccc",
-//               resize: "vertical",
-//             }}
-//           />
-
-//           <div>
-//             {q.options.map((opt, i) => (
-//               <div
-//                 key={i}
-//                 style={{
-//                   display: "flex",
-//                   alignItems: "center",
-//                   marginBottom: "10px",
-//                 }}
-//               >
-//                 <input
-//                   type="radio"
-//                   name={`correct-answer-${q.id}`}
-//                   checked={q.correctAnswerIndex === i}
-//                   onChange={() => setCorrectAnswer(q.id, i)}
-//                   style={{ marginRight: "10px" }}
-//                 />
-//                 <input
-//                   type="text"
-//                   value={opt}
-//                   onChange={(e) => updateOptionText(q.id, i, e.target.value)}
-//                   placeholder={`Option ${i + 1}`}
-//                   style={{
-//                     flex: 1,
-//                     padding: "8px 10px",
-//                     fontSize: "15px",
-//                     borderRadius: "5px",
-//                     border: "1px solid #ccc",
-//                   }}
-//                 />
-//                 {q.options.length > 2 && (
-//                   <button
-//                     onClick={() => removeOption(q.id, i)}
-//                     style={{
-//                       marginLeft: "8px",
-//                       backgroundColor: "red",
-//                       color: "white",
-//                       border: "none",
-//                       borderRadius: "4px",
-//                       cursor: "pointer",
-//                       padding: "6px 10px",
-//                       fontWeight: "bold",
-//                     }}
-//                     title="Remove option"
-//                   >
-//                     &times;
-//                   </button>
-//                 )}
-//               </div>
-//             ))}
-
-//             <button
-//               onClick={() => addOption(q.id)}
-//               style={{
-//                 marginTop: "10px",
-//                 padding: "8px 15px",
-//                 backgroundColor: "#6c5ce7",
-//                 color: "white",
-//                 border: "none",
-//                 borderRadius: "6px",
-//                 cursor: "pointer",
-//               }}
-//             >
-//               + Add Option
-//             </button>
-//           </div>
-//         </div>
-//       ))}
-
-//       <div style={{ marginTop: "30px", display: "flex", gap: "15px" }}>
-//         <button
-//           onClick={addQuestion}
-//           style={{
-//             padding: "12px 20px",
-//             backgroundColor: "#0984e3",
-//             color: "white",
-//             border: "none",
-//             borderRadius: "8px",
-//             cursor: "pointer",
-//             fontWeight: "bold",
-//           }}
-//         >
-//           + Add Question
-//         </button>
-
-//         <button
-//           onClick={handleSubmit}
-//           style={{
-//             padding: "12px 20px",
-//             backgroundColor: "#6c5ce7",
-//             color: "white",
-//             border: "none",
-//             borderRadius: "8px",
-//             cursor: "pointer",
-//             fontWeight: "bold",
-//           }}
-//         >
-//           Save Quiz
-//         </button>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default CreateQuizze;
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { apiRequest } from "../../utils/api"; // your API helper
+import { useNavigate } from "react-router-dom";
 
 const CreateQuizze = () => {
+  const navigate = useNavigate();
+  const [courses, setCourses] = useState([]);
+  const [selectedCourse, setSelectedCourse] = useState("");
+  const [title, setTitle] = useState("");
   const [questions, setQuestions] = useState([
     {
       id: Date.now(),
       questionText: "",
-      options: ["", "", "", ""], // Always 4 options initially
+      options: ["", "", "", ""],
       correctAnswerIndex: null,
     },
   ]);
 
+  // Fetch instructor's courses
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const res = await apiRequest({
+          endpoint: "/courses", // Backend route: /api/courses
+          method: "GET",
+        });
+        console.log("Fetched courses:", res);
+        if (res.success) setCourses(res.data);
+      } catch (err) {
+        console.error("Failed to fetch courses", err);
+      }
+    };
+    fetchCourses();
+  }, []);
+
+  // Question handlers
   const addQuestion = () => {
     setQuestions((prev) => [
       ...prev,
-      {
-        id: Date.now(),
-        questionText: "",
-        options: ["", "", "", ""], // 4 options by default
-        correctAnswerIndex: null,
-      },
+      { id: Date.now(), questionText: "", options: ["", "", "", ""], correctAnswerIndex: null },
     ]);
   };
-
-  const removeQuestion = (id) => {
-    setQuestions((prev) => prev.filter((q) => q.id !== id));
-  };
-
-  const updateQuestionText = (id, text) => {
-    setQuestions((prev) =>
-      prev.map((q) => (q.id === id ? { ...q, questionText: text } : q))
-    );
-  };
-
-  const updateOptionText = (questionId, index, text) => {
+  const removeQuestion = (id) => setQuestions((prev) => prev.filter((q) => q.id !== id));
+  const updateQuestionText = (id, text) =>
+    setQuestions((prev) => prev.map((q) => (q.id === id ? { ...q, questionText: text } : q)));
+  const updateOptionText = (questionId, index, text) =>
     setQuestions((prev) =>
       prev.map((q) => {
         if (q.id === questionId) {
@@ -311,45 +54,80 @@ const CreateQuizze = () => {
         return q;
       })
     );
-  };
-
-  const setCorrectAnswer = (questionId, index) => {
+  const setCorrectAnswer = (questionId, index) =>
     setQuestions((prev) =>
-      prev.map((q) =>
-        q.id === questionId ? { ...q, correctAnswerIndex: index } : q
-      )
+      prev.map((q) => (q.id === questionId ? { ...q, correctAnswerIndex: index } : q))
     );
-  };
 
-  const handleSubmit = () => {
+  // Submit quiz
+  const handleSubmit = async () => {
+    if (!selectedCourse) return alert("Please select a course");
+    if (!title.trim()) return alert("Please enter a quiz title");
+
     for (let q of questions) {
-      if (!q.questionText.trim()) {
-        alert("Please fill all question texts.");
-        return;
-      }
-      if (q.options.some((opt) => !opt.trim())) {
-        alert("Please fill all options.");
-        return;
-      }
-      if (q.correctAnswerIndex === null) {
-        alert("Please select a correct answer for every question.");
-        return;
-      }
+      if (!q.questionText.trim()) return alert("Please fill all question texts");
+      if (q.options.some((opt) => !opt.trim())) return alert("Please fill all options");
+      if (q.correctAnswerIndex === null) return alert("Please select a correct answer for every question");
     }
-    console.log("Quiz to submit:", questions);
-    alert("Quiz saved! (Check console log)");
+
+    // Transform questions for backend
+    const formattedQuestions = questions.map((q) => ({
+      questionText: q.questionText,
+      options: q.options,
+      correctAnswer:  q.options[q.correctAnswerIndex],
+    }));
+
+    try {
+      const res = await apiRequest({
+        endpoint: "/quiz", // Backend route: /api/quiz/create
+        method: "POST",
+        body: { title, courseId: selectedCourse, questions: formattedQuestions },
+      });
+      if (res.success) {
+        alert("Quiz saved successfully!");
+        navigate("/instructor/home");
+      } else {
+        alert(res.message || "Failed to save quiz");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Failed to save quiz");
+    }
   };
 
   return (
-    <div
-      style={{
-        marginLeft: "280px", // Make space for sidebar (adjust if your sidebar width differs)
-        padding: "40px 30px",
-        maxWidth: "800px",
-      }}
-    >
-      <h2 style={{ textAlign: "center", marginBottom: "40px" }}>Create Quiz</h2>
+    <div style={{ marginLeft: "280px", padding: "40px 30px", maxWidth: "800px" }}>
+      <h2 style={{ textAlign: "center", marginBottom: "30px" }}>Create Quiz</h2>
 
+      {/* Course Dropdown */}
+      <div style={{ marginBottom: "20px" }}>
+        <label>Select Course:</label>
+        <select
+          value={selectedCourse}
+          onChange={(e) => setSelectedCourse(e.target.value)}
+          style={{ padding: "8px 10px", marginLeft: "10px", borderRadius: "6px" }}
+        >
+          <option value="">-- Select your course --</option>
+          {courses.map((course) => (
+            <option key={course._id} value={course._id}>
+              {course.title}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Quiz Title */}
+      <div style={{ marginBottom: "20px" }}>
+        <input
+          type="text"
+          placeholder="Quiz Title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          style={{ width: "100%", padding: "10px", fontSize: "16px", borderRadius: "6px", border: "1px solid #ccc" }}
+        />
+      </div>
+
+      {/* Questions */}
       {questions.map((q, qIndex) => (
         <div
           key={q.id}
@@ -366,13 +144,7 @@ const CreateQuizze = () => {
             {questions.length > 1 && (
               <button
                 onClick={() => removeQuestion(q.id)}
-                style={{
-                  background: "transparent",
-                  border: "none",
-                  color: "red",
-                  cursor: "pointer",
-                  fontSize: "18px",
-                }}
+                style={{ background: "transparent", border: "none", color: "red", cursor: "pointer", fontSize: "18px" }}
                 title="Remove question"
               >
                 &times;
@@ -396,42 +168,28 @@ const CreateQuizze = () => {
             }}
           />
 
-          <div>
-            {q.options.map((opt, i) => (
-              <div
-                key={i}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  marginBottom: "10px",
-                }}
-              >
-                <input
-                  type="radio"
-                  name={`correct-answer-${q.id}`}
-                  checked={q.correctAnswerIndex === i}
-                  onChange={() => setCorrectAnswer(q.id, i)}
-                  style={{ marginRight: "10px" }}
-                />
-                <input
-                  type="text"
-                  value={opt}
-                  onChange={(e) => updateOptionText(q.id, i, e.target.value)}
-                  placeholder={`Option ${i + 1}`}
-                  style={{
-                    flex: 1,
-                    padding: "8px 10px",
-                    fontSize: "15px",
-                    borderRadius: "5px",
-                    border: "1px solid #ccc",
-                  }}
-                />
-              </div>
-            ))}
-          </div>
+          {q.options.map((opt, i) => (
+            <div key={i} style={{ display: "flex", alignItems: "center", marginBottom: "10px" }}>
+              <input
+                type="radio"
+                name={`correct-answer-${q.id}`}
+                checked={q.correctAnswerIndex === i}
+                onChange={() => setCorrectAnswer(q.id, i)}
+                style={{ marginRight: "10px" }}
+              />
+              <input
+                type="text"
+                value={opt}
+                onChange={(e) => updateOptionText(q.id, i, e.target.value)}
+                placeholder={`Option ${i + 1}`}
+                style={{ flex: 1, padding: "8px 10px", fontSize: "15px", borderRadius: "5px", border: "1px solid #ccc" }}
+              />
+            </div>
+          ))}
         </div>
       ))}
 
+      {/* Buttons */}
       <div style={{ marginTop: "30px", display: "flex", gap: "15px" }}>
         <button
           onClick={addQuestion}
@@ -447,7 +205,6 @@ const CreateQuizze = () => {
         >
           + Add Question
         </button>
-
         <button
           onClick={handleSubmit}
           style={{
