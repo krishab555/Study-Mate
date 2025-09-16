@@ -64,42 +64,83 @@ const SideBar = () => {
       position: "fixed",
       top: "40px",
       left: 0,
-      backgroundColor: "white",
-      color: "#0a2a66",
-      padding: "20px",
+      backgroundColor: "#365285ff", // Dark blue background
+      color: "white",
+      padding: "20px 0",
       display: "flex",
       flexDirection: "column",
-      gap: "20px",
+      gap: "8px",
       boxShadow: "2px 0 6px rgba(0,0,0,0.2)",
+      zIndex: 100,
+      overflowY: "auto",
     },
     link: {
       display: "flex",
+      alignItems: "center",
       gap: "12px",
-      color: "#0a2a66",
-
+      color: "white",
       textDecoration: "none",
       fontWeight: "500",
       fontSize: "16px",
-      padding: "8px",
-      borderRadius: "5px",
+      padding: "12px 20px",
+      borderRadius: "0 8px 8px 0",
+      margin: "0 10px",
+      transition: "all 0.3s ease",
+      borderLeft: "3px solid transparent",
     },
+    activeLink: {
+      backgroundColor: "rgba(8, 12, 34, 0.15)",
+      borderLeft: "3px solid #fff",
+    },
+    hoverEffect: {
+      backgroundColor: "rgba(83, 115, 241, 0.1)",
+      transform: "translateX(5px)",
+    },
+    noLinks: {
+      color: "#ff6b6b",
+      padding: "20px",
+      textAlign: "center",
+    }
   };
 
   return (
     <div style={styles.sidebar}>
       {roleLinks.length > 0 ? (
-        roleLinks.map((link) => (
-          <Link key={link.path} to={link.path} style={styles.link}>
-            {link.icon}
-            {link.label}
-          </Link>
-        ))
+        roleLinks.map((link) => {
+          const isActive = location.pathname === link.path;
+          return (
+            <Link 
+              key={link.path} 
+              to={link.path} 
+              style={{
+                ...styles.link,
+                ...(isActive ? styles.activeLink : {})
+              }}
+              onMouseEnter={(e) => {
+                if (!isActive) {
+                  e.target.style.backgroundColor = styles.hoverEffect.backgroundColor;
+                  e.target.style.transform = styles.hoverEffect.transform;
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isActive) {
+                  e.target.style.backgroundColor = styles.link.backgroundColor || "transparent";
+                  e.target.style.transform = "translateX(0)";
+                }
+              }}
+            >
+              {link.icon}
+              {link.label}
+            </Link>
+          );
+        })
       ) : (
-        <p style={{ color: "red" }}>No links available for your role</p>
+        <p style={styles.noLinks}>No links available for your role</p>
       )}
     </div>
   );
 };
+
 export const SidebarLayout = ({ children }) => {
   const sidebarWidth = 250; // sidebar width
   const gap = 220; // desired gap (~2-3 inches)
@@ -108,7 +149,7 @@ export const SidebarLayout = ({ children }) => {
   return (
     <div style={{ display: "flex" }}>
       <SideBar />
-      <div style={{ marginLeft: `${totalOffset}px`, flex: 1 }}>{children}</div>
+      <div style={{ marginLeft: `${totalOffset}px`, flex: 1, padding: "20px" }}>{children}</div>
     </div>
   );
 };
