@@ -30,19 +30,17 @@ export const createCourseController = async (req, res) => {
      const imageFile = req.files?.image?.[0];
      const videoFile = req.files?.video?.[0];
 
-
-
+    //  console.log(pdfFile,imageFile,videoFile);
+    // console.log(req.files)
     const pdfUrl = pdfFile ? `/uploads/pdfs/${pdfFile.filename}` : null;
     const imageUrl = imageFile ? `/uploads/images/${imageFile.filename}` : null;
     const videoUrl = videoFile ? `/uploads/videos/${videoFile.filename}` : null;
 
 
-    
-
     const course = await CourseModel.create({
       title,
       description,
-      instructor: req.user._id, // user from auth middleware
+      instructor: req.user._id,
       price,
       isPaid,
       category,
@@ -64,7 +62,10 @@ export const createCourseController = async (req, res) => {
 export const updateCourseController = async (req, res) => {
   try {
     const { id } = req.params;
-    const reqBody = req.body;
+    const reqBody = req.body || {};
+    if (req.file) {
+      reqBody.banner = `/uploads/images/${req.file.filename}`;
+    }
 
     // If howToComplete is in body, handle parsing like above
     if (reqBody.howToComplete) {
@@ -82,7 +83,16 @@ export const updateCourseController = async (req, res) => {
       }
     }
 
-    const updatedCourse = await CourseModel.findByIdAndUpdate(id, reqBody, {
+    const pdfFile = req.files?.pdf?.[0];
+    const imageFile = req.files?.image?.[0];
+    const videoFile = req.files?.video?.[0];
+    console.log(pdfFile, imageFile,videoFile);
+
+    if (pdfFile) reqBody.pdfUrl = `/uploads/pdfs/${pdfFile.filename}`;
+    if (imageFile) reqBody.banner = `/uploads/images/${imageFile.filename}`;
+    if (videoFile) reqBody.videoUrl = `/uploads/videos/${videoFile.filename}`;
+
+   const updatedCourse = await CourseModel.findByIdAndUpdate(id, reqBody, {
       new: true,
     });
 

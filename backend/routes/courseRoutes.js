@@ -29,7 +29,6 @@ courseRoutes.post(
   authenticateUser,
   authorizeRoles("Instructor"),
   courseUploads,
-
   createCourseController
 );
 

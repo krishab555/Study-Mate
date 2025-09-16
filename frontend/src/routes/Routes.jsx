@@ -68,13 +68,11 @@ const PageRoutes = () => {
           <Route path="home" element={<Home />} />
           <Route path="courses" element={<Courses />} />
           <Route path="profile" element={<Profile />} />
-          {/* ✅ New Certificate Routes */}
           <Route path="certificate" element={<Certificate />} />
-          {/* <Route path="certificate/detail" element={<CertificateDetail />} /> */}
           <Route path="certificate/:id" element={<CertificateDetail />} />
-          <Route path="take-quiz/:quizId" element={<TakeQuizze />} />{" "}
-          {/* ✅ ADD THIS */}
+          <Route path="take-quiz/:quizId" element={<TakeQuizze />} />
           <Route path="courses/:id/payment" element={<CoursePayment />} />
+          <Route path="contact" element={<ContactUs/>} />
         </Route>
       </Route>
 
@@ -92,6 +90,7 @@ const PageRoutes = () => {
           <Route path="home" element={<InstructorHome />} />
           <Route path="create-quiz" element={<CreateQuizze />} />
           <Route path="addcourse" element={<AddCourse />} />
+          <Route path="contact" element={<ContactUs/>} />
         </Route>
       </Route>
 
