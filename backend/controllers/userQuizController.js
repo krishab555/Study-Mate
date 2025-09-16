@@ -18,7 +18,10 @@ export const submitQuiz = async (req, res) => {
 
     // Transform answers to match UserQuizModel schema
     const userAnswers = answers.map((ans) => {
-      const question = quiz.questions.id(ans.questionId);
+   const question = quiz.questions.find(
+     (q) => q._id.toString() === ans.questionId
+   );
+
       return {
         questionId: ans.questionId,
         answer: ans.selectedOption,

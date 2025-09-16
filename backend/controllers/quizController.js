@@ -1,4 +1,5 @@
 import { QuizModel } from "../models/quizModel.js";
+import { CourseModel } from "../models/courseModel.js";
 
 // ✅ Create a quiz
 export const createQuiz = async (req, res) => {

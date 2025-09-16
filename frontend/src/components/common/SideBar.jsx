@@ -27,6 +27,7 @@ const SideBar = () => {
       },
       { path: "/faqs", label: "FAQs", icon: <FiTwitch /> },
       { path: "/student/certificate", label: "Certificate", icon: <FiAward /> },
+      { path: "/student/take-quiz/1", label: "Take Quiz", icon: <FiBookOpen /> },
     ],
     instructor: [
       { path: "/instructor/home", label: "Dashboard", icon: <FiGrid /> },
@@ -42,6 +43,7 @@ const SideBar = () => {
         icon: <FiMessageSquare />,
       },
       { path: "/profile", label: "Profile", icon: <FiUser /> },
+      { path: "/instructor/create-quiz", label: "Create Quiz", icon: <FiBookOpen /> },
     ],
     admin: [
       { path: "/admin/home", label: "Dashboard", icon: <FiGrid /> },

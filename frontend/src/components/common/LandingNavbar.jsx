@@ -144,7 +144,7 @@ export default function LandingNavbar() {
 
         {/* Search & User Section */}
         <div style={{ display: "flex", alignItems: "center" }}>
-          <input type="text" placeholder="Search" style={styles.searchBar} />
+          {/* <input type="text" placeholder="Search" style={styles.searchBar} /> */}
           <div style={styles.userSection}>
             
               <button style={styles.btn} onClick={() => navigate("/login")}>

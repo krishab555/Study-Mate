@@ -5,6 +5,8 @@ export default function Navbar() {
   const token = localStorage.getItem("token");
   const userName = localStorage.getItem("userName");
   const role = localStorage.getItem("role")?.toLowerCase();
+    const hiddenPaths = ["/", "/dashboard"]; // Add more paths as needed
+  if (hiddenPaths.includes(location.pathname)) return null;
 
   const handleLogout = () => {
     localStorage.removeItem("token");

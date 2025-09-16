@@ -5,7 +5,7 @@ import { CourseModel } from "../models/courseModel.js";
 export const getCoursesController = async (req, res) => {
   try {
     const user = req.user; // from auth middleware
-    const courses = await CourseModel.find()
+    const courses = await CourseModel.find({ instructor: user._id })
       .populate("instructor", "name")
       .lean();
 

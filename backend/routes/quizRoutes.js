@@ -24,5 +24,21 @@ quizRouter.delete(
   deleteQuiz
 );
 quizRouter.get("/course/:courseId", authenticateUser, getQuizzesByCourse);
+quizRouter.get("/courses", authenticateUser, async (req, res) => {
+  try {
+    const quizzes = await QuizModel.find().populate("course", "title");
+    const coursesWithQuizzes = [
+      ...new Map(
+        quizzes
+          .filter((q) => q.course) // <-- add this line
+          .map((q) => [q.course._id, q.course])
+      ).values(),
+    ];
+    res.status(200).json({ success: true, data: coursesWithQuizzes });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 
 export default quizRouter;
