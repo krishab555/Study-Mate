@@ -1,5 +1,3 @@
-// src/routes/Routes.jsx
-
 import { Route, Routes, Navigate } from "react-router-dom";
 import ProtectedRoutes from "./ProctectedRoutes";
 
@@ -74,12 +72,6 @@ const PageRoutes = () => {
           <Route path="take-quiz/:quizId" element={<TakeQuizze />} />
           <Route path="courses/:id/payment" element={<CoursePayment />} />
           <Route path="contact" element={<ContactUs />} />
-
-          <Route path ="courses/:id/start" element={<CourseContent />}
-          />
-          <Route path="quizzes" element={<QuizCourses/>} />
-          <Route path="take-quiz/:quizId" element={<TakeQuizze/>} />
-
         </Route>
       </Route>
 

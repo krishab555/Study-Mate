@@ -124,7 +124,7 @@ export default function FAQSection() {
             <div key={index} style={faqStyle} onClick={() => toggleFAQ(index)}>
               <h3 style={questionStyle}>
                 {faq.question}
-                <span>{openIndex === index ? "▲" : "▼"}</span>
+                <span>{openIndex === index ? "^" : "˅"}</span>
               </h3>
               {openIndex === index && <p style={answerStyle}>{faq.answer}</p>}
             </div>
@@ -140,7 +140,7 @@ export default function FAQSection() {
             >
               <h3 style={questionStyle}>
                 {faq.question}
-                <span>{openIndex === index + 5 ? "▲" : "▼"}</span>
+                <span>{openIndex === index + 5 ? "^" : "˅"}</span>
               </h3>
               {openIndex === index + 5 && (
                 <p style={answerStyle}>{faq.answer}</p>

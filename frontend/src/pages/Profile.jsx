@@ -237,7 +237,7 @@ const Profile = () => {
         >
           <strong>Change Password</strong>
           <span style={{ fontSize: "16px" }}>
-            {showPasswordForm ? "▲" : "▼"}
+            {showPasswordForm ? "^" : "˅"}
           </span>
         </div>
 
