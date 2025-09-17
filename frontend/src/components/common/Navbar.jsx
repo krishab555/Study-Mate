@@ -1,21 +1,47 @@
-
+import React, {useState, useEffect} from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Bell } from "lucide-react"; // notification icon
 
 export default function Navbar() {
+
   const navigate = useNavigate();
   const location = useLocation();
 
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role")?.toLowerCase();
 
+   const [profileImage, setProfileImage] = useState(
+    localStorage.getItem("profileImage") || "/defaultProfile.jpg"
+  );
+
+  // Update profile image if localStorage changes
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setProfileImage(localStorage.getItem("profileImage") || "/defaultProfile.jpg");
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
+
+  // Optional: manually trigger in same tab after upload
+  useEffect(() => {
+    const handleCustomEvent = () => {
+      setProfileImage(localStorage.getItem("profileImage") || "/defaultProfile.jpg");
+    };
+    window.addEventListener("profileImageUpdated", handleCustomEvent);
+    return () => window.removeEventListener("profileImageUpdated", handleCustomEvent);
+  }, []);
+
   const hiddenPaths = ["/", "/dashboard"];
   if (hiddenPaths.includes(location.pathname)) return null;
+
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("userName");
     localStorage.removeItem("role");
+    localStorage.removeItem("profileImage");
     navigate("/login");
   };
 

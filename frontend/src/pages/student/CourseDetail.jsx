@@ -164,6 +164,8 @@ export default function CourseDetail() {
                   maxWidth: "400px",
                 }}
               >
+                {course.isPaid?(
+                  <>
                 <p style={{ fontSize: "16px", marginBottom: "12px" }}>
                   <strong>Premium Course Price:</strong> Rs {course.price}
                 </p>
@@ -182,9 +184,32 @@ export default function CourseDetail() {
                     cursor: "pointer",
                     transition: "background-color 0.3s",
                   }}
-                >
+                  >
                   Pay Now
                 </button>
+                  </>
+                ):(
+                  <button
+      onClick={() =>
+        navigate(`/student/courses/${course._id}/start`)
+      }
+      style={{
+        width: "100%",
+        padding: "12px 0",
+        backgroundColor: "#2d9f40",
+        color: "white",
+        fontSize: "16px",
+        border: "none",
+        borderRadius: "6px",
+        fontWeight: "bold",
+        cursor: "pointer",
+        transition: "background-color 0.3s",
+      }}
+    >
+      Start Learning
+    </button>
+                )
+              }
               </div>
             </div>
 

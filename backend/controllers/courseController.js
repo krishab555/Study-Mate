@@ -36,13 +36,20 @@ export const createCourseController = async (req, res) => {
     const imageUrl = imageFile ? `/uploads/images/${imageFile.filename}` : null;
     const videoUrl = videoFile ? `/uploads/videos/${videoFile.filename}` : null;
 
+     let finalPrice = 0;
+     let paidStatus = false;
+     if (category.toLowerCase() === "advanced") {
+       finalPrice = price || 100; // default price if none provided
+       paidStatus = true;
+     }
+
 
     const course = await CourseModel.create({
       title,
       description,
       instructor: req.user._id,
-      price,
-      isPaid,
+      price: finalPrice,
+      isPaid : paidStatus,
       category,
       level,
       pdfUrl,
@@ -63,9 +70,15 @@ export const updateCourseController = async (req, res) => {
   try {
     const { id } = req.params;
     const reqBody = req.body || {};
-    if (req.file) {
-      reqBody.banner = `/uploads/images/${req.file.filename}`;
-    }
+    
+    const pdfFile = req.files?.pdf?.[0];
+    const imageFile = req.files?.image?.[0];
+    const videoFile = req.files?.video?.[0];
+
+    if (pdfFile) reqBody.pdfUrl = `/uploads/pdfs/${pdfFile.filename}`;
+    if (imageFile) reqBody.banner = `/uploads/images/${imageFile.filename}`;
+    if (videoFile) reqBody.videoUrl = `/uploads/videos/${videoFile.filename}`;
+
 
     // If howToComplete is in body, handle parsing like above
     if (reqBody.howToComplete) {
@@ -83,14 +96,15 @@ export const updateCourseController = async (req, res) => {
       }
     }
 
-    const pdfFile = req.files?.pdf?.[0];
-    const imageFile = req.files?.image?.[0];
-    const videoFile = req.files?.video?.[0];
-    console.log(pdfFile, imageFile,videoFile);
-
-    if (pdfFile) reqBody.pdfUrl = `/uploads/pdfs/${pdfFile.filename}`;
-    if (imageFile) reqBody.banner = `/uploads/images/${imageFile.filename}`;
-    if (videoFile) reqBody.videoUrl = `/uploads/videos/${videoFile.filename}`;
+    if (reqBody.category) {
+      if (reqBody.category.toLowerCase() === "basic") {
+        reqBody.price = 0;
+        reqBody.isPaid = false;
+      } else if (reqBody.category.toLowerCase() === "advanced") {
+        reqBody.isPaid = true;
+        reqBody.price = reqBody.price ? Number(reqBody.price) : 100; // default
+      }
+    }
 
    const updatedCourse = await CourseModel.findByIdAndUpdate(id, reqBody, {
       new: true,

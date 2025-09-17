@@ -44,6 +44,7 @@ import ManageUsers from "../pages/admin/ManageUsers";
 import AdminCourses from "../pages/admin/AdminCourses";
 import ContactUs from "../pages/student/ContactUs";
 import AdminContact from "../pages/admin/AdminContact";
+import CourseContent from "../pages/student/CourseContent";
 
 const PageRoutes = () => {
   return (
@@ -58,7 +59,7 @@ const PageRoutes = () => {
         }
       >
         <Route path="/discussionForum" element={<DiscussionForum />} />
-        <Route path="profile" element={<Profile />} />
+        <Route path="profile" element={<Profile/>} />
       </Route>
 
       {/* Student Routes */}
@@ -67,12 +68,14 @@ const PageRoutes = () => {
           <Route index element={<Home />} />
           <Route path="home" element={<Home />} />
           <Route path="courses" element={<Courses />} />
-          <Route path="profile" element={<Profile />} />
+          {/* <Route path="profile" element={<Profile />} /> */}
           <Route path="certificate" element={<Certificate />} />
           <Route path="certificate/:id" element={<CertificateDetail />} />
           <Route path="take-quiz/:quizId" element={<TakeQuizze />} />
           <Route path="courses/:id/payment" element={<CoursePayment />} />
           <Route path="contact" element={<ContactUs/>} />
+          <Route path="/student/courses/:id/start" element={<CourseContent/>} />
+
         </Route>
       </Route>
 
