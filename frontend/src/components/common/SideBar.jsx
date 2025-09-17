@@ -42,7 +42,7 @@ const SideBar = () => {
         label: "Discussion Forum",
         icon: <FiMessageSquare />,
       },
-      { path: "/profile", label: "Profile", icon: <FiUser /> },
+    
       { path: "/instructor/create-quiz", label: "Create Quiz", icon: <FiBookOpen /> },
     ],
     admin: [

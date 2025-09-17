@@ -10,10 +10,12 @@ import {
 } from "../controllers/courseController.js";
 import { authenticateUser } from "../middleware/authenticateUser.js";
 import { authorizeRoles } from "../middleware/authorizeRoles.js";
+import { upload } from "../middleware/multipleStorage.js";
 import { uploadPDF } from "../middleware/multerMiddleware.js"; // Your multer config for PDFs
 import { uploadImage } from "../middleware/multerImage.js"; // Your multer config for images
 
-const upload = multer();
+
+// const courseUploads = upload.fields([
 const courseUploads = upload.fields([
   { name: "pdf", maxCount: 1 },
   { name: "image", maxCount: 1 },

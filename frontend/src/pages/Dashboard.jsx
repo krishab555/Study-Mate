@@ -254,7 +254,10 @@ export default function Dashboard() {
       </section>
 
       {/* Contact Section */}
+      <section id="landing-contact" >
+
       <LandingContact/>
+      </section>
     </div>
   );
 }

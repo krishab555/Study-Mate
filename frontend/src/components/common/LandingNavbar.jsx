@@ -117,7 +117,7 @@ export default function LandingNavbar() {
           <li style={styles.navItem} onClick={() => scrollToSection("faqs")}>
             FAQs
           </li>
-          <li style={styles.navItem} onClick={() => scrollToSection("contact")}>
+          <li style={styles.navItem} onClick={() => scrollToSection("landing-contact")}>
             Contact
           </li>
 
