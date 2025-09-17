@@ -26,7 +26,7 @@ const StudentLayout = () => {
         <Outlet/>
       </div>
       </div>
-      <Footer/>
+      {/* <Footer/> */}
     </div>
   );
 };

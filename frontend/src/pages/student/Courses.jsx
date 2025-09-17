@@ -234,7 +234,7 @@ if (loading) return <p style={{ textAlign: "center", marginTop: 50 }}>Loading co
           </div>
         </div>
       </div>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }
