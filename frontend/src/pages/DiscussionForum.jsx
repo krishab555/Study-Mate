@@ -238,7 +238,7 @@ export default function DiscussionForum() {
           </div>
 
           <div style={styles.responseSection}>
-            <button style={styles.responseButton}>➕ Add Response</button>
+            <button style={styles.responseButton}>+ Add Response</button>
           </div>
         </div>
 
@@ -266,7 +266,7 @@ export default function DiscussionForum() {
           </div>
 
           <div style={styles.responseSection}>
-            <button style={styles.responseButton}>➕ Add Response</button>
+            <button style={styles.responseButton}>+ Add Response</button>
           </div>
         </div>
       </div>
