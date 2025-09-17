@@ -26,7 +26,7 @@ export default function Home() {
     fetchCourses();
   }, []);
 
-  // latest 3 courses
+  // latest 6 courses
   const latestCourses = courses.slice(-6).reverse();
 
   // Determine if premium
@@ -128,11 +128,106 @@ export default function Home() {
       cursor: "pointer",
       fontWeight: 700,
     },
+    // Updated styles for Learning Time and Activity sections
+    learningActivitySection: {
+      display: "flex",
+      justifyContent: "space-between",
+      flexWrap: "wrap",
+      gap: "20px",
+      marginBottom: "40px",
+    },
+    learningTime: {
+      flex: "1",
+      minWidth: "280px",
+      backgroundColor: "#ffffff",
+      padding: "25px",
+      borderRadius: "12px",
+      textAlign: "center",
+      boxShadow: "0 4px 20px rgba(0, 0, 0, 0.06)",
+      border: "1px solid #eaeaea",
+    },
+    activity: {
+      flex: "2",
+      minWidth: "300px",
+      backgroundColor: "#ffffff",
+      padding: "25px",
+      borderRadius: "12px",
+      boxShadow: "0 4px 20px rgba(0, 0, 0, 0.06)",
+      border: "1px solid #eaeaea",
+    },
+    progressCircle: {
+      width: "140px",
+      height: "140px",
+      margin: "20px auto",
+      borderRadius: "50%",
+      background: "conic-gradient(#4CAF50 75%, #e8f5e9 0)",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      position: "relative",
+    },
+    progressInnerCircle: {
+      width: "110px",
+      height: "110px",
+      borderRadius: "50%",
+      background: "#ffffff",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      boxShadow: "0 0 10px rgba(0, 0, 0, 0.05)",
+    },
+    timeText: {
+      fontWeight: "bold",
+      fontSize: "18px",
+      color: "#2E7D32",
+      margin: 0,
+    },
+    labelText: {
+      fontSize: "14px",
+      color: "#666",
+      margin: "5px 0 0 0",
+    },
+    activityBars: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "flex-end",
+      height: "150px",
+      marginTop: "20px",
+      padding: "0 10px",
+    },
+    dayBar: {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      width: "12%",
+    },
+    bar: {
+      width: "30px",
+      borderRadius: "6px 6px 0 0",
+      backgroundColor: "#8e44ad",
+      transition: "height 0.3s ease",
+    },
+    dayLabel: {
+      fontSize: "12px",
+      color: "#666",
+      marginTop: "8px",
+    },
+    activityTitle: {
+      textAlign: "center",
+      fontSize: "16px",
+      fontWeight: "600",
+      color: "#333",
+      marginBottom: "5px",
+    },
   };
+
+  // Dummy data for activity bars (heights for each day)
+  const activityData = [40, 65, 50, 75, 60, 45, 80];
 
   const renderCard = (course) => {
     const premium = isPremium(course);
-    console.log(course);
     return (
       <div
         key={course._id}
@@ -151,11 +246,12 @@ export default function Home() {
           src={course.banner ? `http://localhost:5000${course.banner}` : ""}
           alt={course.title || "Course"}
           style={styles.image}
-          
         />
         <div style={styles.content}>
           <h3 style={styles.title}>{course.title || "Untitled Course"}</h3>
-          <p style={styles.desc}>{course.description?.slice(0, 80) || "No description"}...</p>
+          <p style={styles.desc}>
+            {course.description?.slice(0, 80) || "No description"}...
+          </p>
           <div
             style={{
               display: "flex",
@@ -189,28 +285,89 @@ export default function Home() {
 
   return (
     <div style={styles.container}>
+      {/* Welcome Section */}
       <div style={styles.welcomeCard}>
         <h2>Every pro was once a Beginner</h2>
         <h2>You've taken the first step. Let's keep going!</h2>
         <button
           style={styles.button}
-          onMouseDown={(e) => (e.target.style.background = styles.buttonActive.background)}
-          onMouseUp={(e) => (e.target.style.background = styles.button.background)}
+          onMouseDown={(e) =>
+            (e.target.style.background = styles.buttonActive.background)
+          }
+          onMouseUp={(e) =>
+            (e.target.style.background = styles.button.background)
+          }
           onClick={() => navigate("/student/courses")}
         >
           Go to Courses
         </button>
       </div>
 
+      {/* Learning Time & My Activity Section */}
+      <div style={styles.learningActivitySection}>
+        {/* Learning Time */}
+        <div style={styles.learningTime}>
+          <h3 style={{ color: "#333", marginBottom: "15px" }}>Learning Time</h3>
+          <div style={styles.progressCircle}>
+            <div style={styles.progressInnerCircle}>
+              <p style={styles.timeText}>1h 15m</p>
+              <p style={styles.labelText}>Today</p>
+            </div>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: "15px",
+            }}
+          >
+            <div
+              style={{
+                width: "12px",
+                height: "12px",
+                borderRadius: "50%",
+                backgroundColor: "#4CAF50",
+                marginRight: "8px",
+              }}
+            ></div>
+            <p style={{ color: "#666", fontSize: "14px", margin: 0 }}>
+              Reading
+            </p>
+          </div>
+        </div>
+
+        {/* My Activity */}
+        <div style={styles.activity}>
+          <h3 style={{ color: "#333", marginBottom: "20px" }}>My Activity</h3>
+          <p style={styles.activityTitle}>This Week</p>
+          <div style={styles.activityBars}>
+            {activityData.map((height, index) => (
+              <div key={index} style={styles.dayBar}>
+                <div
+                  style={{
+                    ...styles.bar,
+                    height: `${height}px`,
+                    opacity: height / 100 + 0.2,
+                  }}
+                ></div>
+                <span style={styles.dayLabel}>
+                  {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][index]}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Latest Courses */}
       <h3 style={styles.sectionTitle}>Latest Courses</h3>
       {loading ? (
         <p>Loading courses...</p>
       ) : latestCourses.length === 0 ? (
         <p>No courses available.</p>
       ) : (
-        <div style={styles.grid}>
-          {latestCourses.map((c) => renderCard(c))}
-        </div>
+        <div style={styles.grid}>{latestCourses.map((c) => renderCard(c))}</div>
       )}
     </div>
   );

@@ -45,13 +45,15 @@ export default function LandingNavbar() {
     logoContainer: {
       display: "flex",
       alignItems: "center",
-      gap: "10px",
-      marginLeft: "-70px", // move a bit to the left
+      // gap: "10px",
+      marginLeft: "-80px",
+      marginTop: "8px", // move a bit to the left
     },
     logoImage: {
-      width: "180px", // bigger logo width
-      height: "90px", // within navbar height
+      width: "200px", // bigger logo width
+      height: "100px", // within navbar height
       objectFit: "contain",
+     
     },
     navLinks: {
       display: "flex",
