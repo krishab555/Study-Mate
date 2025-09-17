@@ -24,7 +24,6 @@ import FAQSubjects from "../pages/student/FAQSubjects";
 import FAQDetails from "../pages/student/FAQDetails";
 import CoursePayment from "../pages/student/CoursePayment"; // ✅ Add this line
 
-
 // Student Certificates (NEW)
 import Certificate from "../pages/student/Certificate";
 import CertificateDetail from "../pages/student/certificateDetail";
@@ -59,7 +58,7 @@ const PageRoutes = () => {
         }
       >
         <Route path="/discussionForum" element={<DiscussionForum />} />
-        <Route path="profile" element={<Profile/>} />
+        <Route path="profile" element={<Profile />} />
       </Route>
 
       {/* Student Routes */}
@@ -73,9 +72,11 @@ const PageRoutes = () => {
           <Route path="certificate/:id" element={<CertificateDetail />} />
           <Route path="take-quiz/:quizId" element={<TakeQuizze />} />
           <Route path="courses/:id/payment" element={<CoursePayment />} />
-          <Route path="contact" element={<ContactUs/>} />
-          <Route path="/student/courses/:id/start" element={<CourseContent/>} />
-
+          <Route path="contact" element={<ContactUs />} />
+          <Route
+            path="/student/courses/:id/start"
+            element={<CourseContent />}
+          />
         </Route>
       </Route>
 
@@ -93,7 +94,7 @@ const PageRoutes = () => {
           <Route path="home" element={<InstructorHome />} />
           <Route path="create-quiz" element={<CreateQuizze />} />
           <Route path="addcourse" element={<AddCourse />} />
-          <Route path="contact" element={<ContactUs/>} />
+          <Route path="contact" element={<ContactUs />} />
         </Route>
       </Route>
 
