@@ -34,87 +34,39 @@ export default function CoursePayment() {
     fetchCourse();
   }, [id, navigate]);
 
-  // Load Khalti script dynamically once
-  useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://khalti.com/static/khalti-checkout.js";
-    script.async = true;
-    document.body.appendChild(script);
-
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, []);
-
-  const handlePayment = () => {
-    if (!course) {
-      alert("Course data not available");
-      return;
-    }
-
-    if (!window.KhaltiCheckout) {
-      alert("Khalti script is not loaded yet. Please wait and try again.");
-      return;
-    }
-
-    const khaltiPublicKey = import.meta.env.VITE_KHALTI_PUBLIC_KEY;
-
-    if (!khaltiPublicKey) {
-      alert("Khalti public key is missing in environment variables.");
-      return;
-    }
-
+  const handleDummyPayment = async () => {
+    if (!course) return;
     setProcessing(true);
 
-    const config = {
-      publicKey: khaltiPublicKey,
-      productIdentity: course._id,
-      productName: course.title,
-      productUrl: window.location.href,
-      paymentPreference: ["KHALTI"], // Only Khalti Wallet enabled here
-      eventHandler: {
-        onSuccess: async (payload) => {
-          try {
-            // Call backend to verify and save payment
-            const response = await apiRequest({
-              endpoint: "/payments",
-              method: "POST",
-              body: {
-                courseId: course._id,
-                amount: course.price,
-                transactionId: payload.token,
-              },
-            });
+    try {
+      // Generate dummy transaction ID
+      const transactionId = "TXN-" + Date.now();
 
-            if (!response.success) {
-              alert(response.message || "Payment verification failed");
-              setProcessing(false);
-              return;
-            }
+      // Call backend to process payment and create enrollment
+      const response = await apiRequest({
+        endpoint: "/payments",
+        method: "POST",
+        body: {
+          courseId: course._id,
+          amount: course.price,
+          transactionId,
+        },
+      });
 
-            alert("✅ Payment successful! You are now enrolled.");
-            navigate(`/courses/${course._id}/content`);
-          } catch (error) {
-            console.error("Payment verification error:", error);
-            alert("Payment verification failed.");
-          } finally {
-            setProcessing(false);
-          }
-        },
-        onError: (error) => {
-          console.error("Khalti payment error:", error);
-          alert("Payment failed or cancelled.");
-          setProcessing(false);
-        },
-        onClose: () => {
-          setProcessing(false);
-        },
-      },
-      amount: course.price * 100, // amount in paisa
-    };
+      if (!response.success) {
+        alert(response.message || "Payment failed");
+        setProcessing(false);
+        return;
+      }
 
-    const checkout = new window.KhaltiCheckout(config);
-    checkout.show({ amount: course.price * 100 });
+      alert("✅ Payment successful! You are now enrolled.");
+      navigate(`/courses/${course._id}/content`);
+    } catch (error) {
+      console.error(error);
+      alert("Payment failed. Please try again.");
+    } finally {
+      setProcessing(false);
+    }
   };
 
   if (loading)
@@ -162,7 +114,7 @@ export default function CoursePayment() {
             </p>
 
             <button
-              onClick={handlePayment}
+              onClick={handleDummyPayment}
               disabled={processing}
               style={{
                 backgroundColor: processing ? "#888" : "#0B2C5D",
@@ -177,7 +129,7 @@ export default function CoursePayment() {
             >
               {processing
                 ? "Processing..."
-                : "Proceed to Pay with Khalti Wallet"}
+                : "Proceed to Pay"}
             </button>
           </div>
         </div>

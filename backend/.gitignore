@@ -1,2 +1,6 @@
 node_modules
 .env
+uploads/images
+uploads/pdfs
+uploads/projects
+uploads/videos

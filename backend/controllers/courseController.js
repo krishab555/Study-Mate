@@ -1,5 +1,6 @@
 
 import { CourseModel } from "../models/courseModel.js";
+import { EnrollmentModel } from "../models/enrollmentModel.js";
 
 // Get all courses
 export const getCoursesController = async (req, res) => {
@@ -149,14 +150,45 @@ export const getCourseByIdController = async (req, res) => {
       "instructor",
       "name email"
     );
+
     if (!course) {
       return res
         .status(404)
         .json({ success: false, message: "Course not found" });
     }
-    res.status(200).json({ success: true, data: course });
+
+    // Check if student is enrolled
+    let isEnrolled = false;
+    if (req.user) {
+      const enrollment = await EnrollmentModel.findOne({
+        student: req.user.id,
+        course: course._id,
+      });
+      isEnrolled = !!enrollment;
+    }
+
+    res.status(200).json({
+      success: true,
+      data: { ...course.toObject(), isEnrolled }, // include isEnrolled
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: error.message });
   }
+};
+// In courseController.js
+const courseDetailForStudent = async (req, res) => {
+  const course = await CourseModel.findById(req.params.id);
+  if (!course) return res.status(404).json({ message: "Course not found" });
+
+  const enrollment = await EnrollmentModel.findOne({
+    student: req.user.id,
+    course: course._id,
+    status: "active"
+  });
+
+  res.json({
+    ...course.toObject(),
+    isPaid: !!enrollment, // true if enrolled
+  });
 };

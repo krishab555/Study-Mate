@@ -11,6 +11,8 @@ export default function CourseDetail() {
   const navigate = useNavigate();
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [processing, setProcessing] = useState(false);
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -35,6 +37,50 @@ export default function CourseDetail() {
 
     fetchCourse();
   }, [id, navigate]);
+  const handleDummyPayment = async () => {
+    if (!course) return;
+    setProcessing(true);
+
+    try {
+      const transactionId = "TXN-" + Date.now();
+
+      const response = await apiRequest({
+        endpoint: "/payments",
+        method: "POST",
+        body: {
+          courseId: course._id,
+          amount: course.price,
+          transactionId,
+        },
+      });
+
+      if (!response.success) {
+        alert(response.message || "Payment failed");
+        setProcessing(false);
+        return;
+      }
+
+      alert("Payment successful! You are now enrolled.");
+      setShowPaymentModal(false);
+      await handlePaymentSuccess();
+    } catch (error) {
+      console.error(error);
+      alert("Payment failed. Please try again.");
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const handlePaymentSuccess = async () => {
+    try {
+      const response = await apiRequest({ endpoint: `/courses/${id}` });
+      if (response.success) {
+        setCourse(response.data);
+      }
+    } catch (error) {
+      console.error("Failed to refresh course data:", error);
+    }
+  };
 
   if (loading) return <p style={{ padding: "20px" }}>Loading course...</p>;
   if (!course) return <p style={{ padding: "20px" }}>Course not found</p>;
@@ -212,6 +258,61 @@ export default function CourseDetail() {
               }
               </div>
             </div>
+
+             {/* Payment Modal */}
+            {showPaymentModal && (
+              <div
+                style={{
+                  position: "fixed",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  backgroundColor: "rgba(0,0,0,0.5)",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  zIndex: 1000,
+                }}
+              >
+                <div
+                  style={{
+                    backgroundColor: "white",
+                    padding: "30px",
+                    borderRadius: "12px",
+                    minWidth: "300px",
+                    textAlign: "center",
+                  }}
+                >
+                  <h3>Pay Rs {course.price} to enroll</h3>
+                  <button
+                    onClick={handleDummyPayment}
+                    disabled={processing}
+                    style={{
+                      marginTop: "20px",
+                      padding: "10px 20px",
+                      backgroundColor: processing ? "#888" : "#0B2C5D",
+                      color: "white",
+                      borderRadius: "6px",
+                    }}
+                  >
+                    {processing ? "Processing..." : "Pay & Enroll Now"}
+                  </button>
+                  <button
+                    onClick={() => setShowPaymentModal(false)}
+                    style={{
+                      marginTop: "10px",
+                      padding: "8px 16px",
+                      backgroundColor: "#ccc",
+                      borderRadius: "6px",
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+
 
             {/* Right: Instructor Card */}
             <div
