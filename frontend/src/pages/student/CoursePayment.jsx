@@ -34,36 +34,48 @@ export default function CoursePayment() {
     fetchCourse();
   }, [id, navigate]);
 
-  const handleDummyPayment = async () => {
+  const handlePayment = async (method) => {
     if (!course) return;
     setProcessing(true);
 
     try {
-      // Generate dummy transaction ID
-      const transactionId = "TXN-" + Date.now();
+      const txnId = "TXN-" + Date.now();
 
-      // Call backend to process payment and create enrollment
-      const response = await apiRequest({
-        endpoint: "/payments",
-        method: "POST",
-        body: {
-          courseId: course._id,
-          amount: course.price,
-          transactionId,
-        },
-      });
-
-      if (!response.success) {
-        alert(response.message || "Payment failed");
-        setProcessing(false);
-        return;
+      let response;
+      if (method === "stripe") {
+        response = await apiRequest({
+          endpoint: "/payments/stripe-session",
+          method: "POST",
+          body: { courseId: course._id, amount: course.price },
+        });
+        if (response.success) {
+          // redirect to Stripe checkout page
+          window.location.href = response.sessionUrl || `https://checkout.stripe.com/pay/${response.sessionId}`;
+        }
+      } else if (method === "esewa") {
+        response = await apiRequest({
+          endpoint: "/payments/esewa",
+          method: "POST",
+          body: { courseId: course._id, amount: course.price, txnId },
+        });
+        if (response.success) {
+          window.location.href = response.esewaUrl;
+        }
+      } else {
+        // Dummy payment (for testing)
+        response = await apiRequest({
+          endpoint: "/payments",
+          method: "POST",
+          body: { courseId: course._id, amount: course.price, transactionId: txnId, method },
+        });
+        if (response.success) {
+          alert("Payment successful! You are enrolled.");
+          navigate(`/student/courses/${course._id}/start`);
+        }
       }
-
-      alert("✅ Payment successful! You are now enrolled.");
-      navigate(`/courses/${course._id}/content`);
-    } catch (error) {
-      console.error(error);
-      alert("Payment failed. Please try again.");
+    } catch (err) {
+      console.error(err);
+      alert("Payment failed.");
     } finally {
       setProcessing(false);
     }
@@ -80,58 +92,64 @@ export default function CoursePayment() {
     <div>
       <Navbar />
       <SidebarLayout>
-        <div
-          style={{
-            padding: "40px 30px",
-            maxWidth: "600px",
-            margin: "0 auto",
-            textAlign: "center",
-          }}
-        >
-          <h2
-            style={{
-              fontSize: "28px",
-              fontWeight: "bold",
-              marginBottom: "30px",
-            }}
-          >
-            Course Payment
-          </h2>
+        <div style={{ padding: "40px", maxWidth: "600px", margin: "0 auto", textAlign: "center" }}>
+          <h2 style={{ fontSize: "28px", marginBottom: "30px" }}>Course Payment</h2>
+          <p><strong>Course:</strong> {course?.title}</p>
+          <p><strong>Amount:</strong> Rs {course?.price}</p>
 
-          <div
-            style={{
-              padding: "25px",
-              backgroundColor: "#f9f9f9",
-              borderRadius: "10px",
-              boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
-            }}
-          >
-            <p style={{ fontSize: "18px", marginBottom: "10px" }}>
-              <strong>Course:</strong> {course?.title}
-            </p>
-            <p style={{ fontSize: "18px", marginBottom: "20px" }}>
-              <strong>Amount to Pay:</strong> Rs {course?.price}
-            </p>
+         
+         <div style={{ display: "flex", justifyContent: "center", gap: "20px", marginTop: "20px" }}>
+  {/* Stripe Button */}
+  <button
+    onClick={() => handlePayment("stripe")}
+    disabled={processing}
+    style={{
+      display: "flex",
+      alignItems: "center",
+      gap: "8px",
+      padding: "12px 20px",
+      background: "#1c2151ff",
+      color: "#fff",
+      fontWeight: "bold",
+      fontSize: "16px",
+      border: "none",
+      borderRadius: "8px",
+      cursor: processing ? "not-allowed" : "pointer",
+      boxShadow: "0 4px 12px rgba(103, 114, 229, 0.4)",
+      transition: "all 0.2s ease-in-out",
+    }}
+    onMouseEnter={(e) => (e.currentTarget.style.background = "#2d357aff")}
+    onMouseLeave={(e) => (e.currentTarget.style.background = "#1c2151ff")}
+  >
+     {processing ? "Processing..." : "Pay with Stripe"}
+  </button>
 
-            <button
-              onClick={handleDummyPayment}
-              disabled={processing}
-              style={{
-                backgroundColor: processing ? "#888" : "#0B2C5D",
-                color: "white",
-                padding: "12px 30px",
-                fontSize: "16px",
-                fontWeight: "bold",
-                border: "none",
-                borderRadius: "6px",
-                cursor: processing ? "not-allowed" : "pointer",
-              }}
-            >
-              {processing
-                ? "Processing..."
-                : "Proceed to Pay"}
-            </button>
-          </div>
+  {/* eSewa Button */}
+  <button
+    onClick={() => handlePayment("esewa")}
+    disabled={processing}
+    style={{
+      display: "flex",
+      alignItems: "center",
+      gap: "8px",
+      padding: "12px 20px",
+      background: "#8b3104ff",
+      color: "#fff",
+      fontWeight: "bold",
+      fontSize: "16px",
+      border: "none",
+      borderRadius: "8px",
+      cursor: processing ? "not-allowed" : "pointer",
+      boxShadow: "0 4px 12px rgba(242, 106, 39, 0.4)",
+      transition: "all 0.2s ease-in-out",
+    }}
+    onMouseEnter={(e) => (e.currentTarget.style.background = "#af3c02ff")}
+    onMouseLeave={(e) => (e.currentTarget.style.background = "#8b3104ff")}
+  >
+     {processing ? "Processing..." : "Pay with eSewa"}
+  </button>
+</div>
+
         </div>
       </SidebarLayout>
       <Footer />

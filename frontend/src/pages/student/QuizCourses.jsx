@@ -1,22 +1,19 @@
 import React, { useEffect, useState } from "react";
-import TakeQuizze from "./TakeQuizze";
+import { useNavigate } from "react-router-dom";
+import Navbar from "../../components/common/Navbar";
+import SideBar from "../../components/common/SideBar";
+import { apiRequest } from "../../utils/api";
 
 export default function QuizCourses() {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedCourse, setSelectedCourse] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const token = localStorage.getItem("token"); // ✅ get token
-        const res = await fetch("http://localhost:5000/api/quiz/courses", {
-          headers: {
-            Authorization: `Bearer ${token}`, // ✅ send token
-          },
-        });
-        const data = await res.json();
-        if (data.success) setCourses(data.data);
+        const res = await apiRequest({ endpoint: "/quiz/courses" });
+        if (res.success) setCourses(res.data);
       } catch (err) {
         console.error(err);
         alert("Error fetching courses");
@@ -27,77 +24,59 @@ export default function QuizCourses() {
     fetchCourses();
   }, []);
 
+  const cardStyle = {
+    padding: "20px",
+    background: "#fff",
+    borderRadius: "10px",
+    cursor: "pointer",
+    textAlign: "center",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+    transition: "transform 0.2s, box-shadow 0.2s",
+  };
+
   return (
-    <div style={{ padding: "40px", maxWidth: "1000px", margin: "auto" }}>
-      <h2 style={{ textAlign: "center", marginBottom: "30px" }}>Available Quizzes</h2>
-
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "20px" }}>
-        {loading ? (
-          <p>Loading...</p>
-        ) : courses.length === 0 ? (
-          <p>No courses with quizzes available</p>
-        ) : (
-          courses.map((course) => (
-            <div
-              key={course._id}
-              style={{
-                padding: "20px",
-                background: "#fff",
-                borderRadius: "10px",
-                cursor: "pointer",
-                textAlign: "center",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-              }}
-              onClick={() => setSelectedCourse(course)}
-            >
-              <h3>{course.title}</h3>
-            </div>
-          ))
-        )}
-      </div>
-
-      {selectedCourse && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
-            backgroundColor: "rgba(0,0,0,0.5)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 1000,
-          }}
-        >
-          <div
-            style={{
-              width: "700px",
-              background: "#fff",
-              borderRadius: "10px",
-              padding: "30px",
-              position: "relative",
-            }}
-          >
-            <button
-              onClick={() => setSelectedCourse(null)}
-              style={{
-                position: "absolute",
-                top: "10px",
-                right: "15px",
-                fontSize: "20px",
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-              }}
-            >
-              &times;
-            </button>
-            <TakeQuizze courseId={selectedCourse._id} />
+    <div>
+      <Navbar />
+      <div style={{ display: "flex", minHeight: "100vh" }}>
+        <SideBar />
+        <div style={{ flex: 1, padding: "30px", maxWidth: "1000px", marginLeft: "280px" }}>
+          <h2 style={{ textAlign: "center", marginBottom: "30px", color: "#0b2c5d" }}>
+            Available Courses
+          </h2>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "20px" }}>
+            {loading ? (
+              <p>Loading courses...</p>
+            ) : courses.length === 0 ? (
+              <p>No courses available</p>
+            ) : (
+              courses.map((course) => (
+                <div
+                  key={course._id}
+                  style={cardStyle}
+                  onClick={() => {
+                    if (course.quizzes && course.quizzes.length > 0) {
+                      navigate(`/student/take-quiz/${course.quizzes[0]._id}`);
+                    } else {
+                      alert("No quizzes available for this course");
+                    }
+                  }}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.transform = "translateY(-5px)";
+                    e.currentTarget.style.boxShadow = "0 8px 16px rgba(0,0,0,0.2)";
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.1)";
+                  }}
+                >
+                  <h3>{course.title}</h3>
+                  <p>{course.quizzes ? course.quizzes.length : 0} Quiz(es)</p>
+                </div>
+              ))
+            )}
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }

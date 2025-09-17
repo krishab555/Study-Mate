@@ -12,7 +12,7 @@ const quizSchema = new mongoose.Schema({
       _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
       questionText: String,
       options: [String],
-      correctAnswer: String,
+      correctAnswer: { type: Number, required: true },
     },
   ],
   createdAt: { type: Date, default: Date.now },

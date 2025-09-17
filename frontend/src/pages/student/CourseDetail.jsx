@@ -5,6 +5,7 @@ import Navbar from "../../components/common/Navbar";
 import Footer from "../../components/common/Footer";
 import { SidebarLayout } from "../../components/common/SideBar";
 import { apiRequest } from "../../utils/api";
+import TakeQuizze from "./TakeQuizze";
 
 export default function CourseDetail() {
   const { id } = useParams();
@@ -259,7 +260,7 @@ export default function CourseDetail() {
               </div>
             </div>
 
-             {/* Payment Modal */}
+             {/* Payment Modal
             {showPaymentModal && (
               <div
                 style={{
@@ -311,7 +312,7 @@ export default function CourseDetail() {
                   </button>
                 </div>
               </div>
-            )}
+            )} */}
 
 
             {/* Right: Instructor Card */}

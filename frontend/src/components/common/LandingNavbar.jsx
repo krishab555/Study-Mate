@@ -37,7 +37,7 @@ export default function LandingNavbar() {
     },
     container: {
       width: "100%",
-      maxWidth: "1200px", // limit navbar width
+      maxWidth: "1200px", 
       display: "flex",
       justifyContent: "space-between",
       alignItems: "center",
@@ -47,11 +47,11 @@ export default function LandingNavbar() {
       alignItems: "center",
       // gap: "10px",
       marginLeft: "-80px",
-      marginTop: "8px", // move a bit to the left
+      marginTop: "8px",
     },
     logoImage: {
-      width: "200px", // bigger logo width
-      height: "100px", // within navbar height
+      width: "200px", 
+      height: "100px", 
       objectFit: "contain",
      
     },
@@ -146,7 +146,7 @@ export default function LandingNavbar() {
 
         {/* Search & User Section */}
         <div style={{ display: "flex", alignItems: "center" }}>
-          {/* <input type="text" placeholder="Search" style={styles.searchBar} /> */}
+         
           <div style={styles.userSection}>
             
               <button style={styles.btn} onClick={() => navigate("/login")}>

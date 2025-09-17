@@ -27,7 +27,7 @@ const SideBar = () => {
       },
       { path: "/faqs", label: "FAQs", icon: <FiTwitch /> },
       { path: "/student/certificate", label: "Certificate", icon: <FiAward /> },
-      { path: "/student/take-quiz/1", label: "Take Quiz", icon: <FiBookOpen /> },
+      { path: "/student/take-quiz/${quizId}", label: "Take Quiz", icon: <FiBookOpen /> },
     ],
     instructor: [
       { path: "/instructor/home", label: "Dashboard", icon: <FiGrid /> },
@@ -50,7 +50,7 @@ const SideBar = () => {
       { path: "/admin/manage-users", label: "Manage Users", icon: <FiUser /> },
       { path: "/admin/manage-courses", label: "Courses", icon: <FiBookOpen /> },
       { path: "/faqs", label: " Manage FAQs", icon: <FiTwitch /> },
-      { path: "/settings", label: "Settings", icon: <FiSettings /> },
+      // { path: "/settings", label: "Settings", icon: <FiSettings /> },
     ],
   };
   const roleFromStorage = localStorage.getItem("role");

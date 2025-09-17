@@ -3,7 +3,7 @@ import { authenticateUser } from "../middleware/authenticateUser.js";
 import { authorizeRoles } from "../middleware/authorizeRoles.js";
 import {
   processPayment,
-  verifyPayment,
+  // verifyPayment,
 } from "../controllers/paymentController.js";
 
 const paymentRoutes = express.Router();
@@ -16,11 +16,11 @@ paymentRoutes.post(
   processPayment
 );
  
-paymentRoutes.post(
-  "/verify",
-  authenticateUser,
-  authorizeRoles("Student"),
-  verifyPayment
-);
+// paymentRoutes.post(
+//   "/verify",
+//   authenticateUser,
+//   authorizeRoles("Student"),
+//   verifyPayment
+// );
 
 export default paymentRoutes;

@@ -1,190 +1,116 @@
-import React, { useState } from "react";
-
-const sampleQuiz = [
-  {
-    id: 1,
-    question: "The Indian Contract Act 1872 came into force on...",
-    options: [
-      "1st January 1872",
-      "1st March 1872",
-      "1st July 1872",
-      "1st September 1872",
-    ],
-    correctAnswer: 2,
-  },
-  {
-    id: 2,
-    question: "Which of the following is not a contract?",
-    options: ["A lease", "A sale", "A gift", "A mortgage"],
-    correctAnswer: 2,
-  },
-  // Add more questions here if needed
-];
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { apiRequest } from "../../utils/api";
 
 const TakeQuizze = () => {
+  const { quizId } = useParams();
+  const [quiz, setQuiz] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
+  const [score, setScore] = useState(0);
 
-  const currentQuestion = sampleQuiz[currentIndex];
+  useEffect(() => {
+    const fetchQuiz = async () => {
+      try {
+        const res = await apiRequest({ endpoint: `/quiz/${quizId}` });
+        if (res.success) setQuiz(res.quiz);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    if (quizId) fetchQuiz();
+  }, [quizId]);
 
-  const handleOptionChange = (e) => {
-    setAnswers({
-      ...answers,
-      [currentQuestion.id]: parseInt(e.target.value, 10),
-    });
+  if (!quiz) return <p>Loading quiz...</p>;
+
+  const currentQuestion = quiz.questions[currentIndex];
+
+  const handleOption = (option) => {
+    setAnswers({ ...answers, [currentQuestion._id]: option });
   };
 
-  const goNext = () => {
-    if (answers[currentQuestion.id] !== undefined) {
-      setCurrentIndex((prev) => prev + 1);
+  const goNext = () => setCurrentIndex((prev) => prev + 1);
+  const goBack = () => setCurrentIndex((prev) => prev - 1);
+
+  const handleSubmitQuiz = async () => {
+    const formattedAnswers = quiz.questions.map((q) => ({
+      questionId: q._id,
+      selectedOption: answers[q._id] || null,
+    }));
+
+    try {
+      const res = await apiRequest({
+        endpoint: "/userQuiz",
+        method: "POST",
+        body: { quizId: quiz._id, answers: formattedAnswers },
+      });
+
+      if (res.success) {
+        setScore(res.userQuiz.score);
+        setSubmitted(true);
+      } else {
+        alert("Error submitting quiz");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error submitting quiz");
     }
   };
-
-  const goBack = () => {
-    setCurrentIndex((prev) => prev - 1);
-  };
-
-  const handleSubmit = () => {
-    if (answers[currentQuestion.id] === undefined) {
-      alert("Please answer the question before finishing.");
-      return;
-    }
-    setSubmitted(true);
-  };
-
-  const optionStyle = (selected) => ({
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: "15px 20px",
-    marginBottom: "10px",
-    borderRadius: "8px",
-    backgroundColor: selected ? "#f5f0ff" : "#fff",
-    borderLeft: selected ? "4px solid #6c5ce7" : "4px solid transparent",
-    boxShadow: selected ? "0 2px 8px rgba(108, 92, 231, 0.3)" : "none",
-    cursor: "pointer",
-    transition: "all 0.3s ease",
-  });
 
   if (submitted) {
-    let score = 0;
-    sampleQuiz.forEach((q) => {
-      if (answers[q.id] === q.correctAnswer) score++;
-    });
-
     return (
-      <div
-        style={{
-          padding: "40px",
-          maxWidth: "700px",
-          margin: "auto",
-          textAlign: "center",
-          fontFamily: "Arial, sans-serif",
-        }}
-      >
+      <div style={{ textAlign: "center", padding: "40px" }}>
         <h2>Quiz Completed!</h2>
-        <p style={{ fontSize: "18px" }}>
-          Your Score: <strong>{score}</strong> / {sampleQuiz.length}
+        <p>
+          Your Score: {score} / {quiz.questions.length}
         </p>
       </div>
     );
   }
 
   return (
-    <div
-      style={{
-        padding: "40px",
-        maxWidth: "700px",
-        margin: "auto",
-        fontFamily: "Arial, sans-serif",
-      }}
-    >
-      <p style={{ color: "#888", fontSize: "14px", marginBottom: "8px" }}>
-        Question {currentIndex + 1} of {sampleQuiz.length}
-      </p>
-      <h3 style={{ marginBottom: "20px" }}>{currentQuestion.question}</h3>
-
-      {currentQuestion.options.map((option, index) => (
-        <label
-          key={index}
-          style={optionStyle(answers[currentQuestion.id] === index)}
-        >
-          <span>{option}</span>
-          <input
-            type="radio"
-            name={`question-${currentQuestion.id}`}
-            value={index}
-            checked={answers[currentQuestion.id] === index}
-            onChange={handleOptionChange}
-            style={{ cursor: "pointer" }}
-          />
-        </label>
-      ))}
-
-      <div
-        style={{
-          marginTop: "30px",
-          display: "flex",
-          justifyContent: "space-between",
-        }}
-      >
+    <div style={{ padding: "40px", maxWidth: "700px", margin: "auto" }}>
+      <h3>
+        Question {currentIndex + 1} / {quiz.questions.length}
+      </h3>
+      <p>{currentQuestion.questionText}</p>
+      {currentQuestion.options.map((opt) => (
         <button
-          onClick={goBack}
-          disabled={currentIndex === 0}
+          key={opt}
+          onClick={() => handleOption(opt)}
           style={{
+            display: "block",
+            margin: "10px 0",
             padding: "10px 20px",
-            backgroundColor: "#eee",
-            border: "none",
+            backgroundColor:
+              answers[currentQuestion._id] === opt ? "#6c5ce7" : "#fff",
+            color: answers[currentQuestion._id] === opt ? "#fff" : "#000",
             borderRadius: "6px",
-            cursor: currentIndex === 0 ? "not-allowed" : "pointer",
-            opacity: currentIndex === 0 ? 0.5 : 1,
+            border: "1px solid #ccc",
+            cursor: "pointer",
           }}
         >
-          ← Previous
+          {opt}
         </button>
-
-        {currentIndex < sampleQuiz.length - 1 ? (
+      ))}
+      <div style={{ marginTop: "20px" }}>
+        {currentIndex > 0 && <button onClick={goBack}>Previous</button>}
+        {currentIndex < quiz.questions.length - 1 ? (
           <button
             onClick={goNext}
-            disabled={answers[currentQuestion.id] === undefined}
-            style={{
-              padding: "10px 20px",
-              backgroundColor:
-                answers[currentQuestion.id] === undefined ? "#ccc" : "#6c5ce7",
-              color:
-                answers[currentQuestion.id] === undefined ? "#666" : "#fff",
-              border: "none",
-              borderRadius: "6px",
-              cursor:
-                answers[currentQuestion.id] === undefined
-                  ? "not-allowed"
-                  : "pointer",
-              transition: "background-color 0.3s ease",
-            }}
+            disabled={!answers[currentQuestion._id]}
+            style={{ marginLeft: "10px" }}
           >
-            Next →
+            Next
           </button>
         ) : (
           <button
-            onClick={handleSubmit}
-            disabled={answers[currentQuestion.id] === undefined}
-            style={{
-              padding: "10px 25px",
-              backgroundColor:
-                answers[currentQuestion.id] === undefined ? "#ccc" : "#6c5ce7",
-              color:
-                answers[currentQuestion.id] === undefined ? "#666" : "#fff",
-              border: "none",
-              borderRadius: "6px",
-              cursor:
-                answers[currentQuestion.id] === undefined
-                  ? "not-allowed"
-                  : "pointer",
-              transition: "background-color 0.3s ease",
-            }}
+            onClick={handleSubmitQuiz}
+            disabled={!answers[currentQuestion._id]}
+            style={{ marginLeft: "10px" }}
           >
-            Finish
+            Submit
           </button>
         )}
       </div>

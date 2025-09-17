@@ -72,7 +72,7 @@ export default function Navbar() {
       color: "white",
       zIndex: 9999,
       boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
-      height: "70px", // ⬅️ Increased navbar height to fit bigger logo
+      height: "70px", 
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
@@ -88,12 +88,12 @@ export default function Navbar() {
     logoContainer: {
       display: "flex",
       alignItems: "center",
-      marginLeft: "-80px", // ⬅️ Shift logo more to the left
-      marginTop: "8px", // ⬅️ shifted logo a bit down
+      marginLeft: "-80px", 
+      marginTop: "8px", 
     },
     logoImage: {
-      width: "200px", // ⬅️ Increased width
-      height: "100px", // ⬅️ Increased height
+      width: "200px", 
+      height: "100px", 
       objectFit: "contain",
     },
     navLinks: {
@@ -165,7 +165,7 @@ export default function Navbar() {
           )}
         </ul>
 
-        {/* Right: Search + Notification + Profile + Logout */}
+        
         <div style={styles.userSection}>
           {/* Search bar */}
           <input
@@ -189,7 +189,7 @@ export default function Navbar() {
             }}
             onClick={() => alert("Notifications clicked!")}
           >
-            <Bell size={24} /> {/* ⬅️ Slightly bigger notification icon */}
+            <Bell size={24} /> 
           </div>
 
           {/* Profile Image */}
@@ -197,7 +197,7 @@ export default function Navbar() {
             src={localStorage.getItem("profileImage") || "/defaultProfile.jpg"}
             alt="Profile"
             style={{
-              width: "40px", // ⬅️ Made profile image a bit bigger
+              width: "40px", 
               height: "40px",
               borderRadius: "50%",
               objectFit: "cover",
