@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import FAQSection from "../components/FAQsSection";
 import ContactUs from "./student/ContactUs";
+import LandingContact from "./LandingContact";
 export default function Dashboard() {
   const location = useLocation();
 
@@ -187,11 +188,11 @@ export default function Dashboard() {
           <ul
             style={{ fontSize: "16px", lineHeight: "2", paddingLeft: "20px" }}
           >
-            <li>✅ Skill-based Learning</li>
-            <li>✅ 24×7 Learning</li>
-            <li>✅ Free Resources</li>
-            <li>✅ Advance Learning from Experts</li>
-            <li>✅ Certificates</li>
+            <li> Skill-based Learning</li>
+            <li> 24×7 Learning</li>
+            <li> Free Resources</li>
+            <li> Advance Learning from Experts</li>
+            <li> Certificates</li>
           </ul>
         </div>
       </section>
@@ -253,7 +254,7 @@ export default function Dashboard() {
       </section>
 
       {/* Contact Section */}
-      <ContactUs />
+      <LandingContact/>
     </div>
   );
 }

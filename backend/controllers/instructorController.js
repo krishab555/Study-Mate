@@ -1,7 +1,8 @@
 import { EnrollmentModel } from "../models/enrollmentModel.js";
-import { ProjectModel } from "../models/projectModel.js";
-import { QuizAttemptModel } from "../models/quizAttemptModel.js"; // assuming you store attempts
+import { projectModel } from "../models/projectModel.js";
+import { UserQuizModel } from "../models/userQuizModel.js";
 import { CourseModel } from "../models/courseModel.js";
+import { QuizModel } from "../models/quizModel.js";
 
 export const getInstructorStats = async (req, res) => {
   try {
@@ -13,24 +14,29 @@ export const getInstructorStats = async (req, res) => {
     );
     const courseIds = courses.map((c) => c._id);
 
-    // ✅ Count students enrolled across instructor’s courses
+    // ✅ Count students enrolled
     const studentsEnrolled = await EnrollmentModel.countDocuments({
       course: { $in: courseIds },
     });
 
-    // ✅ Count projects submitted in instructor’s courses
-    const projectsSubmitted = await ProjectModel.countDocuments({
+    // ✅ Count projects submitted
+    const projectsSubmitted = await projectModel.countDocuments({
       course: { $in: courseIds },
     });
 
-    // ✅ Count quizzes attempted for instructor’s courses
-    const quizzesAttempted = await QuizAttemptModel.countDocuments({
+    // ✅ Find quizzes that belong to instructor’s courses
+    const quizIds = await QuizModel.find({
       course: { $in: courseIds },
+    }).distinct("_id");
+
+    // ✅ Count quiz attempts
+    const quizzesAttempted = await UserQuizModel.countDocuments({
+      quiz: { $in: quizIds },
     });
 
-    // ✅ Active students = distinct enrolled students
-    const activeStudents = await EnrollmentModel.distinct("student", {
-      course: { $in: courseIds },
+    // ✅ Active students (students who enrolled + attempted something)
+    const activeStudents = await UserQuizModel.distinct("student", {
+      quiz: { $in: quizIds },
     });
 
     res.json({
@@ -41,11 +47,10 @@ export const getInstructorStats = async (req, res) => {
     });
   } catch (error) {
     console.error("Error fetching instructor stats:", error);
-    res
-      .status(500)
-      .json({
-        message: "Error fetching instructor stats",
-        error: error.message,
-      });
+    res.status(500).json({
+      message: "Error fetching instructor stats",
+      error: error.message,
+    });
   }
 };
+

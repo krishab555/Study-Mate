@@ -12,7 +12,7 @@ const projectSchema = new mongoose.Schema(
     required: true,
   },
   projectFile: {
-    type: String, // Could be a URL to file or uploaded filename
+    type: String, 
     required: true,
   },
   status: {

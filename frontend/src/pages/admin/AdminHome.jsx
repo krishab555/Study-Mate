@@ -76,7 +76,7 @@ export default function AdminHome() {
   // Styling
   const contentStyle = {
     padding: "30px",
-    paddingTop: "100px",
+    paddingTop: "50px",
     backgroundColor: "#f5f7fa",
     minHeight: "100vh",
     marginLeft: "280px",
