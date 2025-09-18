@@ -52,7 +52,7 @@ const SideBar = () => {
       left: 0,
       backgroundColor: "#365285ff", // Dark blue background
       color: "white",
-      padding: "20px 0",
+      padding: "30px 0 20px",
       display: "flex",
       flexDirection: "column",
       gap: "8px",
@@ -86,7 +86,7 @@ const SideBar = () => {
       color: "#ff6b6b",
       padding: "20px",
       textAlign: "center",
-    }
+    },
   };
 
   return (
