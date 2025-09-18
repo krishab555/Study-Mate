@@ -25,7 +25,7 @@ import CoursePayment from "../pages/student/CoursePayment"; // ✅ Add this line
 // Student Certificates (NEW)
 import Certificate from "../pages/student/Certificate";
 import CertificateDetail from "../pages/student/certificateDetail";
-import TakeQuizze from "../pages/student/TakeQuizze"; // <-- Add this
+import TakeQuizze from "../pages/student/TakeQuizByCourse"; // <-- Add this
 
 // Instructor
 import InstructorHome from "../pages/instructor/InstructorHome";
@@ -44,6 +44,7 @@ import AdminContact from "../pages/admin/AdminContact";
 import CourseContent from "../pages/student/CourseContent";
 
 import QuizCourses from "../pages/student/QuizCourses";
+import TakeQuizByCourse from "../pages/student/TakeQuizByCourse";
 
 const PageRoutes = () => {
   return (
@@ -69,9 +70,16 @@ const PageRoutes = () => {
           <Route path="courses" element={<Courses />} />
           <Route path="certificate" element={<Certificate />} />
           <Route path="certificate/:id" element={<CertificateDetail />} />
-          <Route path="take-quiz/:quizId" element={<TakeQuizze />} />
+          <Route path="/student/quiz-course/:courseId" element={<TakeQuizByCourse/>} />
           <Route path="courses/:id/payment" element={<CoursePayment />} />
           <Route path="contact" element={<ContactUs />} />
+           <Route path="quiz/courses" element={<QuizCourses/>} />
+          <Route path ="courses/:id" element={<CourseContent />}
+          />
+          {/* <Route path="quizzes" element={<QuizCourses/>} /> */}
+          <Route path="course/:courseId/start" element={<CourseDetail/>} />
+          <Route path="course/:courseId" element={<CourseContent/>} />
+
         </Route>
       </Route>
 
@@ -88,6 +96,8 @@ const PageRoutes = () => {
           <Route index element={<InstructorHome />} />
           <Route path="home" element={<InstructorHome />} />
           <Route path="create-quiz" element={<CreateQuizze />} />
+          <Route path="course/:id" element={<CourseDetail/>} />
+          <Route path ="courses/:id" element={<CourseContent />}/>
           <Route path="addcourse" element={<AddCourse />} />
           <Route path="contact" element={<ContactUs />} />
         </Route>

@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const quizSchema = new mongoose.Schema({
   course: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Course",
+    ref: "courses",
     required: true,
   },
   title: { type: String, required: true },
@@ -12,7 +12,7 @@ const quizSchema = new mongoose.Schema({
       _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
       questionText: String,
       options: [String],
-      correctAnswer: { type: Number, required: true },
+      correctAnswer: { type: String, required: true },
     },
   ],
   createdAt: { type: Date, default: Date.now },

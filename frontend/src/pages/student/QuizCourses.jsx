@@ -53,13 +53,7 @@ export default function QuizCourses() {
                 <div
                   key={course._id}
                   style={cardStyle}
-                  onClick={() => {
-                    if (course.quizzes && course.quizzes.length > 0) {
-                      navigate(`/student/take-quiz/${course.quizzes[0]._id}`);
-                    } else {
-                      alert("No quizzes available for this course");
-                    }
-                  }}
+                  onClick={() => navigate(`/student/quiz-course/${course._id}`)}
                   onMouseOver={(e) => {
                     e.currentTarget.style.transform = "translateY(-5px)";
                     e.currentTarget.style.boxShadow = "0 8px 16px rgba(0,0,0,0.2)";
@@ -70,7 +64,7 @@ export default function QuizCourses() {
                   }}
                 >
                   <h3>{course.title}</h3>
-                  <p>{course.quizzes ? course.quizzes.length : 0} Quiz(es)</p>
+                  
                 </div>
               ))
             )}

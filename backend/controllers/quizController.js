@@ -55,6 +55,7 @@ export const deleteQuiz = async (req, res) => {
 export const getQuizzesByCourse = async (req, res) => {
   try {
     const quizzes = await QuizModel.find({ course: req.params.courseId });
+    console.log("quizzes",quizzes);
     res.status(200).json({ quizzes });
   } catch (error) {
     res.status(500).json({ message: "Error fetching quizzes", error: error.message });

@@ -1,69 +1,123 @@
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 export default function CourseContent() {
-  // Adjust this according to your sidebar width
-  const sidebarWidth = 250;
+  const { courseId } = useParams(); // get course ID from URL
+  const [course, setCourse] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const token = localStorage.getItem("token");
+
+  useEffect(() => {
+    const fetchCourse = async () => {
+      try {
+        const res = await fetch(`http://localhost:5000/api/courses/${courseId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+       const data = await res.json();
+      // if (!data.success) throw new Error(data.message || "Failed to fetch course");
+      setCourse(data.data); 
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCourse();
+  }, [courseId, token]);
+
+  if (loading) return <p style={{ marginLeft: "250px" }}>Loading course...</p>;
+  if (!course) return <p style={{ marginLeft: "250px" }}>Course not found</p>;
 
   return (
-    <div
-      style={{
-        marginLeft: `${sidebarWidth}px`, // pushes content right of sidebar
-        padding: "20px",
-        fontFamily: "Arial, sans-serif",
-      }}
-    >
-      <h1>Course Title</h1>
-      <p>
-        Learn everything step by
-        step!
-      </p>
+    <div style={{ marginLeft: "250px", padding: "20px", fontFamily: "Arial, sans-serif" }}>
+      <h1>{course.title}</h1>
+      <p>{course.description}</p>
 
-      {/* ---------------- Video Button Placeholder ---------------- */}
+      {/* Video Section */}
       <div style={{ marginBottom: "30px" }}>
         <h2>Course Material (Video)</h2>
-        <a
-          href="#"
-          onClick={() => alert("Video will play here after instructor upload")}
-          style={{
-            display: "inline-block",
-            padding: "20px 25px",
-            backgroundColor: "#007bff",
-            color: "white",
-            borderRadius: "10px",
-            textDecoration: "none",
-            fontWeight: "bold",
-            fontSize: "16px",
-            textAlign: "center",
-            cursor: "pointer",
-            minWidth: "200px",
-          }}
-        >
-          🎬 Watch Video
-        </a>
+        {course.videos?.length > 0 ? (
+          course.videos.map((video, idx) => (
+            <a
+              key={idx}
+              href={video.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: "block",
+                padding: "15px 20px",
+                backgroundColor: "#007bff",
+                color: "white",
+                borderRadius: "10px",
+                textDecoration: "none",
+                fontWeight: "bold",
+                fontSize: "16px",
+                marginBottom: "10px",
+              }}
+            >
+               {video.title || `Video ${idx + 1}`}
+            </a>
+          ))
+        ) : (
+          <p>No videos uploaded yet.</p>
+        )}
       </div>
 
-      {/* ---------------- PDF Button Placeholder ---------------- */}
+      {/* PDF Section */}
       <div style={{ marginBottom: "30px" }}>
         <h2>Course Material (PDF)</h2>
-        <a
-          href="#"
-          onClick={() => alert("PDF will open here after upload")}
-          style={{
-            display: "inline-block",
-            padding: "15px 20px",
-            backgroundColor: "#f39c12",
-            color: "white",
-            borderRadius: "10px",
-            textDecoration: "none",
-            fontWeight: "bold",
-            fontSize: "16px",
-            cursor: "pointer",
-          }}
-        >
-          📄 View PDF
-        </a>
+        {course.pdfUrl ? (
+            <a
+              href={'localhost:5000' + course.pdfUrl}
+              // target="_blank"
+              // rel="noopener noreferrer"
+              style={{
+                display: "block",
+                padding: "15px 20px",
+                backgroundColor: "#f39c12",
+                color: "white",
+                borderRadius: "10px",
+                textDecoration: "none",
+                fontWeight: "bold",
+                fontSize: "16px",
+                marginBottom: "10px",
+              }}
+            >
+               {course.pdfUrl}
+            </a>
+
+        ) : (
+          <p>No PDFs uploaded yet.</p>
+        )}
+        {/* {course.pdfs?.length > 0 ? (
+          course.pdfs.map((pdf, idx) => (
+            <a
+              key={idx}
+              href={pdf.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: "block",
+                padding: "15px 20px",
+                backgroundColor: "#f39c12",
+                color: "white",
+                borderRadius: "10px",
+                textDecoration: "none",
+                fontWeight: "bold",
+                fontSize: "16px",
+                marginBottom: "10px",
+              }}
+            >
+              📄 {pdf.title || `PDF ${idx + 1}`}
+            </a>
+          ))
+        ) : (
+          <p>No PDFs uploaded yet.</p>
+        )} */}
       </div>
 
-      {/* ---------------- Project Submission Button ---------------- */}
+      {/* Project Submission */}
       <div>
         <button
           onClick={() => alert("Project submission form will appear here")}
@@ -77,7 +131,7 @@ export default function CourseContent() {
             fontSize: "16px",
           }}
         >
-          🚀 Submit Project
+           Submit Project
         </button>
       </div>
     </div>

@@ -5,7 +5,7 @@ import Navbar from "../../components/common/Navbar";
 import Footer from "../../components/common/Footer";
 import { SidebarLayout } from "../../components/common/SideBar";
 import { apiRequest } from "../../utils/api";
-import TakeQuizze from "./TakeQuizze";
+import TakeQuizze from "./TakeQuizByCourse";
 
 export default function CourseDetail() {
   const { id } = useParams();
@@ -238,7 +238,7 @@ export default function CourseDetail() {
                 ):(
                   <button
       onClick={() =>
-        navigate(`/student/courses/${course._id}/start`)
+        navigate(`/student/course/${course._id}`)
       }
       style={{
         width: "100%",

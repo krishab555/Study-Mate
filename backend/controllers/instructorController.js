@@ -4,27 +4,40 @@ import { UserQuizModel } from "../models/userQuizModel.js";
 import { CourseModel } from "../models/courseModel.js";
 import { QuizModel } from "../models/quizModel.js";
 
+
+export const getInstructorCourses = async (req, res) => {
+  try {
+    const instructorId = req.user.id;
+
+    // Fetch courses added by this instructor
+    const courses = await CourseModel.find({ instructor: instructorId });
+
+    res.status(200).json({ success: true, data: courses });
+  } catch (error) {
+    console.error("Error fetching instructor courses:", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
 export const getInstructorStats = async (req, res) => {
   try {
     const instructorId = req.user.id;
 
-    // ✅ Find all courses by this instructor
     const courses = await CourseModel.find({ instructor: instructorId }).select(
       "_id"
     );
     const courseIds = courses.map((c) => c._id);
 
-    // ✅ Count students enrolled
+    
     const studentsEnrolled = await EnrollmentModel.countDocuments({
       course: { $in: courseIds },
     });
 
-    // ✅ Count projects submitted
+    
     const projectsSubmitted = await projectModel.countDocuments({
       course: { $in: courseIds },
     });
 
-    // ✅ Find quizzes that belong to instructor’s courses
+   
     const quizIds = await QuizModel.find({
       course: { $in: courseIds },
     }).distinct("_id");

@@ -25,6 +25,30 @@ quizRouter.delete(
   deleteQuiz
 );
 
+
+quizRouter.get("/courses", authenticateUser, async (req, res) => {
+  try {
+    const quizzes = await QuizModel.find().populate("course", "title");
+    // Collect unique courses that have quizzes
+    const courseMap = new Map();
+    quizzes.forEach((quiz) => {
+      if (quiz.course && !courseMap.has(quiz.course._id.toString())) {
+        courseMap.set(quiz.course._id.toString(), {
+          _id: quiz.course._id,
+          title: quiz.course.title,
+        });
+      }
+    });
+
+    const coursesWithQuizzes = Array.from(courseMap.values());
+
+    res.status(200).json({ success: true, data: coursesWithQuizzes });
+  } catch (err) {
+    console.error("Error in /api/quiz/courses:", err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 quizRouter.get("/:id", authenticateUser, async (req, res) => {
   try {
     console.log("Fetching quiz with ID:", req.params.id);
@@ -46,35 +70,7 @@ quizRouter.get("/:id", authenticateUser, async (req, res) => {
 });
 
 quizRouter.get("/course/:courseId", authenticateUser, getQuizzesByCourse);
-quizRouter.get("/courses", authenticateUser, async (req, res) => {
-  try {
-    const quizzes = await QuizModel.find().populate("course", "title");
 
-    // Filter out quizzes without a course and get unique courses
-    const coursesWithQuizzes = [];
-    const courseMap = new Map();
-
-    quizzes.forEach((quiz) => {
-      if (quiz.course && !courseMap.has(quiz.course._id.toString())) {
-        courseMap.set(quiz.course._id.toString(), quiz.course);
-        coursesWithQuizzes.push({
-          _id: quiz.course._id,
-          title: quiz.course.title,
-          // Add quizzes count if needed
-          quizzes: quizzes.filter(
-            (q) =>
-              q.course && q.course._id.toString() === quiz.course._id.toString()
-          ),
-        });
-      }
-    });
-
-    res.status(200).json({ success: true, data: coursesWithQuizzes });
-  } catch (err) {
-    console.error("Error in /api/quiz/courses:", err);
-    res.status(500).json({ success: false, message: err.message });
-  }
-});
 
 
 export default quizRouter;

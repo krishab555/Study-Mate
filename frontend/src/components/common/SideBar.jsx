@@ -27,7 +27,7 @@ const SideBar = () => {
       },
       { path: "/faqs", label: "FAQs", icon: <FiTwitch /> },
       { path: "/student/certificate", label: "Certificate", icon: <FiAward /> },
-      { path: "/student/take-quiz/${quizId}", label: "Take Quiz", icon: <FiBookOpen /> },
+      { path: "/student/quiz/courses", label: "Take Quiz", icon: <FiBookOpen /> },
     ],
     instructor: [
       { path: "/instructor/home", label: "Dashboard", icon: <FiGrid /> },
