@@ -68,8 +68,8 @@ const PageRoutes = () => {
           <Route index element={<Home />} />
           <Route path="home" element={<Home />} />
           <Route path="courses" element={<Courses />} />
-          <Route path="certificate" element={<Certificate />} />
-          <Route path="certificate/:id" element={<CertificateDetail />} />
+
+          <Route path="certificate" element={<CertificateDetail/>} />
           <Route path="/student/quiz-course/:courseId" element={<TakeQuizByCourse/>} />
           <Route path="courses/:id/payment" element={<CoursePayment />} />
           <Route path="contact" element={<ContactUs />} />

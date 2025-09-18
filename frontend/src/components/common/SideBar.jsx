@@ -20,29 +20,15 @@ const SideBar = () => {
     student: [
       { path: "/student/home", label: "Dashboard", icon: <FiGrid /> },
       { path: "/student/courses", label: "Courses", icon: <FiBookOpen /> },
-      {
-        path: "/discussionForum",
-        label: "Discussion Forum",
-        icon: <FiMessageSquare />,
-      },
+      { path: "/discussionForum", label: "Discussion Forum", icon: <FiMessageSquare />,},
       { path: "/faqs", label: "FAQs", icon: <FiTwitch /> },
       { path: "/student/certificate", label: "Certificate", icon: <FiAward /> },
       { path: "/student/quiz/courses", label: "Take Quiz", icon: <FiBookOpen /> },
     ],
     instructor: [
       { path: "/instructor/home", label: "Dashboard", icon: <FiGrid /> },
-
-      {
-        path: "/instructor/addcourse",
-        label: "Add Courses",
-        icon: <FiBookOpen />,
-      },
-      {
-        path: "/discussionForum",
-        label: "Discussion Forum",
-        icon: <FiMessageSquare />,
-      },
-    
+      { path: "/instructor/addcourse", label: "Add Courses", icon: <FiBookOpen />,},
+      { path: "/discussionForum", label: "Discussion Forum", icon: <FiMessageSquare />,},
       { path: "/instructor/create-quiz", label: "Create Quiz", icon: <FiBookOpen /> },
     ],
     admin: [
