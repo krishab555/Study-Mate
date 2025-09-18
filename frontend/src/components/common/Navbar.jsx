@@ -1,30 +1,32 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Bell } from "lucide-react"; // notification icon
 
 export default function Navbar() {
-
   const navigate = useNavigate();
   const location = useLocation();
 
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role")?.toLowerCase();
 
-   const [profileImage, setProfileImage] = useState(
+  const [profileImage, setProfileImage] = useState(
     localStorage.getItem("profileImage") || "/defaultProfile.jpg"
   );
+
+  const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [isBtnHovered, setIsBtnHovered] = useState(false);
+  const [isBellHovered, setIsBellHovered] = useState(false);
+  const [isProfileHovered, setIsProfileHovered] = useState(false);
 
   // Update profile image if localStorage changes
   useEffect(() => {
     const handleStorageChange = () => {
       setProfileImage(localStorage.getItem("profileImage") || "/defaultProfile.jpg");
     };
-
     window.addEventListener("storage", handleStorageChange);
     return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
-  // Optional: manually trigger in same tab after upload
   useEffect(() => {
     const handleCustomEvent = () => {
       setProfileImage(localStorage.getItem("profileImage") || "/defaultProfile.jpg");
@@ -35,7 +37,6 @@ export default function Navbar() {
 
   const hiddenPaths = ["/", "/dashboard"];
   if (hiddenPaths.includes(location.pathname)) return null;
-
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -72,7 +73,7 @@ export default function Navbar() {
       color: "white",
       zIndex: 9999,
       boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
-      height: "70px", 
+      height: "70px",
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
@@ -88,12 +89,12 @@ export default function Navbar() {
     logoContainer: {
       display: "flex",
       alignItems: "center",
-      marginLeft: "-80px", 
-      marginTop: "8px", 
+      marginLeft: "-80px",
+      marginTop: "8px",
     },
     logoImage: {
-      width: "200px", 
-      height: "100px", 
+      width: "200px",
+      height: "100px",
       objectFit: "contain",
     },
     navLinks: {
@@ -108,6 +109,11 @@ export default function Navbar() {
       color: "white",
       textDecoration: "none",
       fontWeight: "500",
+      transition: "all 0.2s ease",
+    },
+    navItemHover: {
+      color: "#ffd700",
+      transform: "scale(1.1)",
     },
     searchBar: {
       padding: "6px 12px",
@@ -131,6 +137,11 @@ export default function Navbar() {
       borderRadius: "5px",
       cursor: "pointer",
       fontWeight: "bold",
+      transition: "all 0.2s ease",
+    },
+    btnHover: {
+      backgroundColor: "#e0e0e0",
+      transform: "scale(1.05)",
     },
   };
 
@@ -150,32 +161,32 @@ export default function Navbar() {
 
         {/* Middle: Links */}
         <ul style={styles.navLinks}>
-          {roleLinks.map((link, idx) =>
-            link.path ? (
-              <li key={idx}>
-                <Link to={link.path} style={styles.navItem}>
-                  {link.label}
-                </Link>
-              </li>
-            ) : (
-              <li key={idx} style={styles.navItem} onClick={link.onClick}>
+          {roleLinks.map((link, idx) => (
+            <li key={idx}>
+              <Link
+                to={link.path}
+                style={{
+                  ...styles.navItem,
+                  ...(hoveredIndex === idx ? styles.navItemHover : {}),
+                }}
+                onMouseEnter={() => setHoveredIndex(idx)}
+                onMouseLeave={() => setHoveredIndex(null)}
+              >
                 {link.label}
-              </li>
-            )
-          )}
+              </Link>
+            </li>
+          ))}
         </ul>
 
-        
+        {/* Right section: search, notifications, profile, logout */}
         <div style={styles.userSection}>
-          {/* Search bar */}
+          {/* Search */}
           <input
             type="text"
             placeholder="Search"
             style={styles.searchBar}
             onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                console.log("Search for:", e.target.value);
-              }
+              if (e.key === "Enter") console.log("Search for:", e.target.value);
             }}
           />
 
@@ -183,32 +194,45 @@ export default function Navbar() {
           <div
             style={{
               cursor: "pointer",
-              color: "white",
+              color: isBellHovered ? "#ffd700" : "white",
               display: "flex",
               alignItems: "center",
+              transform: isBellHovered ? "scale(1.1)" : "scale(1)",
+              transition: "all 0.2s ease",
             }}
+            onMouseEnter={() => setIsBellHovered(true)}
+            onMouseLeave={() => setIsBellHovered(false)}
             onClick={() => alert("Notifications clicked!")}
           >
-            <Bell size={24} /> 
+            <Bell size={24} />
           </div>
 
           {/* Profile Image */}
           <img
-            src={localStorage.getItem("profileImage") || "/defaultProfile.jpg"}
+            src={profileImage}
             alt="Profile"
             style={{
-              width: "40px", 
+              width: "40px",
               height: "40px",
               borderRadius: "50%",
               objectFit: "cover",
-              border: "2px solid white",
+              border: isProfileHovered ? "2px solid #ffd700" : "2px solid white",
               cursor: "pointer",
+              transform: isProfileHovered ? "scale(1.1)" : "scale(1)",
+              transition: "all 0.2s ease",
             }}
+            onMouseEnter={() => setIsProfileHovered(true)}
+            onMouseLeave={() => setIsProfileHovered(false)}
             onClick={() => navigate("/profile")}
           />
 
           {/* Logout button */}
-          <button style={styles.btn} onClick={handleLogout}>
+          <button
+            style={{ ...styles.btn, ...(isBtnHovered ? styles.btnHover : {}) }}
+            onMouseEnter={() => setIsBtnHovered(true)}
+            onMouseLeave={() => setIsBtnHovered(false)}
+            onClick={handleLogout}
+          >
             Logout
           </button>
         </div>

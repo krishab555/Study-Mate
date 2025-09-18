@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import Navbar from "../components/common/Navbar";
+import SideBar from "../components/common/SideBar";
 
 const Profile = () => {
   const [profile, setProfile] = useState(null);
@@ -99,6 +101,10 @@ const Profile = () => {
 
   // Styles
   const layoutStyle = {
+    marginLeft: "270px",
+    padding: "20px",
+    paddingTop: "50px",
+    flex: 1,
     display: "flex",
     minHeight: "100vh",
     justifyContent: "center",
@@ -107,14 +113,16 @@ const Profile = () => {
   };
 
   const cardStyle = {
-    maxWidth: "400px",
+    position: "fixed",
+    maxWidth: "600px",
+    minHeight: "400px",
     width: "100%",
     background: "#fff",
     padding: "40px 30px 30px 30px",
     borderRadius: "15px",
     boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
     textAlign: "center",
-    position: "relative",
+    boxSizing: "border-box",
   };
 
   const imageStyle = {
@@ -177,6 +185,14 @@ const Profile = () => {
   }
 
   return (
+    <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+    {/* Navbar fixed at top */}
+    <Navbar />
+
+    {/* Main area: sidebar + page content */}
+    <div style={{ display: "flex", flex: 1 }}>
+      {/* Sidebar on left */}
+      <SideBar />
     <div style={layoutStyle}>
       <div style={cardStyle}>
         {/* Profile Picture */}
@@ -284,6 +300,8 @@ const Profile = () => {
           </div>
         )}
       </div>
+    </div>
+     </div>
     </div>
   );
 };

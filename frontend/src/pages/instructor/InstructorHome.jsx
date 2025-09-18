@@ -134,7 +134,7 @@ export default function InstructorHome() {
             navigate(`/instructor/course/${course._id}`);
           }}
         >
-          View Course
+          Manage Course
         </button>
       </div>
     </div>

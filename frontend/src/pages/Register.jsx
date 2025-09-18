@@ -141,7 +141,7 @@ export default function Register() {
         </div>
 
         {/* Role */}
-        <div>
+        {/* <div>
           <label style={labelStyle}>Role:</label>
           <select
             value={role}
@@ -154,7 +154,7 @@ export default function Register() {
             <option value="Teacher">Teacher</option>
             <option value="Admin">Admin</option>
           </select>
-        </div>
+        </div> */}
 
         {/* Gender */}
         <div style={radioContainer}>

@@ -1,15 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function LandingNavbar() {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
-  const userName = localStorage.getItem("userName");
   const role = localStorage.getItem("role");
+
+  const [hoveredIndex, setHoveredIndex] = useState(null);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    localStorage.removeItem("userName");
     localStorage.removeItem("role");
     navigate("/login");
   };
@@ -19,67 +19,63 @@ export default function LandingNavbar() {
     if (element) element.scrollIntoView({ behavior: "smooth" });
   };
 
+  const navItems = [
+    { name: "Home", section: "home" },
+    { name: "Courses", section: "courses" },
+    { name: "FAQs", section: "faqs" },
+    { name: "Contact", section: "landing-contact" },
+  ];
+
   const styles = {
     navbar: {
       position: "fixed",
       top: 0,
       left: 0,
-      width: "100%", // full width for background color
+      width: "100%",
       backgroundColor: "#0a2a66",
       color: "white",
       zIndex: 9999,
       boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
-      height: "60px", // fixed height
+      height: "60px",
       display: "flex",
-      justifyContent: "center", // center the container
+      justifyContent: "center",
       alignItems: "center",
       padding: "0 10px",
     },
     container: {
       width: "100%",
-      maxWidth: "1200px", 
+      maxWidth: "1200px",
       display: "flex",
-      justifyContent: "space-between",
       alignItems: "center",
     },
     logoContainer: {
       display: "flex",
       alignItems: "center",
-      // gap: "10px",
       marginLeft: "-80px",
       marginTop: "8px",
     },
     logoImage: {
-      width: "200px", 
-      height: "100px", 
+      width: "200px",
+      height: "100px",
       objectFit: "contain",
-     
     },
-    navLinks: {
+    navLinksContainer: {
       display: "flex",
+      justifyContent: "flex-end",
+      alignItems: "center",
       gap: "30px",
-      listStyle: "none",
-      margin: 0,
-      padding: 0,
+      marginLeft: "auto",
     },
     navItem: {
       cursor: "pointer",
       color: "white",
       textDecoration: "none",
       fontWeight: "500",
+      transition: "all 0.2s ease",
     },
-    searchBar: {
-      padding: "6px 12px",
-      borderRadius: "6px",
-      border: "none",
-      outline: "none",
-      fontSize: "14px",
-      marginRight: "20px",
-    },
-    userSection: {
-      display: "flex",
-      alignItems: "center",
-      gap: "15px",
+    navItemHover: {
+      color: "#ffd700", // gold color on hover
+      transform: "scale(1.1)", // slight scale effect
     },
     btn: {
       backgroundColor: "white",
@@ -106,54 +102,82 @@ export default function LandingNavbar() {
           </Link>
         </div>
 
-        {/* Navigation Links */}
-        <ul style={styles.navLinks}>
-          <li style={styles.navItem} onClick={() => scrollToSection("home")}>
-            Home
-          </li>
-          <li style={styles.navItem} onClick={() => scrollToSection("courses")}>
-            Courses
-          </li>
-          <li style={styles.navItem} onClick={() => scrollToSection("faqs")}>
-            FAQs
-          </li>
-          <li style={styles.navItem} onClick={() => scrollToSection("landing-contact")}>
-            Contact
-          </li>
+        {/* Nav Links + Login/Logout */}
+        <div style={styles.navLinksContainer}>
+          {navItems.map((item, index) => (
+            <span
+              key={index}
+              style={{
+                ...styles.navItem,
+                ...(hoveredIndex === index ? styles.navItemHover : {}),
+              }}
+              onMouseEnter={() => setHoveredIndex(index)}
+              onMouseLeave={() => setHoveredIndex(null)}
+              onClick={() => scrollToSection(item.section)}
+            >
+              {item.name}
+            </span>
+          ))}
 
           {token && role === "student" && (
-            <li>
-              <Link to="/student/home" style={styles.navItem}>
-                Dashboard
-              </Link>
-            </li>
+            <Link
+              to="/student/home"
+              style={{
+                ...styles.navItem,
+                ...(hoveredIndex === 4 ? styles.navItemHover : {}),
+              }}
+              onMouseEnter={() => setHoveredIndex(4)}
+              onMouseLeave={() => setHoveredIndex(null)}
+            >
+              Dashboard
+            </Link>
           )}
           {token && role === "instructor" && (
-            <li>
-              <Link to="/instructor/home" style={styles.navItem}>
-                Dashboard
-              </Link>
-            </li>
+            <Link
+              to="/instructor/home"
+              style={{
+                ...styles.navItem,
+                ...(hoveredIndex === 5 ? styles.navItemHover : {}),
+              }}
+              onMouseEnter={() => setHoveredIndex(5)}
+              onMouseLeave={() => setHoveredIndex(null)}
+            >
+              Dashboard
+            </Link>
           )}
           {token && role === "admin" && (
-            <li>
-              <Link to="/admin/home" style={styles.navItem}>
-                Dashboard
-              </Link>
-            </li>
+            <Link
+              to="/admin/home"
+              style={{
+                ...styles.navItem,
+                ...(hoveredIndex === 6 ? styles.navItemHover : {}),
+              }}
+              onMouseEnter={() => setHoveredIndex(6)}
+              onMouseLeave={() => setHoveredIndex(null)}
+            >
+              Dashboard
+            </Link>
           )}
-        </ul>
 
-        {/* Search & User Section */}
-        <div style={{ display: "flex", alignItems: "center" }}>
-         
-          <div style={styles.userSection}>
-            
-              <button style={styles.btn} onClick={() => navigate("/login")}>
-                Login
-              </button>
-            
-          </div>
+          {!token ? (
+            <button
+              style={styles.btn}
+              onMouseEnter={() => setHoveredIndex(7)}
+              onMouseLeave={() => setHoveredIndex(null)}
+              onClick={() => navigate("/login")}
+            >
+              Login
+            </button>
+          ) : (
+            <button
+              style={styles.btn}
+              onMouseEnter={() => setHoveredIndex(7)}
+              onMouseLeave={() => setHoveredIndex(null)}
+              onClick={handleLogout}
+            >
+              Login
+            </button>
+          )}
         </div>
       </div>
     </nav>
