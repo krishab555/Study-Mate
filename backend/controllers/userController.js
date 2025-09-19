@@ -275,7 +275,7 @@ export const createInstructor = async (req, res) => {
       newInstructor._id
     ).populate("role", "name");
 
-    res.json({ success: true, data: newInstructor });
+    res.json({ success: true, data: populatedInstructor });
   } catch (err) {
     console.error("Create instructor error:", err);
     res.status(500).json({ success: false, message: "Server error" });

@@ -173,11 +173,14 @@ export default function Dashboard() {
       style={{
         display: "flex",
         flexWrap: "wrap",
-        justifyContent: "center",
+         justifyContent: "center",
+        // justifyContent: "space-between",
+        //  padding: "0 20px",
         alignItems: "center",
         background: "#f2f2f2",
-        padding: "40px 20px", // Keep original padding
+         padding: "40px 20px", // Keep original padding
         margin: "20px 0",
+        
       }}
     >
       <div style={{ 
