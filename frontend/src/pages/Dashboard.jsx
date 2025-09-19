@@ -1,11 +1,17 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect, useCallback,useRef } from "react";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import FAQSection from "../components/FAQsSection";
-import ContactUs from "./student/ContactUs";
 import LandingContact from "./LandingContact";
+import Footer from "../components/common/Footer";
 export default function Dashboard() {
   const location = useLocation();
+  const sectionRefs = useRef({
+    home: useRef(null),
+    courses: useRef(null),
+    faqs: useRef(null),
+    "landing-contact": useRef(null)
+  });
 
   // Smooth scroll helper with fixed-navbar offset
   const smoothScrollToId = useCallback((id) => {
@@ -58,8 +64,8 @@ export default function Dashboard() {
     borderRadius: "12px",
     textAlign: "center",
     boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-    transition: "transform 0.3s ease, box-shadow 0.3s ease", // smooth animation
-    cursor: "pointer", // hand cursor
+    transition: "transform 0.3s ease, box-shadow 0.3s ease",
+    cursor: "pointer", 
   };
 
   const courseImageStyle = {
@@ -71,98 +77,119 @@ export default function Dashboard() {
   const courseTitleStyle = { fontWeight: "bold" };
 
   return (
-    <div style={{ paddingTop: "80px", margin: 0 }}>
-      {/* Home Section */}
-      {/* Home Section */}
-      <section
-        id="home"
+  <div style={{ 
+    paddingTop: "60px", 
+    margin: 0,
+    width: "100%",
+    overflowX: "hidden",
+    maxWidth: "100vw"
+  }}>
+    
+    {/* Home Section - Keep padding for curved edges */}
+    <section
+      id="home"
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+        width: "100%",
+        gap: "8px",
+        background: "#f9f9f9",
+        padding: "15px", // Keep padding for curved edges
+        margin: " 0 auto",
+        boxSizing: "border-box",
+        
+      }}
+    >
+      <img
+        src="/image1.jpg"
+        alt="Online Learning"
         style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
           width: "100%",
-          gap: "7px", //
-          background: "#f9f9f9",
-          padding: "10px",
+          height: "350px",
+          objectFit: "cover",
+          borderRadius: "10px",
         }}
-      >
-        <img
-          src="/image1.jpg"
-          alt="Online Learning"
-          style={{
-            width: "100%",
-            height: "350px",
-            objectFit: "cover",
-            borderRadius: "10px",
-          }}
-        />
-        <img
-          src="https://img.freepik.com/premium-photo/young-beautiful-student-woman-using-laptop-writing-notebook-home_1303-18769.jpg"
-          alt="Student Writing"
-          style={{
-            width: "100%",
-            height: "350px",
-            objectFit: "cover",
-            borderRadius: "10px",
-          }}
-        />
-      </section>
-
-      {/* Welcome Section */}
-
-      {/* Welcome Section with Full-Width Image */}
-      <section
+      />
+      <img
+        src="https://img.freepik.com/premium-photo/young-beautiful-student-woman-using-laptop-writing-notebook-home_1303-18769.jpg"
+        alt="Student Writing"
         style={{
-          marginTop: "5~px",
-          position: "relative",
-          textAlign: "left",
-          width: "100%", // take full width
+          width: "100%",
+          height: "350px",
+          objectFit: "cover",
+          borderRadius: "10px",
         }}
-      >
-        {/* Image */}
-        <img
-          src="project1.webp"
-          alt="E-learning Welcome"
-          style={{
-            width: "100%", // full width
-            height: "350px", // fixed height
-            objectFit: "cover", // crop neatly
-            display: "block",
-            borderRadius: "16px",
-          }}
-        />
+      />
+    </section>
 
-        {/* Text inside image */}
-        <div
-          style={{
-            position: "absolute",
-            top: "25px",
-            left: "40px",
-            color: "black", // 🔹 changed text color to black
-            background: "rgba(255,255,255,0.5)", // light overlay so black text is visible
-            padding: "10px 15px",
-            borderRadius: "6px",
-          }}
-        >
-          <h1 style={{ fontSize: "34px", fontWeight: "bold", margin: 0 }}>
-            Welcome to StudyMate
-          </h1>
-          <p style={{ fontSize: "20px", marginTop: "10px" }}>
-            Learn Anytime, Anywhere – Explore your skills with us
-          </p>
-        </div>
-      </section>
-
-      {/* We Provide Section */}
-      <section
+    {/* Welcome Section - Keep proper spacing */}
+    <section
+      style={{
+        marginTop: "20px",
+        position: "relative",
+        textAlign: "left",
+        width: "100%", 
+        padding: "0 15px",
+        boxSizing: "border-box", 
+      }}
+    >
+      <img
+        src="project1.webp"
+        alt="E-learning Welcome"
         style={{
-          display: "flex",
-          flexWrap: "wrap",
-          justifyContent: "center",
-          alignItems: "center",
-          background: "#f2f2f2",
-          padding: "40px 20px",
+          width: "100%", 
+          height: "350px", 
+          objectFit: "cover", 
+          display: "block",
+          borderRadius: "16px",
+        }}
+      />
+
+      {/* Text inside image */}
+      <div
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "50px",
+          transform: "translateY(-50%)",
+          color: "black", 
+          background: "rgba(255,255,255,0.7)", 
+          padding: "20px",
+          borderRadius: "10px",
+          maxWidth: "500px"
         }}
       >
+        <h1 style={{ fontSize: "34px", fontWeight: "bold", margin: 0 }}>
+          Welcome to StudyMate
+        </h1>
+        <p style={{ fontSize: "20px", marginTop: "10px" }}>
+          Learn Anytime, Anywhere – Explore your skills with us
+        </p>
+      </div>
+    </section>
+
+    {/* We Provide Section - Keep original padding */}
+    <section
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+        justifyContent: "center",
+        alignItems: "center",
+        background: "#f2f2f2",
+        padding: "40px 20px", // Keep original padding
+        margin: "20px 0",
+      }}
+    >
+      <div style={{ 
+        display: "flex", 
+        flexWrap: "wrap", 
+        justifyContent: "center", 
+        alignItems: "center",
+        maxWidth: "1200px",
+        margin: "0 auto",
+        gap: "40px",
+        width: "100%"
+      }}>
         <div style={{ flex: "1", minWidth: "300px", textAlign: "center" }}>
           <img
             src="https://img.freepik.com/free-photo/smiling-young-woman-pointing-fingers-left-isolated-grey-wall_231208-11567.jpg"
@@ -176,18 +203,10 @@ export default function Dashboard() {
           />
         </div>
         <div style={{ flex: "1", minWidth: "300px", padding: "20px" }}>
-          <h2
-            style={{
-              fontSize: "24px",
-              fontWeight: "bold",
-              marginBottom: "12px",
-            }}
-          >
+          <h2 style={{ fontSize: "24px", fontWeight: "bold", marginBottom: "12px" }}>
             We provide
           </h2>
-          <ul
-            style={{ fontSize: "16px", lineHeight: "2", paddingLeft: "20px" }}
-          >
+          <ul style={{ fontSize: "16px", lineHeight: "2", paddingLeft: "20px" }}>
             <li> Skill-based Learning</li>
             <li> 24×7 Learning</li>
             <li> Free Resources</li>
@@ -195,28 +214,18 @@ export default function Dashboard() {
             <li> Certificates</li>
           </ul>
         </div>
-      </section>
+      </div>
+    </section>
 
-      {/* Courses Section */}
-      <section id="courses" style={{ padding: "40px 20px" }}>
-        <h2
-          style={{
-            fontSize: "24px",
-            fontWeight: "bold",
-            marginBottom: "20px",
-            textAlign: "center",
-          }}
-        >
+    {/* Courses Section - Keep original padding */}
+    <section id="courses" style={{ padding: "40px 20px", margin: "20px 0" }}>
+      <div style={{  margin: "0 auto" }}>
+        {/* maxWidth: "1200px" */}
+        <h2 style={{ fontSize: "24px", fontWeight: "bold", marginBottom: "20px", textAlign: "center" }}>
           Latest Courses
         </h2>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)", // exactly 3 per row
-            gap: "20px",
-          }}
-        >
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "20px" }}>
           {courses.map((course) => (
             <Link
               key={course.id}
@@ -228,8 +237,7 @@ export default function Dashboard() {
                 style={courseCardStyle}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = "scale(1.05)";
-                  e.currentTarget.style.boxShadow =
-                    "0 6px 16px rgba(0,0,0,0.2)";
+                  e.currentTarget.style.boxShadow = "0 6px 16px rgba(0,0,0,0.2)";
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = "scale(1)";
@@ -246,19 +254,23 @@ export default function Dashboard() {
             </Link>
           ))}
         </div>
-      </section>
+      </div>
+    </section>
 
-      {/* FAQs Section */}
-      <section id="faqs" style={{ padding: "40px 20px" }}>
+    {/* FAQs Section - Keep original padding */}
+    <section id="faqs" style={{ margin: "20px 0" }}>
+      <div style={{  margin: "0 auto" }}>
         <FAQSection />
-      </section>
+      </div>
+    </section>
 
-      {/* Contact Section */}
-      <section id="landing-contact" >
+    {/* Contact Section */}
+    <section style={{ margin: "20px 0" }}>
+      <div style={{  margin: "0 auto" }}>
+        <LandingContact/>
+      </div>
+    </section>
 
-      <LandingContact/>
-      </section>
-    </div>
-  );
-  
-}
+    <Footer/>
+  </div>
+);}
