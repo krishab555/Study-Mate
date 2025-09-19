@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import PageRoutes from "./routes/Routes";
 import "./App.css"
 
+
 const App = () => {
   return (
     <BrowserRouter>

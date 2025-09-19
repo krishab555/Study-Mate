@@ -3,8 +3,7 @@ import Navbar from "../../components/common/Navbar";
 import CreateInstructor from "./CreateInstructor";
 
 export default function ManageUsers() {
-  const [students, setStudents] = useState([]);
-  const [instructors, setInstructors] = useState([]);
+  const [users, setUsers] = useState([]);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const token = localStorage.getItem("token");
 
@@ -16,8 +15,7 @@ export default function ManageUsers() {
         });
         const data = await res.json();
         if (data?.data) {
-          setStudents(data.data.filter((u) => u.role.name === "Student"));
-          setInstructors(data.data.filter((u) => u.role.name === "Instructor"));
+          setUsers(data.data);
         }
       } catch (err) {
         console.error("Failed to fetch users", err);
@@ -33,83 +31,41 @@ export default function ManageUsers() {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
-      setStudents((prev) => prev.filter((u) => u._id !== userId));
-      setInstructors((prev) => prev.filter((u) => u._id !== userId));
+      setUsers((prev) => prev.filter((u) => u._id !== userId));
     } catch (err) {
       console.error("Failed to delete user", err);
     }
   };
 
   const renderActions = (user) => (
-    <button
-      onClick={() => handleDelete(user._id)}
-      style={{
-        padding: "5px 10px",
-        backgroundColor: "#5f1b1bff",
-        color: "white",
-        border: "none",
-        borderRadius: "5px",
-        cursor: "pointer",
-      }}
-    >
-      Delete
-    </button>
-  );
-
-  const renderStudentTable = () => (
-    <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: "40px" }}>
-      <thead style={{ backgroundColor: "#1e3a8a", color: "white" }}>
-        <tr>
-          <th style={{ padding: "10px" }}>User ID</th>
-          <th style={{ padding: "10px" }}>Name</th>
-          <th style={{ padding: "10px" }}>Email</th>
-          <th style={{ padding: "10px" }}>Courses</th>
-          <th style={{ padding: "10px" }}>Package</th>
-          <th style={{ padding: "10px" }}>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {students.map((user) => (
-          <tr key={user._id} style={{ borderBottom: "1px solid #ddd" }}>
-            <td style={{ padding: "10px" }}>{user._id}</td>
-            <td style={{ padding: "10px" }}>{user.name}</td>
-            <td style={{ padding: "10px" }}>{user.email}</td>
-            <td style={{ padding: "10px" }}>
-              {user.enrolledCourses?.map((c) => c.title).join(", ") || "None"}
-            </td>
-            <td style={{ padding: "10px" }}>{user.package || "Free"}</td>
-            <td style={{ padding: "10px" }}>{renderActions(user)}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  );
-
-  const renderInstructorTable = () => (
-    <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: "40px" }}>
-      <thead style={{ backgroundColor: "#1e3a8a", color: "white" }}>
-        <tr>
-          <th style={{ padding: "10px" }}>User ID</th>
-          <th style={{ padding: "10px" }}>Name</th>
-          <th style={{ padding: "10px" }}>Email</th>
-          <th style={{ padding: "10px" }}>Courses</th>
-          <th style={{ padding: "10px" }}>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {instructors.map((user) => (
-          <tr key={user._id} style={{ borderBottom: "1px solid #ddd" }}>
-            <td style={{ padding: "10px" }}>{user._id}</td>
-            <td style={{ padding: "10px" }}>{user.name}</td>
-            <td style={{ padding: "10px" }}>{user.email}</td>
-            <td style={{ padding: "10px" }}>
-              {user.subjects?.join(", ") || "None"}
-            </td>
-            <td style={{ padding: "10px" }}>{renderActions(user)}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <div style={{ display: "flex", gap: "5px" }}>
+      <button
+        style={{
+          padding: "5px 10px",
+          backgroundColor: "#1e3a8a",
+          color: "white",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer",
+        }}
+        onClick={() => alert("Edit functionality not implemented yet")}
+      >
+        Edit
+      </button>
+      <button
+        style={{
+          padding: "5px 10px",
+          backgroundColor: "#5f1b1bff",
+          color: "white",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer",
+        }}
+        onClick={() => handleDelete(user._id)}
+      >
+        Delete
+      </button>
+    </div>
   );
 
   return (
@@ -124,23 +80,29 @@ export default function ManageUsers() {
           minHeight: "100vh",
         }}
       >
-        <h2>Create Instructors</h2>
-
-        {/* Button to open modal */}
-        <button
-          onClick={() => setShowCreateModal(true)}
+        <div
           style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
             marginBottom: "20px",
-            padding: "10px 20px",
-            backgroundColor: "#1e3a8a",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
           }}
         >
-          Add Instructor
-        </button>
+          <h2>Manage Users</h2>
+          <button
+            onClick={() => setShowCreateModal(true)}
+            style={{
+              padding: "10px 20px",
+              backgroundColor: "#1e3a8a",
+              color: "white",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+            }}
+          >
+            Add Instructor
+          </button>
+        </div>
 
         {/* Modal */}
         {showCreateModal && (
@@ -157,10 +119,10 @@ export default function ManageUsers() {
               alignItems: "center",
               zIndex: 1000,
             }}
-            onClick={() => setShowCreateModal(false)} // close when click outside
+            onClick={() => setShowCreateModal(false)}
           >
             <div
-              onClick={(e) => e.stopPropagation()} // prevent closing when click inside modal
+              onClick={(e) => e.stopPropagation()}
               style={{
                 backgroundColor: "white",
                 padding: "20px",
@@ -169,22 +131,52 @@ export default function ManageUsers() {
                 maxWidth: "90%",
               }}
             >
-                <h3>Create Instructor</h3>
+              <h3>Create Instructor</h3>
               <CreateInstructor
                 onCreated={(newInstructor) => {
-                  setInstructors((prev) => [...prev, newInstructor]);
+                  setUsers((prev) => [...prev, newInstructor]);
                   setShowCreateModal(false);
                 }}
               />
             </div>
           </div>
         )}
-              
-        
-        <h2>Manage Students</h2>
-        {renderStudentTable()}
-        <h2>Manage Instructors</h2>
-        {renderInstructorTable()}
+
+        {/* Users Table */}
+        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+          <thead style={{ backgroundColor: "#1e3a8a", color: "white" }}>
+            <tr>
+              <th style={{ padding: "10px" }}>Name</th>
+              <th style={{ padding: "10px" }}>Email</th>
+              <th style={{ padding: "10px" }}>Role</th>
+              <th style={{ padding: "10px" }}>Courses</th>
+              <th style={{ padding: "10px" }}>Package</th>
+              <th style={{ padding: "10px" }}>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {users.map((user) => {
+              const roleText = user.role?.name || user.role || "N/A";
+
+              // Courses handling: enrolledCourses first, then subjects
+              const coursesText =
+                user.enrolledCourses?.map((c) => c.title).join(", ") ||
+                user.subjects?.join(", ") ||
+                "None";
+
+              return (
+                <tr key={user._id} style={{ borderBottom: "1px solid #ddd" }}>
+                  <td style={{ padding: "10px" }}>{user.name}</td>
+                  <td style={{ padding: "10px" }}>{user.email}</td>
+                  <td style={{ padding: "10px" }}>{roleText}</td>
+                  <td style={{ padding: "10px" }}>{coursesText} </td>
+                  <td style={{ padding: "10px" }}>{user.package || "Free"}</td>
+                  <td style={{ padding: "10px" }}>{renderActions(user)}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       </main>
     </>
   );
