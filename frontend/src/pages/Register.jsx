@@ -5,7 +5,7 @@ export default function Register() {
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState(""); // Role state added
+  const [role, setRole] = useState("Student"); // Role state added
   const [gender, setGender] = useState("");
   const [date, setDate] = useState("");
   const [password, setPassword] = useState("");
@@ -140,21 +140,7 @@ export default function Register() {
           />
         </div>
 
-        {/* Role */}
-        {/* <div>
-          <label style={labelStyle}>Role:</label>
-          <select
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            style={inputStyle}
-            required
-          >
-            <option value="">Select Role</option>
-            <option value="Student">Student</option>
-            <option value="Teacher">Teacher</option>
-            <option value="Admin">Admin</option>
-          </select>
-        </div> */}
+       
 
         {/* Gender */}
         <div style={radioContainer}>

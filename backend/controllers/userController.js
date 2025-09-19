@@ -271,6 +271,9 @@ export const createInstructor = async (req, res) => {
       subjects,
       role: role._id,
     });
+    const populatedInstructor = await UserModel.findById(
+      newInstructor._id
+    ).populate("role", "name");
 
     res.json({ success: true, data: newInstructor });
   } catch (err) {
