@@ -40,6 +40,9 @@ export default function LandingContact() {
   };
 
   return (
+<div id="landing-contact">  
+    <div style={{textAlign: "center", fontSize: "2.5rem", fontWeight: "bold", marginBottom: "5px",paddingTop: "20px"}}>Contact Us</div>
+    
     <section
       style={{
         display: "flex",
@@ -47,16 +50,17 @@ export default function LandingContact() {
         justifyContent: "center",
         alignItems: "stretch",
         gap: "40px",
-        padding: "60px 20px",
-        background: "#fff", // section background is white
+        padding: " 20px 20px 60px 20px",
+        background: "#fff", 
       }}
     >
+      
       {/* Contact Info */}
       <div
         style={{
           flex: "1 1 400px",
           minWidth: "300px",
-          background: "white", // light gray box for contrast
+          background: "white",
           color: "black",
           borderRadius: "12px",
           padding: "40px 30px",
@@ -81,9 +85,9 @@ export default function LandingContact() {
         style={{
           flex: "1 1 400px",
           minWidth: "300px",
-          background: "white", // same light gray for box
+          background: "white", 
           borderRadius: "12px",
-          padding: "40px 30px",
+          padding: "30px",
           boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
         }}
       >
@@ -146,5 +150,6 @@ export default function LandingContact() {
         </form>
       </div>
     </section>
+    </div>
   );
 }

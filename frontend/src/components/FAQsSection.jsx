@@ -78,7 +78,7 @@ export default function FAQSection() {
     display: "grid",
     gridTemplateColumns: "1fr 1fr",
     gap: "20px",
-    maxWidth: "1200px",
+    
     margin: "0 auto",
   };
 

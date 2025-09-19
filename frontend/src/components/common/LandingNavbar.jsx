@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect} from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function LandingNavbar() {
@@ -7,6 +7,7 @@ export default function LandingNavbar() {
   const role = localStorage.getItem("role");
 
   const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [activeSection, setActiveSection] = useState("home");
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -16,7 +17,11 @@ export default function LandingNavbar() {
 
   const scrollToSection = (id) => {
     const element = document.getElementById(id);
-    if (element) element.scrollIntoView({ behavior: "smooth" });
+    if (element) {
+      const offset = 70; // navbar height
+      const y = element.getBoundingClientRect().top + window.pageYOffset - offset;
+      window.scrollTo({ top: y, behavior: "smooth" });
+    }
   };
 
   const navItems = [
@@ -25,6 +30,38 @@ export default function LandingNavbar() {
     { name: "FAQs", section: "faqs" },
     { name: "Contact", section: "landing-contact" },
   ];
+
+    useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + 100; 
+      const sections = navItems.map(item => {
+        const element = document.getElementById(item.section);
+        return {
+          id: item.section,
+          element: element,
+          top: element ? element.offsetTop - 100 : 0, // Adjust offset as needed
+          bottom: element ? element.offsetTop + element.offsetHeight - 100 : 0
+        };
+      }).filter(section => section.element !== null);
+      
+      // Find the current section
+      let current = "home";
+      for (const section of sections) {
+        if (scrollPosition >= section.top && scrollPosition < section.bottom) {
+          current = section.id;
+          break;
+        }
+      }
+      
+      setActiveSection(current);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    // Call once on mount to set initial active section
+    handleScroll();
+    
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const styles = {
     navbar: {
@@ -51,7 +88,7 @@ export default function LandingNavbar() {
     logoContainer: {
       display: "flex",
       alignItems: "center",
-      marginLeft: "-80px",
+      marginLeft: "0px",
       marginTop: "8px",
     },
     logoImage: {
@@ -72,10 +109,17 @@ export default function LandingNavbar() {
       textDecoration: "none",
       fontWeight: "500",
       transition: "all 0.2s ease",
+      padding: "8px 12px",
+      borderRadius: "4px",
     },
     navItemHover: {
-      color: "#ffd700", // gold color on hover
-      transform: "scale(1.1)", // slight scale effect
+      color: "#ffd700", 
+      transform: "scale(1.1)", 
+    },
+    activeNavItem: {
+      backgroundColor: "rgba(255, 255, 255, 0.1)",
+      color: "#ffd700",
+      fontWeight: "bold",
     },
     btn: {
       backgroundColor: "white",
@@ -110,6 +154,7 @@ export default function LandingNavbar() {
               style={{
                 ...styles.navItem,
                 ...(hoveredIndex === index ? styles.navItemHover : {}),
+                ...(activeSection === item.section ? styles.activeNavItem : {}),
               }}
               onMouseEnter={() => setHoveredIndex(index)}
               onMouseLeave={() => setHoveredIndex(null)}
@@ -159,7 +204,7 @@ export default function LandingNavbar() {
             </Link>
           )}
 
-          {!token ? (
+          
             <button
               style={styles.btn}
               onMouseEnter={() => setHoveredIndex(7)}
@@ -168,16 +213,7 @@ export default function LandingNavbar() {
             >
               Login
             </button>
-          ) : (
-            <button
-              style={styles.btn}
-              onMouseEnter={() => setHoveredIndex(7)}
-              onMouseLeave={() => setHoveredIndex(null)}
-              onClick={handleLogout}
-            >
-              Login
-            </button>
-          )}
+          
         </div>
       </div>
     </nav>
