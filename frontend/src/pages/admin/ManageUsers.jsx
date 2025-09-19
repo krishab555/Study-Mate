@@ -8,6 +8,18 @@ export default function ManageUsers() {
   const token = localStorage.getItem("token");
 
   useEffect(() => {
+  if (showCreateModal) {
+    document.body.style.overflow = "hidden"; 
+  } else {
+    document.body.style.overflow = "auto";   }
+
+  return () => {
+    document.body.style.overflow = "auto";
+  };
+}, [showCreateModal]);
+
+
+  useEffect(() => {
     const fetchUsers = async () => {
       try {
         const res = await fetch("http://localhost:5000/api/users", {
@@ -129,6 +141,8 @@ export default function ManageUsers() {
                 borderRadius: "10px",
                 width: "400px",
                 maxWidth: "90%",
+                maxHeight: "80vh",  
+    overflowY: "auto",
               }}
             >
               <h3>Create Instructor</h3>

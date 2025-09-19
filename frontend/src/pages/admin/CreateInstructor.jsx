@@ -1,39 +1,32 @@
-
-
 import { useState } from "react";
 
 function CreateInstructor({ onCreated }) {
-  const [form, setForm] = useState({ name: "", email: "", password: "", subjects: "", });
+  const [form, setForm] = useState({ name: "", email: "", password: "", subjects: "" });
   const token = localStorage.getItem("token");
-  const role = "Instructor";
 
-  const handleChange = (e) => setForm({ ...form,role, [e.target.name]: e.target.value });
+  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
     try {
       const res = await fetch("http://localhost:5000/api/users/create-instructor", {
         method: "POST",
-        headers: { 
-          "Content-Type": "application/json", 
-          Authorization: `Bearer ${token}` 
-        },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ 
           ...form, 
-          subjects: form.subjects.split(",").map(s => s.trim()) // convert subjects to array
+          subjects: form.subjects.split(",").map(s => s.trim()) 
         }),
       });
       const data = await res.json();
       if (data.success) {
-        alert(`${role} created successfully!`);
-        onCreated(data.data); // update parent component
+        alert("Instructor created successfully!");
+        onCreated(data.data); // update table
       } else {
         alert(data.message);
       }
     } catch (err) {
       console.error(err);
-      alert(`Failed to create ${form.role}`);
+      alert("Failed to create instructor");
     }
   };
 
@@ -78,16 +71,11 @@ function CreateInstructor({ onCreated }) {
         Subjects:
         <input
           name="subjects"
-          placeholder="Enter subjects (comma separated)"
+          placeholder="Enter subjects"
           value={form.subjects}
           onChange={handleChange}
           style={{ width: "100%", padding: "8px", marginTop: "5px", borderRadius: "5px", border: "1px solid #ccc" }}
         />
-      </label>
-      <label>
-        Role:
-        <input type="text" value="Instructor" disabled style={{ width: "100%", padding: "8px", marginTop: "5px", borderRadius: "5px", border: "1px solid #ccc" }} />
-        <input type="hidden" name="role" value="Instructor" />
       </label>
       <button
         type="submit"
@@ -101,10 +89,11 @@ function CreateInstructor({ onCreated }) {
           marginTop: "10px"
         }}
       >
-        Add User
+        Add Instructor
       </button>
     </form>
   );
 }
 
 export default CreateInstructor;
+
