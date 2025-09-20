@@ -31,7 +31,7 @@ connectToDB();
 app.use(
   cors({
     origin: "http://localhost:5173", // frontend Vite dev server
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: ["GET", "POST", "PUT","PATCH","DELETE"],
     credentials: true,
   })
 );

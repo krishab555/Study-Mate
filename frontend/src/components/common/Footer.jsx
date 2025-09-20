@@ -9,7 +9,7 @@ const Footer = () => {
       backgroundColor: "#0a2a66",
       color: "white",
       textAlign: "center",
-      // position: "fixed",
+      // position: "absolute",
       bottom: 0,
       left: 0,
       boxShadow: "0 -2px 6px rgba(0,0,0,0.2)",

@@ -22,7 +22,7 @@ discussionRouter.delete(
 discussionRouter.patch(
   "/:id/pin",
   authenticateUser,
-  authorizeRoles("Instructor"),
+  authorizeRoles("Teacher","Instructor"),
   pinDiscussion
 );
 discussionRouter.post("/:id/reply", authenticateUser, createReply);
