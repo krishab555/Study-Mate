@@ -141,7 +141,7 @@ export default function Dashboard() {
           height: "350px", 
           objectFit: "cover", 
           display: "block",
-          borderRadius: "16px",
+          borderRadius: "10px",
         }}
       />
 
@@ -179,7 +179,8 @@ export default function Dashboard() {
         alignItems: "center",
         background: "#f2f2f2",
          padding: "40px 20px", // Keep original padding
-        margin: "20px 0",
+        margin: "20px 18px",
+        borderRadius: "10px",
         
       }}
     >

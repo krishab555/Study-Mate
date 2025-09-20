@@ -2,7 +2,120 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../components/common/Navbar";
 import SideBar from "../components/common/SideBar";
 
+function DiscussionModal({ isOpen, onClose, onPost }) {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+
+  if (!isOpen) return null;
+
+  return (
+    <div
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background: "rgba(0,0,0,0.5)",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        zIndex: 999,
+      }}
+    >
+      <div
+        style={{
+          background: "white",
+          padding: "20px",
+          borderRadius: "12px",
+          width: "400px",
+          maxWidth: "95%",
+          boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+        }}
+      >
+        <h3
+          style={{ marginBottom: "16px", fontSize: "20px", color: "#0B2C5D" }}
+        >
+          Start a Discussion
+        </h3>
+        <input
+          type="text"
+          placeholder="Course"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          style={{
+            width: "95%",
+            padding: "10px",
+            marginBottom: "12px",
+            borderRadius: "8px",
+            border: "1px solid #ccc",
+            fontSize: "14px",
+            outline: "none",
+          }}
+        />
+        <textarea
+          placeholder="Query"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          style={{
+            width: "95%",
+            padding: "10px",
+            marginBottom: "16px",
+            borderRadius: "8px",
+            border: "1px solid #ccc",
+            fontSize: "14px",
+            minHeight: "120px",
+            outline: "none",
+            resize: "none",
+          }}
+        />
+        <div
+          style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}
+        >
+          <button
+            onClick={onClose}
+            style={{
+              padding: "8px 16px",
+              background: "#f5f5f5",
+              border: "none",
+              borderRadius: "6px",
+              cursor: "pointer",
+              fontSize: "14px",
+            }}
+            onMouseOver={(e) => (e.target.style.background = "#e0e0e0")}
+            onMouseOut={(e) => (e.target.style.background = "#f5f5f5")}
+          >
+            Cancel
+          </button>
+          <button
+            onClick={() => {
+              onPost(title, description);
+              setTitle("");
+              setDescription("");
+            }}
+            style={{
+              padding: "8px 16px",
+              background: "#0B2C5D",
+              color: "white",
+              border: "none",
+              borderRadius: "6px",
+              cursor: "pointer",
+              fontSize: "14px",
+              fontWeight: "bold",
+            }}
+            onMouseOver={(e) => (e.target.style.background = "#174a91")}
+            onMouseOut={(e) => (e.target.style.background = "#0B2C5D")}
+          >
+            Post
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function DiscussionForum() {
+  const [showModal, setShowModal] = useState(false);
   const [discussions, setDiscussions] = useState([]);
   const [filter, setFilter] = useState("latest");
   const [newTitle, setNewTitle] = useState("");
@@ -29,7 +142,9 @@ export default function DiscussionForum() {
           },
         });
         const data = await res.json();
-        if (data.success) setCourses(data.data);
+        if (data.success) {
+          setCourses(data.data || data.courses || []);
+        }
       } catch (err) {
         console.error("Failed to fetch courses", err);
       }
@@ -67,7 +182,7 @@ export default function DiscussionForum() {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          title: newTitle,
+          // title: newTitle,
           content: newContent,
           courseId: selectedCourse || "",
         }),
@@ -138,6 +253,32 @@ export default function DiscussionForum() {
     return acc;
   }, {});
 
+  const handlePost = async (title, description) => {
+    try {
+      const res = await fetch("http://localhost:5000/api/discussions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          title,
+          content: description,
+          courseId: selectedCourse || "",
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        fetchDiscussions();
+        setShowModal(false); // close modal after posting
+      } else {
+        alert(data.message || "Failed to post discussion");
+      }
+    } catch (err) {
+      console.error("Error posting discussion:", err);
+    }
+  };
+
   return (
     <div className="discussion-forum-page">
       {/* Inject CSS directly */}
@@ -145,17 +286,49 @@ export default function DiscussionForum() {
         .discussion-forum-page { background-color: #f5f7f9; min-height: 100vh; }
         .discussion-container { display: flex; padding-top: 60px; }
         .discussion-content { margin-left: 280px; padding: 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 900px; width: 100%; }
-        .discussion-title { color: #2c3e50; margin-bottom: 24px; font-weight: 600; }
-        .new-discussion-card { background: white; margin-bottom: 24px; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+        
+        .discussion-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 24px;
+        }
+        
+        .discussion-title { 
+          color: #2c3e50; 
+          font-weight: 600; 
+          margin: 0;
+        }
+        
+        .new-discussion-btn {
+          padding: 10px 20px; 
+          background: #0a2a66; 
+          color: white; 
+          border: none; 
+          border-radius: 8px; 
+          cursor: pointer; 
+          font-weight: 500; 
+          transition: background 0.2s;
+        }
+        
+        .new-discussion-btn:hover { 
+          background: #365285ff; 
+        }
+        
+        .new-discussion-card {
+         background: white;
+          margin-bottom: 24px;
+           padding: 20px;
+            border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
         .new-discussion-title { margin-bottom: 16px; color: #2c3e50; font-weight: 500; }
         .discussion-input, .discussion-textarea, .discussion-select { width: 100%; padding: 12px; margin-bottom: 12px; border-radius: 8px; border: 1px solid #ddd; font-family: inherit; transition: border-color 0.2s; }
-        .discussion-input:focus, .discussion-textarea:focus, .discussion-select:focus { outline: none; border-color: #3498db; box-shadow: 0 0 0 2px rgba(52,152,219,0.2); }
+        .discussion-input:focus, .discussion-textarea:focus, .discussion-select:focus { outline: none; border-color: #365285ff; box-shadow: 0 0 0 2px rgba(52,152,219,0.2); }
         .discussion-textarea { min-height: 100px; resize: vertical; }
-        .post-button { padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; transition: background 0.2s; }
-        .post-button:hover { background: #2980b9; }
+        .post-button { padding: 10px 20px; background: #0a2a66; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; transition: background 0.2s; }
+        .post-button:hover { background: #365285ff; }
         .filter-container { margin-bottom: 20px; display: flex; gap: 12px; }
         .filter-btn { padding: 8px 16px; border-radius: 20px; border: 1px solid #ddd; background: white; cursor: pointer; font-weight: 500; transition: all 0.2s; }
-        .filter-btn.active { background: #3498db; color: white; border-color: #3498db; }
+        .filter-btn.active { background: #0a2a66; color: white; border-color: #0a2a66; }
         .filter-btn:hover:not(.active) { background: #f8f9fa; }
         .course-discussion-section { margin-bottom: 24px; }
         .course-header { background: white; padding: 12px 16px; cursor: pointer; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 4px rgba(0,0,0,0.05); transition: background 0.2s; }
@@ -175,15 +348,15 @@ export default function DiscussionForum() {
         .action-btn { padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 14px; transition: background 0.2s; }
         .pin-btn { background: #f8f9fa; }
         .pin-btn:hover { background: #e9ecef; }
-        .comment-btn { background: #e8f4fd; color: #3498db; }
+        .comment-btn { background: #e8f4fd; color: #0a2a66; }
         .comment-btn:hover { background: #d1ebff; }
         .delete-btn { background: #ffeaea; color: #e74c3c; }
         .delete-btn:hover { background: #ffd5d5; }
         .comments-section { margin-top: 16px; padding-top: 16px; border-top: 1px solid #eee; }
         .comment-input-container { display: flex; gap: 8px; margin-bottom: 16px; }
         .comment-textarea { flex-grow: 1; padding: 10px; border-radius: 8px; border: 1px solid #ddd; resize: vertical; min-height: 60px; font-family: inherit; }
-        .comment-submit-btn { padding: 10px 16px; background: #3498db; color: white; border: none; border-radius: 8px; cursor: pointer; align-self: flex-start; }
-        .comment-submit-btn:hover { background: #2980b9; }
+        .comment-submit-btn { padding: 10px 16px; background: #0a2a66; color: white; border: none; border-radius: 8px; cursor: pointer; align-self: flex-start; }
+        .comment-submit-btn:hover { background: #365285ff; }
         .comments-list { display: flex; flex-direction: column; gap: 12px; }
         .comment-item { display: flex; gap: 10px; }
         .comment-avatar { width: 32px; height: 32px; border-radius: 50%; background: #95a5a6; display: flex; justify-content: center; align-items: center; color: white; font-size: 12px; font-weight: 600; flex-shrink: 0; }
@@ -191,27 +364,57 @@ export default function DiscussionForum() {
         .comment-author { font-weight: 600; font-size: 14px; color: #2c3e50; margin-bottom: 4px; }
         .comment-text { font-size: 14px; color: #34495e; line-height: 1.4; }
         .no-discussions { text-align: center; padding: 40px; background: white; border-radius: 12px; color: #7f8c8d; }
-        @media (max-width: 1024px) { .discussion-content { margin-left: 0; padding: 20px 16px; } }
-        @media (max-width: 768px) { .post-header { flex-direction: column; } .comment-input-container { flex-direction: column; } .comment-submit-btn { align-self: flex-end; } }
+        
+        @media (max-width: 1024px) { 
+          .discussion-content { margin-left: 0; padding: 20px 16px; } 
+        }
+        
+        @media (max-width: 768px) { 
+          .discussion-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 16px;
+          }
+          
+          .post-header { flex-direction: column; } 
+          .comment-input-container { flex-direction: column; } 
+          .comment-submit-btn { align-self: flex-end; } 
+        }
       `}</style>
 
       <Navbar />
       <div className="discussion-container">
         <SideBar />
         <div className="discussion-content">
-          <h2 className="discussion-title">Discussion Forum</h2>
+          {/* Modified header section */}
+          <div className="discussion-header">
+            <h2 className="discussion-title">Discussion Forum</h2>
+            <button
+              className="new-discussion-btn"
+              onClick={() => setShowModal(true)}
+            >
+              New Discussion
+            </button>
+          </div>
 
-          {/* Post Box */}
+          {/* Inject Modal */}
+          <DiscussionModal
+            isOpen={showModal}
+            onClose={() => setShowModal(false)}
+            onPost={handlePost}
+          />
+
+          {/* Post Box (kept as is) */}
           {user && (
             <div className="new-discussion-card">
               <h3 className="new-discussion-title">Start a New Discussion</h3>
-              <input
+              {/* <input
                 className="discussion-input"
                 type="text"
                 placeholder="Question / Title"
                 value={newTitle}
                 onChange={(e) => setNewTitle(e.target.value)}
-              />
+              /> */}
               <textarea
                 className="discussion-textarea"
                 placeholder="Write your question or details..."

@@ -81,7 +81,7 @@ export default function LandingNavbar() {
     },
     container: {
       width: "100%",
-      maxWidth: "1200px",
+      maxWidth: "1450px",
       display: "flex",
       alignItems: "center",
     },
@@ -90,6 +90,7 @@ export default function LandingNavbar() {
       alignItems: "center",
       marginLeft: "0px",
       marginTop: "8px",
+      
     },
     logoImage: {
       width: "200px",
