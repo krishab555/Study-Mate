@@ -1,6 +1,7 @@
 import { QuizModel } from "../models/quizModel.js";
 import { CourseModel } from "../models/courseModel.js";
-
+import { EnrollmentModel } from "../models/enrollmentModel.js";
+import { createNotification } from "./notificationController.js";
 // ✅ Create a quiz
 export const createQuiz = async (req, res) => {
   try {
@@ -15,6 +16,14 @@ export const createQuiz = async (req, res) => {
       title,
       questions,
     });
+    const enrolledStudents = await EnrollmentModel.find({ course: courseId });
+    for (let enrollment of enrolledStudents) {
+      await createNotification({
+        userId: enrollment.student,
+        message: `A new quiz "${title}" has been added to your course.`,
+        type: "quiz_result", // you can add a new type "quiz_created"
+      });
+    }
 
     res.status(201).json({ message: "Quiz created successfully", quiz });
   } catch (error) {
@@ -33,6 +42,17 @@ export const updateQuiz = async (req, res) => {
     if (questions) quiz.questions = questions;
 
     await quiz.save();
+    // 🔔 Notify students about update
+    const enrolledStudents = await EnrollmentModel.find({
+      course: quiz.course,
+    });
+    for (let enrollment of enrolledStudents) {
+      await createNotification({
+        userId: enrollment.student,
+        message: `Quiz "${quiz.title}" has been updated.`,
+        type: "quiz_result",
+      });
+    }
     res.status(200).json({ message: "Quiz updated successfully", quiz });
   } catch (error) {
     res.status(500).json({ message: "Error updating quiz", error: error.message });

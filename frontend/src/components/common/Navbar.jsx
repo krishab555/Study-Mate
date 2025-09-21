@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Bell, X, Eye, EyeOff } from "lucide-react";
+import NotificationBell from "./NotificationBell"; 
+import SearchBar from "../SearchBar";
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -528,25 +530,18 @@ export default function Navbar() {
             placeholder="Search"
             style={styles.searchBar}
             onKeyDown={(e) => {
-              if (e.key === "Enter") console.log("Search for:", e.target.value);
+               if (e.key === "Enter") {
+      e.preventDefault();
+             const query = e.target.value.trim();
+              if (query){ navigate(`/search?query=${encodeURIComponent(query)}`);
+               }}
             }}
           />
+          {/* <SearchBar/> */}
 
-          {/* Notification icon */}
-          <div
-            style={{
-              cursor: "pointer",
-              color: isBellHovered ? "#ffd700" : "white",
-              display: "flex",
-              alignItems: "center",
-              transform: isBellHovered ? "scale(1.1)" : "scale(1)",
-              transition: "all 0.2s ease",
-            }}
-            onMouseEnter={() => setIsBellHovered(true)}
-            onMouseLeave={() => setIsBellHovered(false)}
-            onClick={() => alert("Notifications clicked!")}
-          >
-            <Bell size={24} />
+          
+          <div style={{ marginLeft: "auto", marginRight: "20px" }}>
+            <NotificationBell />
           </div>
 
           {/* Profile Image */}

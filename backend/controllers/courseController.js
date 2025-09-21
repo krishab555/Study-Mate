@@ -1,6 +1,7 @@
 
 import { CourseModel } from "../models/courseModel.js";
 import { EnrollmentModel } from "../models/enrollmentModel.js";
+import { createNotification } from "./notificationController.js";
 
 // Get all courses
 export const getCoursesController = async (req, res) => {
@@ -63,6 +64,11 @@ export const createCourseController = async (req, res) => {
       banner: imageUrl,
 
       videoUrl,
+    });
+    await createNotification({
+      userId: instructorId,
+      message: `Your course "${course.title}" has been created successfully.`,
+      type: "course_update",
     });
 
     res.status(201).json({ success: true, data: course });
@@ -142,6 +148,11 @@ export const updateCourseController = async (req, res) => {
         .status(404)
         .json({ success: false, message: "Course not found" });
     }
+    await createNotification({
+      userId: updatedCourse.instructor,
+      message: `Your course "${updatedCourse.title}" has been updated.`,
+      type: "course_update",
+    });
 
     res.status(200).json({ success: true, data: updatedCourse });
   } catch (error) {
@@ -156,6 +167,11 @@ export const deleteCourseController = async (req, res) => {
     const { id } = req.params;
     const deletedCourse = await CourseModel.findByIdAndDelete(id);
     if (!deletedCourse) {
+      await createNotification({
+        userId: deletedCourse.instructor,
+        message: `Your course "${deletedCourse.title}" has been deleted.`,
+        type: "course_update",
+      });
       return res
         .status(404)
         .json({ success: false, message: "Course not found" });

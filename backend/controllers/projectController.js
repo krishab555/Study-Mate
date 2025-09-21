@@ -1,6 +1,7 @@
 import { projectModel } from "../models/projectModel.js";
 import { certificateModel} from "../models/certificateModel.js";
 import { CourseModel } from "../models/courseModel.js";
+import { createNotification } from "./notificationController.js";
 
 // --------------------
 // User submits a project
@@ -19,6 +20,18 @@ export const submitProjectController = async (req, res) => {
       course: courseId,
       student: req.user.id,
       projectFile:req.file.path,
+    });
+    await createNotification({
+      userId: req.user._id,
+      message: `You submitted your project for "${course.title}".`,
+      type: "project_review",
+    });
+
+    // 🔔 Notify instructor
+    await createNotification({
+      userId: course.instructor,
+      message: `A student submitted a project for "${course.title}".`,
+      type: "project_review",
     });
 
     res
@@ -71,6 +84,11 @@ export const reviewProjectController = async (req, res) => {
         });
       }
     }
+     await createNotification({
+       userId: project.student,
+       message: `Your project for "${project.course.title}" was ${status}.`,
+       type: "project_review",
+     });
 
     res
       .status(200)

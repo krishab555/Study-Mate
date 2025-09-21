@@ -1,6 +1,7 @@
 import { EnrollmentModel } from "../models/enrollmentModel.js";
 import { CourseModel } from "../models/courseModel.js";
 import { PaymentModel } from "../models/paymentModel.js";
+import { createNotification } from "./notificationController.js";
 
 // ✅ Enroll a student after payment success
 export const enrollCourse = async (req, res) => {
@@ -38,6 +39,18 @@ export const enrollCourse = async (req, res) => {
       student: req.user.id,
       course: courseId,
       payment: paymentId,
+    });
+    await createNotification({
+      userId: req.user._id,
+      message: `You enrolled in "${course.title}".`,
+      type: "enrollment",
+    });
+
+    // 🔔 Notify instructor
+    await createNotification({
+      userId: course.instructor,
+      message: `A new student enrolled in your course "${course.title}".`,
+      type: "enrollment",
     });
 
     res.status(201).json({

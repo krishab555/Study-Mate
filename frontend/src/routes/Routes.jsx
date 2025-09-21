@@ -41,6 +41,7 @@ import AddCourse from "../pages/admin/AddCourse";
 
 import QuizCourses from "../pages/student/QuizCourses";
 import TakeQuizByCourse from "../pages/student/TakeQuizByCourse";
+import SearchResults from "../components/SearchResults";
 
 
 const PageRoutes = () => {
@@ -50,12 +51,15 @@ const PageRoutes = () => {
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
       <Route path="/" element={<LandingPage />} />
-      <Route element={ <ProtectedRoutes allowedRole={["Student", "Instructor", "Admin"]} />}>
+      <Route path="/search" element={<SearchResults />} />
+      <Route
+        element={
+          <ProtectedRoutes allowedRole={["Student", "Instructor", "Admin"]} />
+        }
+      >
         <Route path="/discussionForum" element={<DiscussionForum />} />
         <Route path="profile" element={<Profile />} />
       </Route>
-      
-      
 
       {/* Student Routes */}
       <Route element={<ProtectedRoutes allowedRole={["Student"]} />}>
@@ -94,7 +98,7 @@ const PageRoutes = () => {
           <Route path="create-quiz" element={<CreateQuizze />} />
           <Route path="course/:id" element={<CourseDetail />} />
           <Route path="courses/:id" element={<CourseContent />} />
-          <Route path="editcourse/:id" element={<EditCourse/>} />
+          <Route path="editcourse/:id" element={<EditCourse />} />
           <Route path="contact" element={<ContactUs />} />
         </Route>
       </Route>
@@ -107,7 +111,7 @@ const PageRoutes = () => {
           <Route path="manage-users" element={<ManageUsers />} />
           <Route path="manage-courses" element={<AdminCourses />} />
           <Route path="contact" element={<AdminContact />} />
-          <Route path="addcourse" element={<AddCourse/>} />
+          <Route path="addcourse" element={<AddCourse />} />
         </Route>
       </Route>
 
