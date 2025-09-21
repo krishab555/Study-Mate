@@ -224,6 +224,7 @@ export default function TakeQuizByCourse() {
     fontSize: "15px",
     width: "100%",
     textAlign: "left",
+    color: "#212529",
   };
 
   const selectedOptionStyle = {
@@ -231,11 +232,12 @@ export default function TakeQuizByCourse() {
     backgroundColor: "#e7f3ff",
     borderColor: "#4361ee",
     boxShadow: "0 4px 10px rgba(67, 97, 238, 0.15)",
+    color: "#212529",
   };
 
   const buttonStyle = {
     padding: "12px 25px",
-    background: "linear-gradient(90deg, #4361ee, #3a0ca3)",
+    background: "linear-gradient(90deg, #242836ff, #3a0ca3)",
     color: "#fff",
     border: "none",
     borderRadius: "8px",
