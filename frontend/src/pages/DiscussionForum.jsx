@@ -56,40 +56,49 @@ export default function DiscussionForum() {
         }
       );
       const data = await res.json();
-      if (data.success) setDiscussions(data.data);
+      if (data.success) {
+        let list = data.data;
+
+        // 👇 Only pinned posts in popular filter
+        if (filter === "popular") {
+          list = list.filter((d) => d.pinned);
+        }
+
+        setDiscussions(list);
+      }
     } catch (err) {
       console.error("Error fetching discussions:", err);
     }
   };
 
-  const handleSubmit = async () => {
-    if (!newTitle || !newContent)
-      return alert("Title and content are required");
-    try {
-      const res = await fetch("http://localhost:5000/api/discussions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          title: newTitle,
-          content: newContent,
-          courseId: selectedCourse || "",
-        }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        setNewTitle("");
-        setNewContent("");
-        setSelectedCourse("");
-        fetchDiscussions();
-      } else alert(data.message || "Failed to post discussion");
-    } catch (err) {
-      console.error(err);
-      alert("Error posting discussion");
-    }
-  };
+  // const handleSubmit = async () => {
+  //   if (!newTitle || !newContent)
+  //     return alert("Title and content are required");
+  //   try {
+  //     const res = await fetch("http://localhost:5000/api/discussions", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //       body: JSON.stringify({
+  //         title: newTitle,
+  //         content: newContent,
+  //         courseId: selectedCourse || "",
+  //       }),
+  //     });
+  //     const data = await res.json();
+  //     if (data.success) {
+  //       setNewTitle("");
+  //       setNewContent("");
+  //       setSelectedCourse("");
+  //       fetchDiscussions();
+  //     } else alert(data.message || "Failed to post discussion");
+  //   } catch (err) {
+  //     console.error(err);
+  //     alert("Error posting discussion");
+  //   }
+  // };
 
   const handleDelete = async (id) => {
     try {

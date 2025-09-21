@@ -281,4 +281,26 @@ export const createInstructor = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
+export const getAllInstructors = async (req, res) => {
+  try {
+    // Find role ID for Instructor
+    const instructorRole = await RoleModel.findOne({ name: "Instructor" });
+    if (!instructorRole) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Instructor role not found" });
+    }
+
+    const instructors = await UserModel.find({
+      role: instructorRole._id,
+    }).select("_id name email");
+
+    res.status(200).json({ success: true, data: instructors });
+  } catch (err) {
+    console.error("Error fetching instructors:", err);
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to fetch instructors" });
+  }
+};
 

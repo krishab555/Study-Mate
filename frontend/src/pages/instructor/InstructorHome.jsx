@@ -131,10 +131,10 @@ export default function InstructorHome() {
           style={buttonStyle}
           onClick={(e) => {
             e.stopPropagation();
-            navigate(`/instructor/course/${course._id}`);
+            navigate(`/instructor/editcourse/${course._id}`);
           }}
         >
-          Manage Course
+          Edit Course
         </button>
       </div>
     </div>

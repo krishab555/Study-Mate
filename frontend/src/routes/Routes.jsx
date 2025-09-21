@@ -5,13 +5,9 @@ import ProtectedRoutes from "./ProctectedRoutes";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import DiscussionForum from "../pages/DiscussionForum";
-
-// Landing Page
 import LandingPage from "../pages/LandingPage";
+import Profile from "../pages/Profile";
 
-// Dashboard / Layouts
-import Dashboard from "../pages/Dashboard";
-import Layout from "./Layout";
 
 // Student
 import StudentLayout from "./StudentLayout";
@@ -20,7 +16,7 @@ import Courses from "../pages/student/Courses";
 import CourseDetail from "../pages/student/CourseDetail";
 import FAQSubjects from "../pages/student/FAQSubjects";
 import FAQDetails from "../pages/student/FAQDetails";
-import CoursePayment from "../pages/student/CoursePayment"; // ✅ Add this line
+import CoursePayment from "../pages/student/CoursePayment"; 
 
 // Student Certificates (NEW)
 import Certificate from "../pages/student/Certificate";
@@ -30,21 +26,22 @@ import TakeQuizze from "../pages/student/TakeQuizByCourse"; // <-- Add this
 // Instructor
 import InstructorHome from "../pages/instructor/InstructorHome";
 import InstructorLayout from "./InstructorLayout";
-import AddCourse from "../pages/instructor/AddCourse";
+import EditCourse from "../pages/instructor/EditCourse";
 import CreateQuizze from "../pages/instructor/CreateQuizze"; // <-- Add this
 
 // Admin
 import AdminHome from "../pages/admin/AdminHome";
 import AdminLayout from "./AdminLayout";
-import Profile from "../pages/Profile";
 import ManageUsers from "../pages/admin/ManageUsers";
 import AdminCourses from "../pages/admin/AdminCourses";
 import ContactUs from "../pages/student/ContactUs";
 import AdminContact from "../pages/admin/AdminContact";
 import CourseContent from "../pages/student/CourseContent";
+import AddCourse from "../pages/admin/AddCourse";
 
 import QuizCourses from "../pages/student/QuizCourses";
 import TakeQuizByCourse from "../pages/student/TakeQuizByCourse";
+
 
 const PageRoutes = () => {
   return (
@@ -53,14 +50,12 @@ const PageRoutes = () => {
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
       <Route path="/" element={<LandingPage />} />
-      <Route
-        element={
-          <ProtectedRoutes allowedRole={["Student", "Instructor", "Admin"]} />
-        }
-      >
+      <Route element={ <ProtectedRoutes allowedRole={["Student", "Instructor", "Admin"]} />}>
         <Route path="/discussionForum" element={<DiscussionForum />} />
         <Route path="profile" element={<Profile />} />
       </Route>
+      
+      
 
       {/* Student Routes */}
       <Route element={<ProtectedRoutes allowedRole={["Student"]} />}>
@@ -69,17 +64,18 @@ const PageRoutes = () => {
           <Route path="home" element={<Home />} />
           <Route path="courses" element={<Courses />} />
 
-          <Route path="certificate" element={<CertificateDetail/>} />
-          <Route path="/student/quiz-course/:courseId" element={<TakeQuizByCourse/>} />
+          <Route path="certificate" element={<CertificateDetail />} />
+          <Route
+            path="/student/quiz-course/:courseId"
+            element={<TakeQuizByCourse />}
+          />
           <Route path="courses/:id/payment" element={<CoursePayment />} />
           <Route path="contact" element={<ContactUs />} />
-           <Route path="quiz/courses" element={<QuizCourses/>} />
-          <Route path ="courses/:id" element={<CourseContent />}
-          />
+          <Route path="quiz/courses" element={<QuizCourses />} />
+          <Route path="courses/:id" element={<CourseContent />} />
           {/* <Route path="quizzes" element={<QuizCourses/>} /> */}
-          <Route path="course/:courseId/start" element={<CourseDetail/>} />
-          <Route path="course/:courseId" element={<CourseContent/>} />
-
+          <Route path="course/:courseId/start" element={<CourseDetail />} />
+          <Route path="course/:courseId" element={<CourseContent />} />
         </Route>
       </Route>
 
@@ -96,9 +92,9 @@ const PageRoutes = () => {
           <Route index element={<InstructorHome />} />
           <Route path="home" element={<InstructorHome />} />
           <Route path="create-quiz" element={<CreateQuizze />} />
-          <Route path="course/:id" element={<CourseDetail/>} />
-          <Route path ="courses/:id" element={<CourseContent />}/>
-          <Route path="addcourse" element={<AddCourse />} />
+          <Route path="course/:id" element={<CourseDetail />} />
+          <Route path="courses/:id" element={<CourseContent />} />
+          <Route path="editcourse/:id" element={<EditCourse/>} />
           <Route path="contact" element={<ContactUs />} />
         </Route>
       </Route>
@@ -111,6 +107,7 @@ const PageRoutes = () => {
           <Route path="manage-users" element={<ManageUsers />} />
           <Route path="manage-courses" element={<AdminCourses />} />
           <Route path="contact" element={<AdminContact />} />
+          <Route path="addcourse" element={<AddCourse/>} />
         </Route>
       </Route>
 

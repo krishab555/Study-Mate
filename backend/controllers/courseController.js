@@ -24,8 +24,13 @@ export const getCoursesController = async (req, res) => {
 // Create a new course
 export const createCourseController = async (req, res) => {
   try {
+     if (req.user.role !== "Admin") {
+       return res
+         .status(403)
+         .json({ success: false, message: "Only admin can create courses" });
+     }
 
-    const { title, description, instructor, price, isPaid, category, level } =
+    const { title, description, instructorId, price, isPaid, category, level } =
       req.body;
      const pdfFile = req.files?.pdf?.[0];
      const imageFile = req.files?.image?.[0];
@@ -48,9 +53,10 @@ export const createCourseController = async (req, res) => {
     const course = await CourseModel.create({
       title,
       description,
-      instructor: req.user._id,
+      instructor:  instructorId,
+      createdBy: req.user._id,
       price: finalPrice,
-      isPaid : paidStatus,
+      isPaid: paidStatus,
       category,
       level,
       pdfUrl,
@@ -71,6 +77,26 @@ export const updateCourseController = async (req, res) => {
   try {
     const { id } = req.params;
     const reqBody = req.body || {};
+
+    const course = await CourseModel.findById(id);
+    if (!course) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Course not found" });
+    }
+
+    // ✅ Only the assigned instructor or admin can edit
+    if (
+      req.user.role !== "Admin" &&
+      course.instructor.toString() !== req.user._id.toString()
+    ) {
+      return res
+        .status(403)
+        .json({
+          success: false,
+          message: "Not authorized to edit this course",
+        });
+    }
     
     const pdfFile = req.files?.pdf?.[0];
     const imageFile = req.files?.image?.[0];
@@ -81,21 +107,21 @@ export const updateCourseController = async (req, res) => {
     if (videoFile) reqBody.videoUrl = `/uploads/videos/${videoFile.filename}`;
 
 
-    // If howToComplete is in body, handle parsing like above
-    if (reqBody.howToComplete) {
-      if (typeof reqBody.howToComplete === "string") {
-        try {
-          reqBody.howToComplete = JSON.parse(reqBody.howToComplete);
-          if (!Array.isArray(reqBody.howToComplete)) {
-            reqBody.howToComplete = [reqBody.howToComplete];
-          }
-        } catch {
-          reqBody.howToComplete = reqBody.howToComplete
-            .split(",")
-            .map((s) => s.trim());
-        }
-      }
-    }
+    // // If howToComplete is in body, handle parsing like above
+    // if (reqBody.howToComplete) {
+    //   if (typeof reqBody.howToComplete === "string") {
+    //     try {
+    //       reqBody.howToComplete = JSON.parse(reqBody.howToComplete);
+    //       if (!Array.isArray(reqBody.howToComplete)) {
+    //         reqBody.howToComplete = [reqBody.howToComplete];
+    //       }
+    //     } catch {
+    //       reqBody.howToComplete = reqBody.howToComplete
+    //         .split(",")
+    //         .map((s) => s.trim());
+    //     }
+    //   }
+    // }
 
     if (reqBody.category) {
       if (reqBody.category.toLowerCase() === "basic") {
