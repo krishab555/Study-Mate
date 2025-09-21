@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../components/common/Navbar";
 import SideBar from "../components/common/SideBar";
 import DiscussionModal from "../components/common/DiscussionModel";
-import "../pages/DisscussionForum.css";
 import Footer from "../components/common/Footer";
 
 export default function DiscussionForum() {
@@ -34,8 +33,7 @@ export default function DiscussionForum() {
           },
         });
         const data = await res.json();
-        if (data.success) setCourses(data.data); 
-       
+        if (data.success) setCourses(data.data);
       } catch (err) {
         console.error("Failed to fetch courses", err);
       }
@@ -59,7 +57,6 @@ export default function DiscussionForum() {
       if (data.success) {
         let list = data.data;
 
-        // 👇 Only pinned posts in popular filter
         if (filter === "popular") {
           list = list.filter((d) => d.pinned);
         }
@@ -70,35 +67,6 @@ export default function DiscussionForum() {
       console.error("Error fetching discussions:", err);
     }
   };
-
-  // const handleSubmit = async () => {
-  //   if (!newTitle || !newContent)
-  //     return alert("Title and content are required");
-  //   try {
-  //     const res = await fetch("http://localhost:5000/api/discussions", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //       body: JSON.stringify({
-  //         title: newTitle,
-  //         content: newContent,
-  //         courseId: selectedCourse || "",
-  //       }),
-  //     });
-  //     const data = await res.json();
-  //     if (data.success) {
-  //       setNewTitle("");
-  //       setNewContent("");
-  //       setSelectedCourse("");
-  //       fetchDiscussions();
-  //     } else alert(data.message || "Failed to post discussion");
-  //   } catch (err) {
-  //     console.error(err);
-  //     alert("Error posting discussion");
-  //   }
-  // };
 
   const handleDelete = async (id) => {
     try {
@@ -129,7 +97,6 @@ export default function DiscussionForum() {
       );
       const data = await res.json();
       if (data.success) {
-        // Update frontend immediately
         setDiscussions((prev) =>
           prev.map((d) =>
             d._id === post._id ? { ...d, pinned: !post.pinned } : d
@@ -151,7 +118,6 @@ export default function DiscussionForum() {
         {
           method: "POST",
           headers: {
-            
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
@@ -194,7 +160,6 @@ export default function DiscussionForum() {
       if (data.success) {
         fetchDiscussions();
         setShowModal(false);
-        
       } else {
         alert(data.message || "Failed to post discussion");
       }
@@ -203,24 +168,291 @@ export default function DiscussionForum() {
     }
   };
 
+  // Inline styles
+  const styles = {
+    container: {
+      minHeight: "100vh",
+      backgroundColor: "#f8fafc",
+      fontFamily: "'Inter', sans-serif",
+    },
+    discussionContainer: {
+      display: "flex",
+      minHeight: "calc(100vh - 80px)",
+      paddingTop: "80px", // Added padding to prevent navbar overlap
+    },
+    content: {
+      flex: 1,
+      padding: "24px",
+      marginLeft: "250px",
+      maxWidth: "calc(100% - 250px)",
+    },
+    header: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginBottom: "24px",
+    },
+    title: {
+      fontSize: "28px",
+      fontWeight: "700",
+      color: "#1e293b",
+      margin: 0,
+    },
+    newDiscussionBtn: {
+      backgroundColor: "#4f46e5",
+      color: "white",
+      border: "none",
+      borderRadius: "8px",
+      padding: "12px 20px",
+      fontSize: "16px",
+      fontWeight: "600",
+      cursor: "pointer",
+      display: "flex",
+      alignItems: "center",
+      gap: "8px",
+      boxShadow: "0 4px 6px rgba(79, 70, 229, 0.2)",
+      transition: "all 0.2s ease",
+    },
+    filterContainer: {
+      display: "flex",
+      gap: "12px",
+      marginBottom: "24px",
+    },
+    filterBtn: {
+      padding: "8px 16px",
+      borderRadius: "6px",
+      border: "1px solid #e2e8f0",
+      backgroundColor: "white",
+      cursor: "pointer",
+      fontSize: "14px",
+      fontWeight: "500",
+      transition: "all 0.2s ease",
+    },
+    activeFilter: {
+      backgroundColor: "#4f46e5",
+      color: "white",
+      borderColor: "#4f46e5",
+    },
+    courseSection: {
+      backgroundColor: "white",
+      borderRadius: "12px",
+      boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+      marginBottom: "20px",
+      overflow: "hidden",
+    },
+    courseHeader: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      padding: "16px 20px",
+      backgroundColor: "#f1f5f9",
+      cursor: "pointer",
+      borderBottom: "1px solid #e2e8f0",
+    },
+    courseName: {
+      fontSize: "18px",
+      fontWeight: "600",
+      color: "#1e293b",
+      margin: 0,
+    },
+    courseToggle: {
+      fontSize: "14px",
+      color: "#64748b",
+    },
+    discussionCard: {
+      padding: "20px",
+      borderBottom: "1px solid #f1f5f9",
+      backgroundColor: "white",
+    },
+    postHeader: {
+      display: "flex",
+      alignItems: "flex-start",
+      marginBottom: "12px",
+    },
+    userAvatar: {
+      width: "40px",
+      height: "40px",
+      borderRadius: "50%",
+      backgroundColor: "#4f46e5",
+      color: "white",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      fontWeight: "600",
+      fontSize: "16px",
+      marginRight: "12px",
+      flexShrink: 0,
+    },
+    userInfo: {
+      flex: 1,
+    },
+    userName: {
+      fontSize: "16px",
+      fontWeight: "600",
+      color: "#1e293b",
+      margin: "0 0 4px 0",
+    },
+    postTitle: {
+      fontSize: "18px",
+      fontWeight: "600",
+      color: "#1e293b",
+      margin: "0 0 8px 0",
+    },
+    pinnedBadge: {
+      backgroundColor: "#fef3c7",
+      color: "#92400e",
+      padding: "4px 8px",
+      borderRadius: "4px",
+      fontSize: "12px",
+      fontWeight: "500",
+      display: "inline-flex",
+      alignItems: "center",
+      gap: "4px",
+    },
+    postContent: {
+      fontSize: "16px",
+      color: "#475569",
+      lineHeight: "1.6",
+      margin: "0 0 16px 0",
+    },
+    postActions: {
+      display: "flex",
+      gap: "12px",
+      alignItems: "center",
+    },
+    actionBtn: {
+      padding: "8px 12px",
+      borderRadius: "6px",
+      border: "1px solid #e2e8f0",
+      backgroundColor: "white",
+      cursor: "pointer",
+      fontSize: "14px",
+      fontWeight: "500",
+      display: "flex",
+      alignItems: "center",
+      gap: "6px",
+      transition: "all 0.2s ease",
+    },
+    pinBtn: {
+      backgroundColor: "#fef3c7",
+      borderColor: "#fef3c7",
+      color: "#92400e",
+    },
+    commentBtn: {
+      backgroundColor: "#eff6ff",
+      borderColor: "#eff6ff",
+      color: "#1e40af",
+    },
+    deleteBtn: {
+      backgroundColor: "#fee2e2",
+      borderColor: "#fee2e2",
+      color: "#b91c1c",
+    },
+    commentsSection: {
+      marginTop: "16px",
+      paddingTop: "16px",
+      borderTop: "1px solid #f1f5f9",
+    },
+    commentInputContainer: {
+      display: "flex",
+      gap: "12px",
+      marginBottom: "16px",
+    },
+    commentTextarea: {
+      flex: 1,
+      padding: "12px",
+      borderRadius: "8px",
+      border: "1px solid #e2e8f0",
+      fontSize: "14px",
+      resize: "vertical",
+      minHeight: "80px",
+    },
+    commentSubmitBtn: {
+      padding: "12px 16px",
+      backgroundColor: "#4f46e5",
+      color: "white",
+      border: "none",
+      borderRadius: "8px",
+      fontSize: "14px",
+      fontWeight: "500",
+      cursor: "pointer",
+      alignSelf: "flex-start",
+    },
+    commentsList: {
+      display: "flex",
+      flexDirection: "column",
+      gap: "12px",
+    },
+    commentItem: {
+      display: "flex",
+      gap: "12px",
+    },
+    commentAvatar: {
+      width: "32px",
+      height: "32px",
+      borderRadius: "50%",
+      backgroundColor: "#94a3b8",
+      color: "white",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      fontWeight: "600",
+      fontSize: "14px",
+      flexShrink: 0,
+    },
+    commentContent: {
+      flex: 1,
+      backgroundColor: "#f8fafc",
+      padding: "12px",
+      borderRadius: "8px",
+    },
+    commentAuthor: {
+      fontSize: "14px",
+      fontWeight: "600",
+      color: "#1e293b",
+      margin: "0 0 4px 0",
+    },
+    commentText: {
+      fontSize: "14px",
+      color: "#475569",
+      margin: 0,
+      lineHeight: "1.5",
+    },
+    noDiscussions: {
+      textAlign: "center",
+      padding: "40px",
+      backgroundColor: "white",
+      borderRadius: "12px",
+      boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+    },
+  };
+
   return (
-    <div className="discussion-forum-page">
+    <div style={styles.container}>
       <Navbar />
-      <div className="discussion-container">
+      <div style={styles.discussionContainer}>
         <SideBar />
-        <div className="discussion-content">
-          {/* Modified header section */}
-          <div className="discussion-header">
-            <h2 className="discussion-title">Discussion Forum</h2>
+        <div style={styles.content}>
+          {/* Header section */}
+          <div style={styles.header}>
+            <h2 style={styles.title}>Discussion Forum</h2>
             <button
-              className="new-discussion-btn"
+              style={styles.newDiscussionBtn}
               onClick={() => setShowModal(true)}
+              onMouseOver={(e) => {
+                e.target.style.backgroundColor = "#4338ca";
+                e.target.style.transform = "translateY(-2px)";
+              }}
+              onMouseOut={(e) => {
+                e.target.style.backgroundColor = "#4f46e5";
+                e.target.style.transform = "translateY(0)";
+              }}
             >
-              New Discussion
+              <span>+</span> New Discussion
             </button>
           </div>
 
-          {/* Inject Modal */}
+          {/* Modal */}
           <DiscussionModal
             isOpen={showModal}
             onClose={() => setShowModal(false)}
@@ -229,15 +461,21 @@ export default function DiscussionForum() {
           />
 
           {/* Filter Buttons */}
-          <div className="filter-container">
+          <div style={styles.filterContainer}>
             <button
-              className={`filter-btn ${filter === "latest" ? "active" : ""}`}
+              style={{
+                ...styles.filterBtn,
+                ...(filter === "latest" ? styles.activeFilter : {}),
+              }}
               onClick={() => setFilter("latest")}
             >
               Latest
             </button>
             <button
-              className={`filter-btn ${filter === "popular" ? "active" : ""}`}
+              style={{
+                ...styles.filterBtn,
+                ...(filter === "popular" ? styles.activeFilter : {}),
+              }}
               onClick={() => setFilter("popular")}
             >
               Popular
@@ -246,59 +484,62 @@ export default function DiscussionForum() {
 
           {/* Grouped Discussions */}
           {Object.keys(groupedByCourse).length === 0 ? (
-            <div className="no-discussions">
-              <p>No discussions found</p>
+            <div style={styles.noDiscussions}>
+              <p>No discussions found. Start a new discussion!</p>
             </div>
           ) : (
-            <div className="discussions-container">
+            <div>
               {Object.entries(groupedByCourse).map(
                 ([courseName, courseDiscussions]) => (
-                  <div key={courseName} className="course-discussion-section">
+                  <div key={courseName} style={styles.courseSection}>
                     <div
-                      className="course-header"
+                      style={styles.courseHeader}
                       onClick={() =>
                         setExpandedCourse(
                           expandedCourse === courseName ? null : courseName
                         )
                       }
                     >
-                      <span className="course-name">{courseName}</span>
-                      <span className="course-toggle">
+                      <h3 style={styles.courseName}>{courseName}</h3>
+                      <span style={styles.courseToggle}>
                         {expandedCourse === courseName ? "▲" : "▼"}
                       </span>
                     </div>
 
                     {expandedCourse === courseName &&
                       courseDiscussions.map((post) => (
-                        <div key={post._id} className="discussion-card">
+                        <div key={post._id} style={styles.discussionCard}>
                           {/* User Info */}
-                          <div className="post-header">
-                            <div className="user-avatar">
+                          <div style={styles.postHeader}>
+                            <div style={styles.userAvatar}>
                               {post.details[0]?.user?.name
                                 .charAt(0)
                                 .toUpperCase()}
                             </div>
-                            <div className="user-info">
-                              <div className="user-name">
+                            <div style={styles.userInfo}>
+                              <div style={styles.userName}>
                                 {post.details[0]?.user?.name}
                               </div>
-                              <div className="post-title">{post.title}</div>
+                              <div style={styles.postTitle}>{post.title}</div>
                             </div>
                             {post.pinned && (
-                              <span className="pinned-badge">📌 Pinned</span>
+                              <span style={styles.pinnedBadge}>📌 Pinned</span>
                             )}
                           </div>
 
                           {/* Post Content */}
-                          <p className="post-content">
+                          <p style={styles.postContent}>
                             {post.details[0]?.content}
                           </p>
 
                           {/* Actions */}
-                          <div className="post-actions">
+                          <div style={styles.postActions}>
                             {role === "Instructor" && (
                               <button
-                                className="action-btn pin-btn"
+                                style={{
+                                  ...styles.actionBtn,
+                                  ...styles.pinBtn,
+                                }}
                                 onClick={() => handlePin(post._id)}
                                 title={
                                   post.pinned
@@ -306,11 +547,14 @@ export default function DiscussionForum() {
                                     : "Pin this post"
                                 }
                               >
-                                📌
+                                📌 {post.pinned ? "Unpin" : "Pin"}
                               </button>
                             )}
                             <button
-                              className="action-btn comment-btn"
+                              style={{
+                                ...styles.actionBtn,
+                                ...styles.commentBtn,
+                              }}
                               onClick={() =>
                                 setExpandedPost(
                                   expandedPost === post._id ? null : post._id
@@ -321,7 +565,10 @@ export default function DiscussionForum() {
                             </button>
                             {role === "Admin" && (
                               <button
-                                className="action-btn delete-btn"
+                                style={{
+                                  ...styles.actionBtn,
+                                  ...styles.deleteBtn,
+                                }}
                                 onClick={() => handleDelete(post._id)}
                                 title="Delete this post"
                               >
@@ -332,10 +579,10 @@ export default function DiscussionForum() {
 
                           {/* Comments */}
                           {expandedPost === post._id && (
-                            <div className="comments-section">
-                              <div className="comment-input-container">
+                            <div style={styles.commentsSection}>
+                              <div style={styles.commentInputContainer}>
                                 <textarea
-                                  className="comment-textarea"
+                                  style={styles.commentTextarea}
                                   placeholder="Write a comment..."
                                   value={commentText[post._id] || ""}
                                   onChange={(e) =>
@@ -346,24 +593,24 @@ export default function DiscussionForum() {
                                   }
                                 />
                                 <button
-                                  className="comment-submit-btn"
+                                  style={styles.commentSubmitBtn}
                                   onClick={() => handleComment(post._id)}
                                 >
                                   Submit
                                 </button>
                               </div>
 
-                              <div className="comments-list">
+                              <div style={styles.commentsList}>
                                 {post.details?.slice(1).map((c) => (
-                                  <div key={c._id} className="comment-item">
-                                    <div className="comment-avatar">
+                                  <div key={c._id} style={styles.commentItem}>
+                                    <div style={styles.commentAvatar}>
                                       {c.user?.name.charAt(0).toUpperCase()}
                                     </div>
-                                    <div className="comment-content">
-                                      <div className="comment-author">
+                                    <div style={styles.commentContent}>
+                                      <div style={styles.commentAuthor}>
                                         {c.user?.name}
                                       </div>
-                                      <div className="comment-text">
+                                      <div style={styles.commentText}>
                                         {c.content}
                                       </div>
                                     </div>
@@ -381,8 +628,7 @@ export default function DiscussionForum() {
           )}
         </div>
       </div>
-      {/* <Footer/> */}
+      <Footer />
     </div>
-
   );
 }
