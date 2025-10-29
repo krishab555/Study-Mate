@@ -2,7 +2,8 @@ import express from "express";
 import { authenticateUser } from "../middleware/authenticateUser.js";
 import { authorizeRoles } from "../middleware/authorizeRoles.js";
 import {
-  processPayment,
+  createStripeSession,
+  // processPayment,
   // verifyPayment,
 } from "../controllers/paymentController.js";
 
@@ -10,10 +11,11 @@ const paymentRoutes = express.Router();
 
 // Only students can pay
 paymentRoutes.post(
-  "/",
+  "/session",
   authenticateUser,
   authorizeRoles("Student"),
-  processPayment
+  createStripeSession
+  // processPayment
 );
  
 // paymentRoutes.post(

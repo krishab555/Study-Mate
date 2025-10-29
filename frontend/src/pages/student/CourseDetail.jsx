@@ -382,6 +382,9 @@ import Navbar from "../../components/common/Navbar";
 import Footer from "../../components/common/Footer";
 import { SidebarLayout } from "../../components/common/SideBar";
 import { apiRequest } from "../../utils/api";
+// import axios from "axios";
+// import StripePayment from "./StripePayment";
+// import TakeQuizze from "./TakeQuizByCourse";
 
 export default function CourseDetail() {
   const { id } = useParams();

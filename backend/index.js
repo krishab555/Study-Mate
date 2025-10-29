@@ -24,6 +24,7 @@ import searchRouter from "./routes/searchRoutes.js";
 // Initialize app
 
 dotenv.config();
+console.log("Environment:", process.env.STRIPE_SECRET_KEY);
 const app = express();
 
 // Connect to MongoDB
@@ -52,6 +53,7 @@ app.use("/api/quiz", quizRouter);
 app.use("/api/userQuiz", userQuizRouter);
 app.use("/api/enrollments", enrollmentRoutes);
 app.use("/api/payments", paymentRoutes);
+
 app.use("/api/instructor", instructorRoutes);
 app.use("/api/notifications", NotificationRouter)
 app.use("/api/contact", messageRouter);
@@ -60,7 +62,9 @@ app.use("/api/discussions", discussionRouter);
 app.get("/", (req, res) => {
   res.send("Study-Mate API is running...");
 });
+console.log("Stripe Key:", process.env.STRIPE_SECRET_KEY);
 app.use("/uploads", express.static("uploads"));
+
 
 // Global error handler
 app.use((err, req, res, next) => {

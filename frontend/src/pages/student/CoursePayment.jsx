@@ -48,9 +48,12 @@ export default function CoursePayment() {
           method: "POST",
           body: { courseId: course._id, amount: course.price },
         });
-        if (response.success) {
-          // redirect to Stripe checkout page
-          window.location.href = response.sessionUrl || `https://checkout.stripe.com/pay/${response.sessionId}`;
+
+        if (response.success && response.sessionUrl) {
+          // Redirect to Stripe test checkout
+          window.location.href = response.sessionUrl;
+        } else {
+          alert("Stripe session creation failed");
         }
       } else if (method === "esewa") {
         response = await apiRequest({
@@ -58,15 +61,18 @@ export default function CoursePayment() {
           method: "POST",
           body: { courseId: course._id, amount: course.price, txnId },
         });
-        if (response.success) {
-          window.location.href = response.esewaUrl;
-        }
+        if (response.success) window.location.href = response.esewaUrl;
       } else {
-        // Dummy payment (for testing)
+        // Dummy payment
         response = await apiRequest({
           endpoint: "/payments",
           method: "POST",
-          body: { courseId: course._id, amount: course.price, transactionId: txnId, method },
+          body: {
+            courseId: course._id,
+            amount: course.price,
+            transactionId: txnId,
+            method,
+          },
         });
         if (response.success) {
           alert("Payment successful! You are enrolled.");
@@ -80,6 +86,54 @@ export default function CoursePayment() {
       setProcessing(false);
     }
   };
+
+
+  // const handlePayment = async (method) => {
+  //   if (!course) return;
+  //   setProcessing(true);
+
+  //   try {
+  //     const txnId = "TXN-" + Date.now();
+
+  //     let response;
+  //     if (method === "stripe") {
+  //       response = await apiRequest({
+  //         endpoint: "/payments/stripe-session",
+  //         method: "POST",
+  //         body: { courseId: course._id, amount: course.price },
+  //       });
+  //       if (response.success) {
+  //         // redirect to Stripe checkout page
+  //         window.location.href = response.sessionUrl || `https://checkout.stripe.com/pay/${response.sessionId}`;
+  //       }
+  //     } else if (method === "esewa") {
+  //       response = await apiRequest({
+  //         endpoint: "/payments/esewa",
+  //         method: "POST",
+  //         body: { courseId: course._id, amount: course.price, txnId },
+  //       });
+  //       if (response.success) {
+  //         window.location.href = response.esewaUrl;
+  //       }
+  //     } else {
+  //       // Dummy payment (for testing)
+  //       response = await apiRequest({
+  //         endpoint: "/payments",
+  //         method: "POST",
+  //         body: { courseId: course._id, amount: course.price, transactionId: txnId, method },
+  //       });
+  //       if (response.success) {
+  //         alert("Payment successful! You are enrolled.");
+  //         navigate(`/student/courses/${course._id}/start`);
+  //       }
+  //     }
+  //   } catch (err) {
+  //     console.error(err);
+  //     alert("Payment failed.");
+  //   } finally {
+  //     setProcessing(false);
+  //   }
+  // };
 
   if (loading)
     return (
