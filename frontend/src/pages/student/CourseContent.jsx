@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 export default function CourseContent() {
-  const { courseId } = useParams(); // get course ID from URL
+  const { id } = useParams(); // get course ID from URL
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
   const token = localStorage.getItem("token");
@@ -10,7 +10,7 @@ export default function CourseContent() {
   useEffect(() => {
     const fetchCourse = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/courses/${courseId}`, {
+        const res = await fetch(`http://localhost:5000/api/courses/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
        const data = await res.json();
@@ -24,7 +24,7 @@ export default function CourseContent() {
     };
 
     fetchCourse();
-  }, [courseId, token]);
+  }, [id, token]);
 
   if (loading) return <p style={{ marginLeft: "250px" }}>Loading course...</p>;
   if (!course) return <p style={{ marginLeft: "250px" }}>Course not found</p>;

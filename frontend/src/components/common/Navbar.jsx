@@ -29,6 +29,40 @@ export default function Navbar() {
   const [passwordUpdateStatus, setPasswordUpdateStatus] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploadStatus, setUploadStatus] = useState(null);
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState({courses:[],instructors:[]});
+  const [showDropdown, setShowDropdown] = useState(false);
+
+ useEffect(() => {
+   if (!query) {
+     setResults({ courses: [], instructors: [] });
+     return;
+   }
+
+   const fetchResults = async () => {
+     try {
+       const res = await fetch(`http://localhost:5000/api/search?q=${query}`);
+       const data = await res.json();
+       if (data.success) {
+         setResults(data.data);
+         setShowDropdown(true);
+       }
+     } catch (err) {
+       console.error(err);
+     }
+   };
+
+   const debounce = setTimeout(fetchResults, 300); // debounce typing
+   return () => clearTimeout(debounce);
+ }, [query]);
+
+ // Function to handle selection
+ const handleSelect = (type, id) => {
+   if (type === "course") navigate(`/courses/${id}`);
+   else if (type === "instructor") navigate(`/instructor/${id}`);
+   setShowDropdown(false);
+ };
+
 
   // Scroll locking effect
   useEffect(() => {

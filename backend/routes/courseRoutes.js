@@ -29,7 +29,7 @@ courseRoutes.get("/", authenticateUser, getCoursesController);
 courseRoutes.post(
   "/",
   authenticateUser,
-  authorizeRoles("Instructor"),
+  authorizeRoles("Admin"),
   courseUploads,
   createCourseController
 );

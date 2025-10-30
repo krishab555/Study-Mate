@@ -79,7 +79,7 @@ const PageRoutes = () => {
           <Route path="courses/:id" element={<CourseContent />} />
           {/* <Route path="quizzes" element={<QuizCourses/>} /> */}
           <Route path="course/:courseId/start" element={<CourseDetail />} />
-          <Route path="course/:courseId" element={<CourseContent />} />
+          
         </Route>
       </Route>
 

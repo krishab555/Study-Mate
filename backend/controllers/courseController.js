@@ -25,7 +25,7 @@ export const getCoursesController = async (req, res) => {
 // Create a new course
 export const createCourseController = async (req, res) => {
   try {
-     if (req.user.role !== "Admin") {
+     if (!req.user?.role || String(req.user.role).toLowerCase() !== "Admin") {
        return res
          .status(403)
          .json({ success: false, message: "Only admin can create courses" });
@@ -113,21 +113,6 @@ export const updateCourseController = async (req, res) => {
     if (videoFile) reqBody.videoUrl = `/uploads/videos/${videoFile.filename}`;
 
 
-    // // If howToComplete is in body, handle parsing like above
-    // if (reqBody.howToComplete) {
-    //   if (typeof reqBody.howToComplete === "string") {
-    //     try {
-    //       reqBody.howToComplete = JSON.parse(reqBody.howToComplete);
-    //       if (!Array.isArray(reqBody.howToComplete)) {
-    //         reqBody.howToComplete = [reqBody.howToComplete];
-    //       }
-    //     } catch {
-    //       reqBody.howToComplete = reqBody.howToComplete
-    //         .split(",")
-    //         .map((s) => s.trim());
-    //     }
-    //   }
-    // }
 
     if (reqBody.category) {
       if (reqBody.category.toLowerCase() === "basic") {
@@ -205,6 +190,7 @@ export const getCourseByIdController = async (req, res) => {
       const enrollment = await EnrollmentModel.findOne({
         student: req.user.id,
         course: course._id,
+        isActive:true,
       });
       isEnrolled = !!enrollment;
     }
@@ -214,23 +200,7 @@ export const getCourseByIdController = async (req, res) => {
       data: { ...course.toObject(), isEnrolled }, // include isEnrolled
     });
   } catch (error) {
-    console.error(error);
+    console.error("error fetching the course",error);
     res.status(500).json({ success: false, message: error.message });
   }
-};
-// In courseController.js
-const courseDetailForStudent = async (req, res) => {
-  const course = await CourseModel.findById(req.params.id);
-  if (!course) return res.status(404).json({ message: "Course not found" });
-
-  const enrollment = await EnrollmentModel.findOne({
-    student: req.user.id,
-    course: course._id,
-    status: "active"
-  });
-
-  res.json({
-    ...course.toObject(),
-    isPaid: !!enrollment, // true if enrolled
-  });
 };

@@ -21,6 +21,7 @@ import discussionRouter from "./routes/discussionRoutes.js";
 import instructorRoutes from './routes/instructorRoutes.js'
 import NotificationRouter from "./routes/notificationRoutes.js";
 import searchRouter from "./routes/searchRoutes.js";
+import { createStripeSession, handleStripeWebhook } from "./controllers/paymentController.js";
 // Initialize app
 
 dotenv.config();
@@ -64,6 +65,12 @@ app.get("/", (req, res) => {
 });
 console.log("Stripe Key:", process.env.STRIPE_SECRET_KEY);
 app.use("/uploads", express.static("uploads"));
+app.post(
+  "/api/payments/webhook",
+  express.raw({ type: "application/json" }),
+  handleStripeWebhook
+);
+app.post("/api/payments/create-session", createStripeSession);
 
 
 // Global error handler

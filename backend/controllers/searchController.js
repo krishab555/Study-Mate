@@ -22,7 +22,7 @@ export const searchController = async (req, res) => {
         "name"
       );
       const instructors = allUsers.filter(
-        (user) => user.role?.name === "Teacher"
+        (user) => user.role?.name === "Instructor"
       );
 
     res.status(200).json({ success: true, data: { courses, instructors } });

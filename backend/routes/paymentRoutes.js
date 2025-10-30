@@ -2,7 +2,7 @@ import express from "express";
 import { authenticateUser } from "../middleware/authenticateUser.js";
 import { authorizeRoles } from "../middleware/authorizeRoles.js";
 import {
-  createStripeSession,
+  createStripeSession,getLatestPaymentForCourse
   // processPayment,
   // verifyPayment,
 } from "../controllers/paymentController.js";
@@ -15,14 +15,9 @@ paymentRoutes.post(
   authenticateUser,
   authorizeRoles("Student"),
   createStripeSession
-  // processPayment
+  
 );
+paymentRoutes.get("/latest/:courseId", authenticateUser, authorizeRoles("Student"),getLatestPaymentForCourse );
  
-// paymentRoutes.post(
-//   "/verify",
-//   authenticateUser,
-//   authorizeRoles("Student"),
-//   verifyPayment
-// );
 
 export default paymentRoutes;

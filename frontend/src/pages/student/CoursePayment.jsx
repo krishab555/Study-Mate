@@ -34,50 +34,22 @@ export default function CoursePayment() {
     fetchCourse();
   }, [id, navigate]);
 
-  const handlePayment = async (method) => {
+  const handleStripePayment = async () => {
     if (!course) return;
     setProcessing(true);
 
     try {
-      const txnId = "TXN-" + Date.now();
+      const response = await apiRequest({
+        endpoint: "/payments/session", // Your backend endpoint
+        method: "POST",
+        body: { courseId: course._id, amount: course.price },
+      });
 
-      let response;
-      if (method === "stripe") {
-        response = await apiRequest({
-          endpoint: "/payments/stripe-session",
-          method: "POST",
-          body: { courseId: course._id, amount: course.price },
-        });
-
-        if (response.success && response.sessionUrl) {
-          // Redirect to Stripe test checkout
-          window.location.href = response.sessionUrl;
-        } else {
-          alert("Stripe session creation failed");
-        }
-      } else if (method === "esewa") {
-        response = await apiRequest({
-          endpoint: "/payments/esewa",
-          method: "POST",
-          body: { courseId: course._id, amount: course.price, txnId },
-        });
-        if (response.success) window.location.href = response.esewaUrl;
+      if (response.success && response.sessionUrl) {
+        // Redirect user to Stripe Checkout
+        window.location.href = response.sessionUrl;
       } else {
-        // Dummy payment
-        response = await apiRequest({
-          endpoint: "/payments",
-          method: "POST",
-          body: {
-            courseId: course._id,
-            amount: course.price,
-            transactionId: txnId,
-            method,
-          },
-        });
-        if (response.success) {
-          alert("Payment successful! You are enrolled.");
-          navigate(`/student/courses/${course._id}/start`);
-        }
+        alert(response.message || "Failed to create Stripe session");
       }
     } catch (err) {
       console.error(err);
@@ -88,53 +60,7 @@ export default function CoursePayment() {
   };
 
 
-  // const handlePayment = async (method) => {
-  //   if (!course) return;
-  //   setProcessing(true);
-
-  //   try {
-  //     const txnId = "TXN-" + Date.now();
-
-  //     let response;
-  //     if (method === "stripe") {
-  //       response = await apiRequest({
-  //         endpoint: "/payments/stripe-session",
-  //         method: "POST",
-  //         body: { courseId: course._id, amount: course.price },
-  //       });
-  //       if (response.success) {
-  //         // redirect to Stripe checkout page
-  //         window.location.href = response.sessionUrl || `https://checkout.stripe.com/pay/${response.sessionId}`;
-  //       }
-  //     } else if (method === "esewa") {
-  //       response = await apiRequest({
-  //         endpoint: "/payments/esewa",
-  //         method: "POST",
-  //         body: { courseId: course._id, amount: course.price, txnId },
-  //       });
-  //       if (response.success) {
-  //         window.location.href = response.esewaUrl;
-  //       }
-  //     } else {
-  //       // Dummy payment (for testing)
-  //       response = await apiRequest({
-  //         endpoint: "/payments",
-  //         method: "POST",
-  //         body: { courseId: course._id, amount: course.price, transactionId: txnId, method },
-  //       });
-  //       if (response.success) {
-  //         alert("Payment successful! You are enrolled.");
-  //         navigate(`/student/courses/${course._id}/start`);
-  //       }
-  //     }
-  //   } catch (err) {
-  //     console.error(err);
-  //     alert("Payment failed.");
-  //   } finally {
-  //     setProcessing(false);
-  //   }
-  // };
-
+ 
   if (loading)
     return (
       <p style={{ padding: 20, textAlign: "center" }}>
@@ -178,30 +104,6 @@ export default function CoursePayment() {
      {processing ? "Processing..." : "Pay with Stripe"}
   </button>
 
-  {/* eSewa Button */}
-  <button
-    onClick={() => handlePayment("esewa")}
-    disabled={processing}
-    style={{
-      display: "flex",
-      alignItems: "center",
-      gap: "8px",
-      padding: "12px 20px",
-      background: "#8b3104ff",
-      color: "#fff",
-      fontWeight: "bold",
-      fontSize: "16px",
-      border: "none",
-      borderRadius: "8px",
-      cursor: processing ? "not-allowed" : "pointer",
-      boxShadow: "0 4px 12px rgba(242, 106, 39, 0.4)",
-      transition: "all 0.2s ease-in-out",
-    }}
-    onMouseEnter={(e) => (e.currentTarget.style.background = "#af3c02ff")}
-    onMouseLeave={(e) => (e.currentTarget.style.background = "#8b3104ff")}
-  >
-     {processing ? "Processing..." : "Pay with eSewa"}
-  </button>
 </div>
 
         </div>
