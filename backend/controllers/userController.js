@@ -178,6 +178,12 @@ export const updatePassword = async (req, res) => {
     await foundUser.save();
 
     res.json({ success: true, message: "Password updated successfully!" });
+    await createNotification({
+      userId: foundUser._id,
+      message: `Your password has been updated successfully.`,
+      type: "announcement",
+    });
+
   } catch (error) {
     console.log(error);
     res.json({ success: false, message: error.message });

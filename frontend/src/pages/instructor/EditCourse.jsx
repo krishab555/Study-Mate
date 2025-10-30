@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useModal } from "../../Context/ModelContext";
 import Navbar from "../../components/common/Navbar";
 
 export default function EditCourse() {
@@ -16,6 +17,8 @@ export default function EditCourse() {
 
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
+  const { showSuccess } = useModal();
+
 
   // Redirect non-instructor
   useEffect(() => {

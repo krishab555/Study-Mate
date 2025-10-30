@@ -4,9 +4,7 @@ import { CourseModel } from "../models/courseModel.js";
 import { createNotification } from "./notificationController.js";
 import { addActivity } from "./activityController.js";
 
-// --------------------
-// User submits a project
-// --------------------
+
 export const submitProjectController = async (req, res) => {
   try {
     const { courseId } = req.params;
@@ -36,7 +34,7 @@ export const submitProjectController = async (req, res) => {
       type: "project_review",
     });
 
-    // 🔔 Notify instructor
+   
     await createNotification({
       userId: course.instructor,
       message: `A student submitted a project for "${course.title}".`,
@@ -65,9 +63,6 @@ export const submitProjectController = async (req, res) => {
   }
 };
 
-// --------------------
-// Instructor reviews project
-// --------------------
 export const reviewProjectController = async (req, res) => {
   try {
     const { id } = req.params;
@@ -88,7 +83,7 @@ export const reviewProjectController = async (req, res) => {
     project.feedback = feedback || "";
     await project.save();
 
-    // ✅ Auto-generate certificate if approved
+   
     if (status === "Approved") {
       const certificateExists = await certificateModel.findOne({
         student: project.student,
@@ -124,9 +119,7 @@ export const reviewProjectController = async (req, res) => {
   }
 };
 
-// --------------------
-// Instructor gets all projects for their courses
-// --------------------
+
 export const getAllProjectsByInstructor = async (req, res) => {
   try {
     const courses = await CourseModel.find({ instructor: req.user.id }).select(
@@ -138,6 +131,7 @@ export const getAllProjectsByInstructor = async (req, res) => {
 
       .populate("student", "name email")
       .populate("course", "title");
+      
 
     res.status(200).json({ projects });
   } catch (error) {
@@ -147,9 +141,7 @@ export const getAllProjectsByInstructor = async (req, res) => {
   }
 };
 
-// --------------------
-// User gets all their submitted projects
-// --------------------
+
 export const getUserProjects = async (req, res) => {
   try {
     const projects = await projectModel.find({ student: req.user.id })
