@@ -6,6 +6,7 @@ import { PaymentModel } from "../models/paymentModel.js";
 import { EnrollmentModel } from "../models/enrollmentModel.js";
 import { CourseModel } from "../models/courseModel.js";
 import { createNotification } from "./notificationController.js";
+import { addActivity } from "./activityController.js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -134,6 +135,12 @@ export const handleStripeWebhook = async (req, res) => {
           message: `A new student enrolled in your course "${course.title}".`,
           type: "enrollment",
         });
+
+        const user = await UserModel.findById(userId);
+        await addActivity(
+          `${user.name} enrolled in "${course.title}"`,
+          "payment"
+        );
 
         console.log(
           `Payment processed and user enrolled: ${userId} -> ${courseId}`

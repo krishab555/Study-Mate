@@ -1,40 +1,47 @@
 // components/VisitorLineChart.jsx
-import React from "react";
-
-const data = [10, 15, 20, 18, 22, 25, 30, 18, 15, 25, 10, 18];
-const months = [
-  "Jan",
-  "Feb",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
-];
+import React, { useEffect, useState } from "react";
 
 const width = 450;
 const height = 280;
 const padding = 40;
 
-const maxVisitor = Math.max(...data);
-const points = data.map((val, i) => {
-  const x = padding + i * ((width - 2 * padding) / (data.length - 1));
-  const y = height - padding - (val / maxVisitor) * (height - 2 * padding);
-  return `${x},${y}`;
-});
-
-const linePath = points.join(" ");
-
 export default function VisitorLineChart() {
+  const [months, setMonths] = useState([]);
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const fetchVisitorStats = async () => {
+      try {
+        const res = await fetch(
+          "http://localhost:5000/api/analytics/visitors/stats"
+        );
+        const result = await res.json();
+        setMonths(result.months);
+        setData(result.data);
+      } catch (err) {
+        console.error("Failed to fetch visitor stats:", err);
+      }
+    };
+
+    fetchVisitorStats();
+  }, []);
+
+  if (data.length === 0) return <div>Loading chart...</div>;
+
+  const maxVisitor = Math.max(...data);
+  const yStep = Math.ceil(maxVisitor / 5); // 5 steps on Y-axis
+  const yLabels = Array.from({ length: 6 }, (_, i) => i * yStep);
+
+  const points = data.map((val, i) => {
+    const x = padding + i * ((width - 2 * padding) / (data.length - 1));
+    const y = height - padding - (val / (yStep * 5)) * (height - 2 * padding);
+    return `${x},${y}`;
+  });
+
+  const linePath = points.join(" ");
+
   return (
-    <div
-      style={{ fontFamily: "Arial, sans-serif", width: width, margin: "auto" }}
-    >
+    <div style={{ fontFamily: "Arial, sans-serif", width, margin: "auto" }}>
       <h3 style={{ textAlign: "center", marginBottom: "10px" }}>
         Visitor in The Website
       </h3>
@@ -107,9 +114,9 @@ export default function VisitorLineChart() {
         })}
 
         {/* Y-axis labels */}
-        {[0, 5, 10, 15, 20, 25, 30].map((val, idx) => {
+        {yLabels.map((val, idx) => {
           const y =
-            height - padding - (val / maxVisitor) * (height - 2 * padding);
+            height - padding - (val / (yStep * 5)) * (height - 2 * padding);
           return (
             <text
               key={idx}

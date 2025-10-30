@@ -22,6 +22,10 @@ import instructorRoutes from './routes/instructorRoutes.js'
 import NotificationRouter from "./routes/notificationRoutes.js";
 import searchRouter from "./routes/searchRoutes.js";
 import { createStripeSession, handleStripeWebhook } from "./controllers/paymentController.js";
+import analyticRoutes from "./routes/analyticRoutes.js";
+import activityRouter from "./routes/activityRoutes.js";
+
+
 // Initialize app
 
 dotenv.config();
@@ -58,8 +62,10 @@ app.use("/api/payments", paymentRoutes);
 app.use("/api/instructor", instructorRoutes);
 app.use("/api/notifications", NotificationRouter)
 app.use("/api/contact", messageRouter);
-app.use("/api/search", searchRouter)
+app.use("/api/search", searchRouter);
 app.use("/api/discussions", discussionRouter);
+app.use("/api/analytics", analyticRoutes);
+app.use("/api/activities",activityRouter);
 app.get("/", (req, res) => {
   res.send("Study-Mate API is running...");
 });

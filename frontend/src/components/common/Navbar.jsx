@@ -16,6 +16,7 @@ export default function Navbar() {
   );
 
   const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [activeLink, setActiveLink] = useState(location.pathname);
   const [isBtnHovered, setIsBtnHovered] = useState(false);
   const [isBellHovered, setIsBellHovered] = useState(false);
   const [isProfileHovered, setIsProfileHovered] = useState(false);
@@ -32,7 +33,9 @@ export default function Navbar() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState({courses:[],instructors:[]});
   const [showDropdown, setShowDropdown] = useState(false);
-
+useEffect(() => {
+  setActiveLink(location.pathname);
+}, [location.pathname]);
  useEffect(() => {
    if (!query) {
      setResults({ courses: [], instructors: [] });
@@ -349,10 +352,17 @@ export default function Navbar() {
       textDecoration: "none",
       fontWeight: "500",
       transition: "all 0.2s ease",
+      borderRadius: "4px",
+      padding: "6px 10px",
     },
     navItemHover: {
       color: "#ffd700",
       transform: "scale(1.1)",
+    },
+    activeNavItem: {
+      backgroundColor: "rgba(255, 255, 255, 0.1)",
+      color: "#ffd700",
+      fontWeight: "bold",
     },
     searchBar: {
       padding: "6px 12px",
@@ -546,6 +556,7 @@ export default function Navbar() {
                 style={{
                   ...styles.navItem,
                   ...(hoveredIndex === idx ? styles.navItemHover : {}),
+                  ...(activeLink === link.path ? styles.activeNavItem : {}),
                 }}
                 onMouseEnter={() => setHoveredIndex(idx)}
                 onMouseLeave={() => setHoveredIndex(null)}
@@ -564,16 +575,17 @@ export default function Navbar() {
             placeholder="Search"
             style={styles.searchBar}
             onKeyDown={(e) => {
-               if (e.key === "Enter") {
-      e.preventDefault();
-             const query = e.target.value.trim();
-              if (query){ navigate(`/search?query=${encodeURIComponent(query)}`);
-               }}
+              if (e.key === "Enter") {
+                e.preventDefault();
+                const query = e.target.value.trim();
+                if (query) {
+                  navigate(`/search?query=${encodeURIComponent(query)}`);
+                }
+              }
             }}
           />
           {/* <SearchBar/> */}
 
-          
           <div style={{ marginLeft: "auto", marginRight: "20px" }}>
             <NotificationBell />
           </div>
