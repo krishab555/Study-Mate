@@ -8,18 +8,26 @@ import { createNotification } from "./notificationController.js";
 // --------------------
 export const submitProjectController = async (req, res) => {
   try {
-    const { courseId } = req.body;
+    const { courseId } = req.params;
+    const { gitLink } = req.body;
 
     if (!courseId || !req.file) {
       return res
         .status(400)
         .json({ message: "Course ID and PDF are required." });
     }
+    const course = await CourseModel.findById(courseId);
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" });
+    }
 
     const newProject = await projectModel.create({
       course: courseId,
       student: req.user.id,
-      projectFile:req.file.path,
+      projectFile: req.file.path,
+      gitLink: gitLink || "",
+      status: "Pending",
+      submittedAt: new Date(),
     });
     await createNotification({
       userId: req.user._id,
@@ -34,9 +42,17 @@ export const submitProjectController = async (req, res) => {
       type: "project_review",
     });
 
-    res
-      .status(201)
-      .json({ message: "Project submitted successfully", project: newProject });
+    res.status(201).json({
+      message: "Project submitted successfully",
+      project: {
+        _id: newProject._id,
+        course: { _id: course._id, title: course.title },
+        gitLink: newProject.gitLink,
+        projectFile: newProject.projectFile,
+        status: newProject.status,
+        submittedAt: newProject.submittedAt,
+      },
+    });
   } catch (error) {
     res
       .status(500)

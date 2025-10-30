@@ -14,10 +14,10 @@ const projectRoutes = express.Router();
 
 // ✅ User submits project
 projectRoutes.post(
-  "/",
+  "/:courseId",
   authenticateUser,
   authorizeRoles("User"),
-  uploadProjectPDF.single("projectFile"),
+  uploadProjectPDF.single("pdf"),
   submitProjectController
 );
 

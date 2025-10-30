@@ -8,7 +8,7 @@ export const getCoursesController = async (req, res) => {
   try {
     const user = req.user; // from auth middleware
     const courses = await CourseModel.find()
-      .populate("role", "name")
+      .populate("instructor", "name")
       .lean();
 
     return res.status(200).json({
@@ -25,9 +25,13 @@ export const getCoursesController = async (req, res) => {
 // Create a new course
 export const createCourseController = async (req, res) => {
   console.log("Create Course Request Body:", req.body);
+  console.log(
+    "Create Course Request Files:",
+    req.user,
+    req.user?.role, String(req.user.role.name).toLowerCase(),
+    !req.user?.role || String(req.user.role).toLowerCase() !== "admin");
   try {
-     if (!req.user?.role || String(req.user.role).toLowerCase() !== "admin")
-       {
+     if (req.user?.role?.name &&  String(req.user.role.name).toLowerCase() !== "admin") {
        return res
          .status(403)
          .json({ success: false, message: "Only admin can create courses" });
@@ -105,10 +109,6 @@ export const updateCourseController = async (req, res) => {
           message: "Not authorized to edit this course",
         });
     }
-    if (req.user.role === "Instructor") {
-      // Prevent changing the title
-      delete reqBody.title;
-    }
     
     const pdfFile = req.files?.pdf?.[0];
     const imageFile = req.files?.image?.[0];
@@ -119,6 +119,21 @@ export const updateCourseController = async (req, res) => {
     if (videoFile) reqBody.videoUrl = `/uploads/videos/${videoFile.filename}`;
 
 
+    // // If howToComplete is in body, handle parsing like above
+    // if (reqBody.howToComplete) {
+    //   if (typeof reqBody.howToComplete === "string") {
+    //     try {
+    //       reqBody.howToComplete = JSON.parse(reqBody.howToComplete);
+    //       if (!Array.isArray(reqBody.howToComplete)) {
+    //         reqBody.howToComplete = [reqBody.howToComplete];
+    //       }
+    //     } catch {
+    //       reqBody.howToComplete = reqBody.howToComplete
+    //         .split(",")
+    //         .map((s) => s.trim());
+    //     }
+    //   }
+    // }
 
     if (reqBody.category) {
       if (reqBody.category.toLowerCase() === "basic") {
@@ -210,3 +225,19 @@ export const getCourseByIdController = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+// // In courseController.js
+// const courseDetailForStudent = async (req, res) => {
+//   const course = await CourseModel.findById(req.params.id);
+//   if (!course) return res.status(404).json({ message: "Course not found" });
+
+//   const enrollment = await EnrollmentModel.findOne({
+//     student: req.user.id,
+//     course: course._id,
+//     status: "active"
+//   });
+
+//   res.json({
+//     ...course.toObject(),
+//     isPaid: !!enrollment, // true if enrolled
+//   });
+// };

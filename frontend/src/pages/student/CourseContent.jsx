@@ -5,7 +5,29 @@ export default function CourseContent() {
   const { id } = useParams(); // get course ID from URL
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [projectForm, setProjectForm] = useState({ gitLink: "", pdf: null });
   const token = localStorage.getItem("token");
+
+
+   const handleProjectChange = (e) => {
+     const { name, value, files } = e.target;
+     if (name === "pdf") {
+       setProjectForm((prev) => ({ ...prev, pdf: files[0] }));
+     } else {
+       setProjectForm((prev) => ({ ...prev, [name]: value }));
+     }
+   };
+
+   const handleProjectSubmit = (e) => {
+     e.preventDefault();
+     console.log("Git Link:", projectForm.gitLink);
+     console.log("PDF:", projectForm.pdf);
+     alert("Project submitted successfully!");
+     setShowModal(false);
+     setProjectForm({ gitLink: "", pdf: null });
+   };
+
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -30,7 +52,13 @@ export default function CourseContent() {
   if (!course) return <p style={{ marginLeft: "250px" }}>Course not found</p>;
 
   return (
-    <div style={{ marginLeft: "250px", padding: "20px", fontFamily: "Arial, sans-serif" }}>
+    <div
+      style={{
+        marginLeft: "250px",
+        padding: "20px",
+        fontFamily: "Arial, sans-serif",
+      }}
+    >
       <h1>{course.title}</h1>
       <p>{course.description}</p>
 
@@ -56,7 +84,7 @@ export default function CourseContent() {
                 marginBottom: "10px",
               }}
             >
-               {video.title || `Video ${idx + 1}`}
+              {video.title || `Video ${idx + 1}`}
             </a>
           ))
         ) : (
@@ -68,59 +96,34 @@ export default function CourseContent() {
       <div style={{ marginBottom: "30px" }}>
         <h2>Course Material (PDF)</h2>
         {course.pdfUrl ? (
-            <a
-              href={'localhost:5000' + course.pdfUrl}
-              // target="_blank"
-              // rel="noopener noreferrer"
-              style={{
-                display: "block",
-                padding: "15px 20px",
-                backgroundColor: "#f39c12",
-                color: "white",
-                borderRadius: "10px",
-                textDecoration: "none",
-                fontWeight: "bold",
-                fontSize: "16px",
-                marginBottom: "10px",
-              }}
-            >
-               {course.pdfUrl}
-            </a>
-
+          <a
+            href={"localhost:5000" + course.pdfUrl}
+            // target="_blank"
+            // rel="noopener noreferrer"
+            style={{
+              display: "block",
+              padding: "15px 20px",
+              backgroundColor: "#f39c12",
+              color: "white",
+              borderRadius: "10px",
+              textDecoration: "none",
+              fontWeight: "bold",
+              fontSize: "16px",
+              marginBottom: "10px",
+            }}
+          >
+            {course.pdfUrl}
+          </a>
         ) : (
           <p>No PDFs uploaded yet.</p>
         )}
-        {/* {course.pdfs?.length > 0 ? (
-          course.pdfs.map((pdf, idx) => (
-            <a
-              key={idx}
-              href={pdf.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                display: "block",
-                padding: "15px 20px",
-                backgroundColor: "#f39c12",
-                color: "white",
-                borderRadius: "10px",
-                textDecoration: "none",
-                fontWeight: "bold",
-                fontSize: "16px",
-                marginBottom: "10px",
-              }}
-            >
-              📄 {pdf.title || `PDF ${idx + 1}`}
-            </a>
-          ))
-        ) : (
-          <p>No PDFs uploaded yet.</p>
-        )} */}
+        
       </div>
 
       {/* Project Submission */}
       <div>
         <button
-          onClick={() => alert("Project submission form will appear here")}
+          onClick={() => setShowModal(true)}
           style={{
             padding: "10px 20px",
             backgroundColor: "green",
@@ -131,9 +134,112 @@ export default function CourseContent() {
             fontSize: "16px",
           }}
         >
-           Submit Project
+          Submit Project
         </button>
       </div>
+      {/* Modal */}
+      {showModal && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            backgroundColor: "rgba(0,0,0,0.5)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 1000,
+          }}
+          onClick={() => setShowModal(false)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              backgroundColor: "#fff",
+              padding: "20px",
+              borderRadius: "10px",
+              width: "400px",
+              maxWidth: "90%",
+              boxShadow: "0 2px 10px rgba(0,0,0,0.2)",
+            }}
+          >
+            <h2 style={{ marginBottom: "15px" }}>Submit Your Project</h2>
+            <form
+              onSubmit={handleProjectSubmit}
+              style={{ display: "flex", flexDirection: "column", gap: "15px" }}
+            >
+              <label>
+                Git Link:
+                <input
+                  type="url"
+                  name="gitLink"
+                  placeholder="Enter Git repository link"
+                  value={projectForm.gitLink}
+                  onChange={handleProjectChange}
+                  required
+                  style={{
+                    width: "100%",
+                    padding: "8px",
+                    marginTop: "5px",
+                    borderRadius: "5px",
+                    border: "1px solid #ccc",
+                  }}
+                />
+              </label>
+              <label>
+                Upload PDF:
+                <input
+                  type="file"
+                  name="pdf"
+                  accept=".pdf"
+                  onChange={handleProjectChange}
+                  required
+                  style={{
+                    width: "100%",
+                    marginTop: "5px",
+                  }}
+                />
+              </label>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  gap: "10px",
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={() => setShowModal(false)}
+                  style={{
+                    padding: "8px 12px",
+                    backgroundColor: "#ccc",
+                    border: "none",
+                    borderRadius: "5px",
+                    cursor: "pointer",
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  style={{
+                    padding: "8px 12px",
+                    backgroundColor: "#1e3a8a",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "5px",
+                    cursor: "pointer",
+                  }}
+                >
+                  Submit
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
