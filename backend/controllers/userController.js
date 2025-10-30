@@ -1,6 +1,7 @@
 import { UserModel, validateUserSchema } from "../models/UserModel.js";
 import { RoleModel } from "../models/RoleModel.js";
 import { generateToken } from "../utils/generateToken.js";
+import { addActivity } from "./activityController.js";
 
 // Register User
 export const registerUser = async (req, res) => {

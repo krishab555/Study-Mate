@@ -2,6 +2,7 @@ import { projectModel } from "../models/projectModel.js";
 import { certificateModel} from "../models/certificateModel.js";
 import { CourseModel } from "../models/courseModel.js";
 import { createNotification } from "./notificationController.js";
+import { addActivity } from "./activityController.js";
 
 // --------------------
 // User submits a project
@@ -41,6 +42,10 @@ export const submitProjectController = async (req, res) => {
       message: `A student submitted a project for "${course.title}".`,
       type: "project_review",
     });
+    await addActivity(
+      `${req.user.name} submitted a project for "${course.title}"`,
+      "project"
+    );
 
     res.status(201).json({
       message: "Project submitted successfully",

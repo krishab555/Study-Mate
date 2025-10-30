@@ -2,6 +2,7 @@
 import { CourseModel } from "../models/courseModel.js";
 import { EnrollmentModel } from "../models/enrollmentModel.js";
 import { createNotification } from "./notificationController.js";
+import { addActivity } from "./activityController.js";
 
 // Get all courses
 export const getCoursesController = async (req, res) => {
@@ -76,6 +77,10 @@ export const createCourseController = async (req, res) => {
       message: `Your course "${course.title}" has been created successfully.`,
       type: "course_update",
     });
+    await addActivity(
+      `New course "${course.title}" was created by ${req.user.name}`,
+      "course"
+    );
 
     res.status(201).json({ success: true, data: course });
   } catch (error) {

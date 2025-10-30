@@ -14,6 +14,22 @@ import {
 } from "react-icons/fa";
 
 export default function AdminHome() {
+  const [activities, setActivities] = useState([]);
+  
+useEffect(() => {
+  const fetchActivities = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/api/activities");
+      const data = await res.json();
+      setActivities(data);
+    } catch (err) {
+      console.error("Failed to fetch activities:", err);
+    }
+  };
+
+  fetchActivities();
+}, []);
+
   const [stats, setStats] = useState({
     totalCourses: 0,
     newStudents: 0,
@@ -303,106 +319,58 @@ export default function AdminHome() {
           </div>
 
           <div style={recentActivityListStyle}>
-            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-              <div
-                style={{
-                  backgroundColor: "#c7d2fe",
-                  borderRadius: "6px",
-                  padding: "6px",
-                  fontSize: "18px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  width: "36px",
-                  height: "36px",
-                }}
-              >
-                <FaUsers color="#4f46e5" />
-              </div>
-              <div>
-                <strong>John Doe</strong> enrolled in{" "}
-                <strong>Web Development 101</strong>
-                <div style={{ fontSize: "12px", color: "#94a3b8" }}>
-                  2 hours ago
-                </div>
-              </div>
+            {activities.length === 0 ? (
+      <p style={{ color: "#94a3b8" }}>No recent activities yet.</p>
+    ) : (
+      activities.map((activity) => (
+        <div
+          key={activity._id}
+          style={{ display: "flex", alignItems: "center", gap: "12px" }}
+        >
+          <div
+            style={{
+              backgroundColor:
+                activity.type === "course"
+                  ? "#c7d2fe"
+                  : activity.type === "project"
+                  ? "#fcd34d"
+                  : activity.type === "user"
+                  ? "#a7f3d0"
+                  : "#fca5a5",
+              borderRadius: "6px",
+              padding: "6px",
+              fontSize: "18px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "36px",
+              height: "36px",
+            }}
+          >
+            {activity.type === "course" ? (
+              <FaBook color="#4f46e5" />
+            ) : activity.type === "project" ? (
+              <FaTasks color="#eab308" />
+            ) : activity.type === "user" ? (
+              <FaUsers color="#10b981" />
+            ) : (
+              <FaChartLine color="#ef4444" />
+            )}
+          </div>
+          <div>
+            <div style={{ fontWeight: "500", color: "#334155" }}>
+              {activity.message}
             </div>
-
-            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-              <div
-                style={{
-                  backgroundColor: "#c7d2fe",
-                  borderRadius: "6px",
-                  padding: "6px",
-                  fontSize: "18px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  width: "36px",
-                  height: "36px",
-                }}
-              >
-                <FaTasks color="#4f46e5" />
-              </div>
-              <div>
-                <strong>Sarah Smith</strong> submitted the{" "}
-                <strong>Capstone Project</strong>
-                <div style={{ fontSize: "12px", color: "#94a3b8" }}>
-                  5 hours ago
-                </div>
-              </div>
-            </div>
-
-            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-              <div
-                style={{
-                  backgroundColor: "#94a3b8",
-                  borderRadius: "6px",
-                  padding: "6px",
-                  fontSize: "18px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  width: "36px",
-                  height: "36px",
-                }}
-              >
-                <FaBook color="#475569" />
-              </div>
-              <div>
-                New course <strong>Advanced React Patterns</strong> was
-                published
-                <div style={{ fontSize: "12px", color: "#94a3b8" }}>
-                  Yesterday
-                </div>
-              </div>
-            </div>
-
-            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-              <div
-                style={{
-                  backgroundColor: "#c7d2fe",
-                  borderRadius: "6px",
-                  padding: "6px",
-                  fontSize: "18px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  width: "36px",
-                  height: "36px",
-                }}
-              >
-                <FaUsers color="#4f46e5" />
-              </div>
-              <div>
-                <strong>25 new users</strong> joined the platform this week
-                <div style={{ fontSize: "12px", color: "#94a3b8" }}>
-                  2 days ago
-                </div>
-              </div>
+            <div style={{ fontSize: "12px", color: "#94a3b8" }}>
+              {new Date(activity.createdAt).toLocaleString()}
             </div>
           </div>
         </div>
+      ))
+    )}
+  </div>
+</div>
+          
         {/* End Recent Activity */}
       </main>
     </>

@@ -7,4 +7,4 @@ const visitorSchema = new mongoose.Schema({
 });
 
 
-export const VisitorModel = mongoose.model("Visitor", visitorSchema);
+export const VisitorModel = mongoose.model("visitor", visitorSchema);
