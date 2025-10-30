@@ -30,8 +30,8 @@ courseRoutes.post(
   "/",
   authenticateUser,
   authorizeRoles("Admin"),
+  createCourseController,
   courseUploads,
-  createCourseController
 );
 
 courseRoutes.put(

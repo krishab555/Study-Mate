@@ -8,7 +8,7 @@ export const getCoursesController = async (req, res) => {
   try {
     const user = req.user; // from auth middleware
     const courses = await CourseModel.find()
-      .populate("instructor", "name")
+      .populate("role", "name")
       .lean();
 
     return res.status(200).json({
@@ -24,8 +24,10 @@ export const getCoursesController = async (req, res) => {
 
 // Create a new course
 export const createCourseController = async (req, res) => {
+  console.log("Create Course Request Body:", req.body);
   try {
-     if (!req.user?.role || String(req.user.role).toLowerCase() !== "Admin") {
+     if (!req.user?.role || String(req.user.role).toLowerCase() !== "admin")
+       {
        return res
          .status(403)
          .json({ success: false, message: "Only admin can create courses" });
@@ -102,6 +104,10 @@ export const updateCourseController = async (req, res) => {
           success: false,
           message: "Not authorized to edit this course",
         });
+    }
+    if (req.user.role === "Instructor") {
+      // Prevent changing the title
+      delete reqBody.title;
     }
     
     const pdfFile = req.files?.pdf?.[0];

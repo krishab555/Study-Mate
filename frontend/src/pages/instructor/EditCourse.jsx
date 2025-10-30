@@ -181,8 +181,13 @@ export default function EditCourse() {
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              style={styles.input}
-              required
+              style={{
+                ...styles.input,
+                backgroundColor: "#f0f0f0",
+                cursor: "not-allowed",
+              }}
+              //instructor can read only
+              readOnly={role === "Instructor"}
             />
           </div>
 

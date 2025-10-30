@@ -58,7 +58,7 @@ export default function AddCourse() {
     formData.append("title", title);
     formData.append("description", description);
     formData.append("category", category);
-    formData.append("instructor", selectedInstructor);
+    formData.append("instructorId", selectedInstructor);
     formData.append("pdf", pdfFile);
     formData.append("image", imageFile);
     if (videoFile) formData.append("video", videoFile);
