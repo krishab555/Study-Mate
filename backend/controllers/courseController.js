@@ -1,4 +1,3 @@
-
 import { CourseModel } from "../models/courseModel.js";
 import { EnrollmentModel } from "../models/enrollmentModel.js";
 import { createNotification } from "./notificationController.js";
@@ -29,20 +28,25 @@ export const createCourseController = async (req, res) => {
   console.log(
     "Create Course Request Files:",
     req.user,
-    req.user?.role, String(req.user.role.name).toLowerCase(),
-    !req.user?.role || String(req.user.role).toLowerCase() !== "admin");
+    req.user?.role,
+    String(req.user.role.name).toLowerCase(),
+    !req.user?.role || String(req.user.role).toLowerCase() !== "admin"
+  );
   try {
-     if (req.user?.role?.name &&  String(req.user.role.name).toLowerCase() !== "admin") {
-       return res
-         .status(403)
-         .json({ success: false, message: "Only admin can create courses" });
-     }
+    if (
+      req.user?.role?.name &&
+      String(req.user.role.name).toLowerCase() !== "admin"
+    ) {
+      return res
+        .status(403)
+        .json({ success: false, message: "Only admin can create courses" });
+    }
 
     const { title, description, instructorId, price, isPaid, category, level } =
       req.body;
-     const pdfFile = req.files?.pdf?.[0];
-     const imageFile = req.files?.image?.[0];
-     const videoFile = req.files?.video?.[0];
+    const pdfFile = req.files?.pdf?.[0];
+    const imageFile = req.files?.image?.[0];
+    const videoFile = req.files?.video?.[0];
 
     //  console.log(pdfFile,imageFile,videoFile);
     // console.log(req.files)
@@ -50,18 +54,17 @@ export const createCourseController = async (req, res) => {
     const imageUrl = imageFile ? `/uploads/images/${imageFile.filename}` : null;
     const videoUrl = videoFile ? `/uploads/videos/${videoFile.filename}` : null;
 
-     let finalPrice = 0;
-     let paidStatus = false;
-     if (category.toLowerCase() === "advanced") {
-       finalPrice = price || 100; // default price if none provided
-       paidStatus = true;
-     }
-
+    let finalPrice = 0;
+    let paidStatus = false;
+    if (category.toLowerCase() === "advanced") {
+      finalPrice = price || 100; // default price if none provided
+      paidStatus = true;
+    }
 
     const course = await CourseModel.create({
       title,
       description,
-      instructor:  instructorId,
+      instructor: instructorId,
       createdBy: req.user._id,
       price: finalPrice,
       isPaid: paidStatus,
@@ -94,39 +97,38 @@ export const updateCourseController = async (req, res) => {
   try {
     const { id } = req.params;
     const reqBody = req.body || {};
- const course = await CourseModel.findById(id);
- if (!course) {
-   return res.status(404).json({ success: false, message: "Course not found" });
- }
+    const course = await CourseModel.findById(id);
+    if (!course) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Course not found" });
+    }
 
- const userRole = req.user.role?.name || "";
- let instructorId;
- if (course.instructor && course.instructor._id) {
-   instructorId = course.instructor._id.toString();
- } else if (course.instructor) {
-   // If it's just an ObjectId (not populated)
-   instructorId = course.instructor.toString();
- } else {
-   return res.status(400).json({
-     success: false,
-     message: "Course instructor information is missing",
-   });
- }
+    const userRole = req.user.role?.name || "";
+    let instructorId;
+    if (course.instructor && course.instructor._id) {
+      instructorId = course.instructor._id.toString();
+    } else if (course.instructor) {
+      // If it's just an ObjectId (not populated)
+      instructorId = course.instructor.toString();
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: "Course instructor information is missing",
+      });
+    }
 
- console.log("userRole:", userRole);
- console.log("instructorId:", instructorId);
- console.log("req.user._id:", req.user._id.toString());
+    console.log("userRole:", userRole);
+    console.log("instructorId:", instructorId);
+    console.log("req.user._id:", req.user._id.toString());
 
- // Check authorization
- if (userRole !== "Admin" && instructorId !== req.user._id.toString()) {
-   return res.status(403).json({
-     success: false,
-     message: "Not authorized to edit this course",
-   });
- }
-
-    
-   
+    // Check authorization
+    if (userRole !== "Admin" && instructorId !== req.user._id.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: "Not authorized to edit this course",
+      });
+    }
 
     // const userRole = req.user.role?.name || "";
     // const instructorId =
@@ -140,7 +142,6 @@ export const updateCourseController = async (req, res) => {
     //   });
     // }
 
-    
     const pdfFile = req.files?.pdf?.[0];
     const imageFile = req.files?.image?.[0];
     const videoFile = req.files?.video?.[0];
@@ -148,7 +149,6 @@ export const updateCourseController = async (req, res) => {
     if (pdfFile) reqBody.pdfUrl = `/uploads/pdfs/${pdfFile.filename}`;
     if (imageFile) reqBody.banner = `/uploads/images/${imageFile.filename}`;
     if (videoFile) reqBody.videoUrl = `/uploads/videos/${videoFile.filename}`;
-
 
     if (reqBody.category) {
       if (reqBody.category.toLowerCase() === "basic") {
@@ -160,7 +160,7 @@ export const updateCourseController = async (req, res) => {
       }
     }
 
-   const updatedCourse = await CourseModel.findByIdAndUpdate(id, reqBody, {
+    const updatedCourse = await CourseModel.findByIdAndUpdate(id, reqBody, {
       new: true,
     });
 
@@ -174,18 +174,18 @@ export const updateCourseController = async (req, res) => {
       message: `Your course "${updatedCourse.title}" has been updated.`,
       type: "course_update",
     });
-    const enrolledStudents = await EnrollmentModel.find({ 
-  course: updatedCourse._id, 
-  isActive: true // optional, only active enrollments
-});
+    const enrolledStudents = await EnrollmentModel.find({
+      course: updatedCourse._id,
+      isActive: true, // optional, only active enrollments
+    });
 
-for (const enrollment of enrolledStudents) {
-  await createNotification({
-    userId: enrollment.student,
-    message: `The course "${updatedCourse.title}" has been updated by the instructor.`,
-    type: "course_update",
-  });
-}
+    for (const enrollment of enrolledStudents) {
+      await createNotification({
+        userId: enrollment.student,
+        message: `The course "${updatedCourse.title}" has been updated by the instructor.`,
+        type: "course_update",
+      });
+    }
 
     await addActivity(
       `Course "${updatedCourse.title}" was updated by ${req.user.name}`,
@@ -243,7 +243,7 @@ export const getCourseByIdController = async (req, res) => {
       const enrollment = await EnrollmentModel.findOne({
         student: req.user.id,
         course: course._id,
-        isActive:true,
+        isActive: true,
       });
       isEnrolled = !!enrollment;
     }
@@ -253,7 +253,7 @@ export const getCourseByIdController = async (req, res) => {
       data: { ...course.toObject(), isEnrolled }, // include isEnrolled
     });
   } catch (error) {
-    console.error("error fetching the course",error);
+    console.error("error fetching the course", error);
     res.status(500).json({ success: false, message: error.message });
   }
 };

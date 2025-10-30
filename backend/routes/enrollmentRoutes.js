@@ -2,7 +2,7 @@ import express from "express";
 import { authenticateUser } from "../middleware/authenticateUser.js";
 import { authorizeRoles } from "../middleware/authorizeRoles.js";
 import {
-  enrollCourse,
+  // enrollCourse,
   getMyEnrollments,
   getCourseStudents,
 } from "../controllers/enrollmentController.js";
@@ -13,13 +13,13 @@ const enrollmentRoutes = express.Router();
 enrollmentRoutes.post(
   "/",
   authenticateUser,
-  authorizeRoles("Student"),
-  enrollCourse
+  authorizeRoles("Student")
+  // enrollCourse
 );
 
 // ✅ Student gets their enrollments
 enrollmentRoutes.get(
-  "/my-courses",
+  "/my-courses/:id",
   authenticateUser,
   authorizeRoles("Student"),
   getMyEnrollments

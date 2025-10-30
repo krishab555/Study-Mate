@@ -1,7 +1,6 @@
-
 import React, { useEffect, useState } from "react";
-import {loadStripe} from '@stripe/stripe-js';
-import { useParams, useNavigate ,useLocation} from "react-router-dom";
+import { loadStripe } from "@stripe/stripe-js";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import Navbar from "../../components/common/Navbar";
 import Footer from "../../components/common/Footer";
 import { SidebarLayout } from "../../components/common/SideBar";
@@ -9,18 +8,20 @@ import { apiRequest } from "../../utils/api";
 
 const stripePromise = loadStripe(
   "pk_test_51SN5gnQyJLqGP2AyftMe6eacdb1aUSGwsoA1v08CvxHzFemvn9WSB4fd0KmX4nfbL6ZdlT45WuXzA4gNqWtpI1vS00wqwNy9bW"
-); 
+);
 
 export default function CourseDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
   const [course, setCourse] = useState(null);
+  const [courseIspaid, setCourseIspaid] = useState(false);
+  const [enrollment_status, setEnrollment_status] = useState(false);
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
   const query = new URLSearchParams(location.search);
   const paymentSuccess = query.get("success") === "true";
-  console.log(typeof paymentSuccess)
+  console.log(typeof paymentSuccess);
 
   // ✅ Auto-enroll student after successful payment
   useEffect(() => {
@@ -63,6 +64,7 @@ export default function CourseDetail() {
         });
 
         const enrollData = await enrollRes.json();
+        console.log(enrollData, "enrollData");
 
         if (enrollRes.ok) {
           console.log("Enrolled successfully:", enrollData);
@@ -75,7 +77,7 @@ export default function CourseDetail() {
         console.error("Enrollment creation failed:", error);
       }
     };
-        // Make POST request to enroll student
+    // Make POST request to enroll student
     //     const res = await fetch("http://localhost:5000/api/enrollments", {
     //       method: "POST",
     //       headers: {
@@ -84,7 +86,7 @@ export default function CourseDetail() {
     //       },
     //       body: JSON.stringify({
     //         courseId: id,
-    //         paymentId, 
+    //         paymentId,
     //       }),
     //     });
 
@@ -112,6 +114,14 @@ export default function CourseDetail() {
     setLoading(true);
     try {
       const response = await apiRequest({ endpoint: `/courses/${id}` });
+      const enrollmentResponse = await apiRequest({
+        endpoint: `/enrollments/my-courses/${id}`,
+      });
+      setEnrollment_status(enrollmentResponse.enrollments?.isActive || false);
+      console.log(
+        enrollmentResponse.enrollments?.isActive,
+        "enrollmentResponse"
+      );
       if (!response.success) {
         alert(response.message);
         if (response.message === "You must be logged in") {
@@ -121,7 +131,8 @@ export default function CourseDetail() {
         }
         return;
       }
-      setCourse(response.data);
+      setCourse(response?.data);
+      setCourseIspaid(response?.data.isPaid);
       console.log("Course data:", response.data);
     } catch (err) {
       console.error(err);
@@ -350,7 +361,33 @@ export default function CourseDetail() {
                   marginTop: "30px",
                 }}
               >
-                {course.isPaid ? (
+                {!courseIspaid ? (
+                  <div style={{ textAlign: "center" }}>
+                    <button
+                      onClick={handleStartLearning}
+                      style={{
+                        width: "100%",
+                        padding: "16px 0",
+                        backgroundColor: "#10b981",
+                        color: "white",
+                        fontSize: "16px",
+                        border: "none",
+                        borderRadius: "10px",
+                        fontWeight: "600",
+                        cursor: "pointer",
+                        transition: "all 0.2s ease",
+                      }}
+                      onMouseOver={(e) => {
+                        e.target.style.backgroundColor = "#059669";
+                      }}
+                      onMouseOut={(e) => {
+                        e.target.style.backgroundColor = "#10b981";
+                      }}
+                    >
+                      Start Learning Now
+                    </button>
+                  </div>
+                ) : !enrollment_status ? (
                   <div style={{ textAlign: "center" }}>
                     <p
                       style={{
@@ -536,7 +573,6 @@ export default function CourseDetail() {
           </div>
         </div>
       </SidebarLayout>
-      
     </div>
   );
 }

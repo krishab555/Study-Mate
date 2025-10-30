@@ -24,7 +24,7 @@ export const createStripeSession = async (req, res) => {
       student: req.user._id,
       course: courseId,
       amount,
-      status: "pending",
+      status: "completed",
     });
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
@@ -48,8 +48,16 @@ export const createStripeSession = async (req, res) => {
       success_url: `http://localhost:5173/courses/${courseId}?success=true`,
       cancel_url: `http://localhost:5173/courses/${courseId}`,
     });
+    if (payment) {
+      // 2️⃣ Create enrollment record
+      await EnrollmentModel.create({
+        student: req.user.id,
+        course: courseId,
+        payment: payment._id.toString(),
+      });
+    }
 
-    res.json({ success: true, sessionId: session.id, paymentId: payment._id,  }); //ya url garne seeion ma
+    res.json({ success: true, sessionId: session.id, paymentId: payment._id }); //ya url garne seeion ma
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: err.message });
@@ -78,17 +86,21 @@ export const getLatestPaymentForCourse = async (req, res) => {
 
 // Optional: handle webhook to mark payment completed
 export const handleStripeWebhook = async (req, res) => {
-  const sig = req.headers['stripe-signature'];
+  const sig = req.headers["stripe-signature"];
   let event;
 
   try {
-    event = stripe.webhooks.constructEvent(req.rawBody, process.env.STRIPE_WEBHOOK_SECRET, sig);
+    event = stripe.webhooks.constructEvent(
+      req.rawBody,
+      process.env.STRIPE_WEBHOOK_SECRET,
+      sig
+    );
   } catch (err) {
     console.log("Webhook signature verification failed.", err.message);
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
-  if (event.type === 'checkout.session.completed') {
+  if (event.type === "checkout.session.completed") {
     const session = event.data.object;
     // Here you can create Payment and Enrollment records
     await PaymentModel.findOneAndUpdate(
@@ -109,7 +121,6 @@ export const handleStripeWebhook = async (req, res) => {
           student: userId,
           course: courseId,
           payment: payment._id,
-        
         });
 
         // 2️⃣ Create enrollment record
@@ -158,7 +169,7 @@ export const handleStripeWebhook = async (req, res) => {
 export const createPayment = async (req, res) => {
   try {
     const { courseId, amount } = req.body;
-
+    console.log(req, "reqest");
     const payment = await PaymentModel.create({
       student: req.user._id,
       course: req.params.courseId,
@@ -166,13 +177,14 @@ export const createPayment = async (req, res) => {
       status: "completed",
     }).sort({ createdAt: -1 });
 
-     if (!payment) {
+    if (!payment) {
       return res.status(404).json({ message: "No completed payment found" });
     }
 
     res.json({ payment });
   } catch (err) {
-    res.status(500).json({ message: "Error fetching payment", error: err.message });
-  
-  } 
+    res
+      .status(500)
+      .json({ message: "Error fetching payment", error: err.message });
+  }
 };

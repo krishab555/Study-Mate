@@ -4,77 +4,83 @@ import { PaymentModel } from "../models/paymentModel.js";
 import { createNotification } from "./notificationController.js";
 
 // ✅ Enroll a student after payment success
-export const enrollCourse = async (req, res) => {
-  // try {
-  //   const { courseId, paymentId } = req.body;
+// export const enrollCourse = async (req, res) => {
+//   try {
+//     const { courseId, paymentId } = req.body;
 
-  //   if (!courseId || !paymentId) {
-  //     return res
-  //       .status(400)
-  //       .json({ message: "Course ID and Payment ID are required" });
-  //   }
-  //   // check if course exists
-  //   const course = await CourseModel.findById(courseId);
-  //   if (!course) return res.status(404).json({ message: "Course not found" });
+//     if (!courseId || !paymentId) {
+//       return res
+//         .status(400)
+//         .json({ message: "Course ID and Payment ID are required" });
+//     }
+//     // check if course exists
+//     const course = await CourseModel.findById(courseId);
+//     if (!course) return res.status(404).json({ message: "Course not found" });
 
-  //   // Check if payment exists and is completed
-  //   const payment = await PaymentModel.findById(paymentId);
-  //   if (!payment || payment.status !== "completed") {
-  //     return res.status(400).json({ message: "Invalid or incomplete payment" });
-  //   }
+//     // Check if payment exists and is completed
+//     const payment = await PaymentModel.findById(paymentId);
+//     if (!payment || payment.status !== "completed") {
+//       return res.status(400).json({ message: "Invalid or incomplete payment" });
+//     }
 
-  //   // prevent duplicate enrollment
-  //   const existing = await EnrollmentModel.findOne({
-  //     student: req.user.id,
-  //     course: courseId,
-  //     payment: paymentId,
-  //   });
-  //   if (existing) {
-  //     return res
-  //       .status(400)
-  //       .json({ message: "Already enrolled in this course" });
-  //   }
+//     // prevent duplicate enrollment
+//     const existing = await EnrollmentModel.findOne({
+//       student: req.user.id,
+//       course: courseId,
+//       payment: paymentId,
+//     });
+//     if (existing) {
+//       return res
+//         .status(400)
+//         .json({ message: "Already enrolled in this course" });
+//     }
 
-  //   // create enrollment
-  //   const enrollment = await EnrollmentModel.create({
-  //     student: req.user.id,
-  //     course: courseId,
-  //     payment: paymentId,
-  //   });
-  //   await createNotification({
-  //     userId: req.user._id,
-  //     message: `You enrolled in "${course.title}".`,
-  //     type: "enrollment",
-  //   });
+//     // create enrollment
+//     const enrollment = await EnrollmentModel.create({
+//       student: req.user.id,
+//       course: courseId,
+//       payment: paymentId,
+//     });
+//     await createNotification({
+//       userId: req.user._id,
+//       message: `You enrolled in "${course.title}".`,
+//       type: "enrollment",
+//     });
 
-  //   // 🔔 Notify instructor
-  //   await createNotification({
-  //     userId: course.instructor,
-  //     message: `A new student enrolled in your course "${course.title}".`,
-  //     type: "enrollment",
-  //   });
+//     // 🔔 Notify instructor
+//     await createNotification({
+//       userId: course.instructor,
+//       message: `A new student enrolled in your course "${course.title}".`,
+//       type: "enrollment",
+//     });
 
-  //   res.status(201).json({
-  //     message: "Enrolled successfully",
-  //     enrollment,
-  //   });
-  // } catch (error) {
-  //   res
-  //     .status(500)
-  //     .json({ message: "Error enrolling course", error: error.message });
-  // }
-};
+//     res.status(201).json({
+//       message: "Enrolled successfully",
+//       enrollment,
+//     });
+//   } catch (error) {
+//     res
+//       .status(500)
+//       .json({ message: "Error enrolling course", error: error.message });
+//   }
+// };
 
 // ✅ Get student’s enrolled courses
 export const getMyEnrollments = async (req, res) => {
+  console.log(req.user.id, "user id", req.params.id);
   try {
-    const enrollments = await EnrollmentModel.find({ student: req.user.id })
-      .populate("course", "title description price")
+    const enrollments = await EnrollmentModel.findOne({
+      student: req.user.id,
+      course: req.params.id,
+    })
+      // .populate("course", "title description price")
       .populate("payment", "amount status")
       .sort({ enrolledAt: -1 });
+    console.log(enrollments, "enrollments");
 
     res.status(200).json({ enrollments });
   } catch (error) {
+    console.log(error);
     res
       .status(500)
       .json({ message: "Error fetching enrollments", error: error.message });
@@ -92,11 +98,9 @@ export const getCourseStudents = async (req, res) => {
 
     res.status(200).json({ enrollments });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        message: "Error fetching course students",
-        error: error.message,
-      });
+    res.status(500).json({
+      message: "Error fetching course students",
+      error: error.message,
+    });
   }
 };
