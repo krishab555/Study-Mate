@@ -16,7 +16,7 @@ const projectRoutes = express.Router();
 projectRoutes.post(
   "/:courseId",
   authenticateUser,
-  authorizeRoles("User"),
+  authorizeRoles("Student"),
   uploadProjectPDF.single("pdf"),
   submitProjectController
 );

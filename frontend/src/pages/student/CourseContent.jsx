@@ -13,19 +13,49 @@ export default function CourseContent() {
    const handleProjectChange = (e) => {
      const { name, value, files } = e.target;
      if (name === "pdf") {
+       const file = files[0];
+       console.log("Selected PDF file:", files);
        setProjectForm((prev) => ({ ...prev, pdf: files[0] }));
+       
      } else {
        setProjectForm((prev) => ({ ...prev, [name]: value }));
      }
    };
 
-   const handleProjectSubmit = (e) => {
+   const handleProjectSubmit = async (e) => {
      e.preventDefault();
-     console.log("Git Link:", projectForm.gitLink);
-     console.log("PDF:", projectForm.pdf);
-     alert("Project submitted successfully!");
-     setShowModal(false);
-     setProjectForm({ gitLink: "", pdf: null });
+     if (!projectForm.gitLink || !projectForm.pdf) {
+       alert("Please provide both Git link and PDF file.");
+       return;
+     }
+     const formData = new FormData();
+     formData.append("pdf", projectForm.pdf);
+     formData.append("gitLink", projectForm.gitLink);
+     console.log([...formData]);
+    
+console.log("token:", token);
+     try {
+       const res = await fetch(`http://localhost:5000/api/projects/${id}`, {
+         method: "POST",
+         headers: {
+           Authorization: `Bearer ${token}`,
+         },
+         body: formData,
+       });
+
+       const data = await res.json();
+       if (res.ok) {
+         alert("Project submitted successfully!");
+         console.log("Project Saved:", data.project);
+         setShowModal(false);
+         setProjectForm({ gitLink: "", pdf: null });
+       } else {
+         alert(` Error: ${data.message || "Failed to submit project"}`);
+       }
+     } catch (error) {
+       console.error("Error submitting project:", error);
+       alert("Error submitting project");
+     }
    };
 
 
@@ -36,7 +66,7 @@ export default function CourseContent() {
           headers: { Authorization: `Bearer ${token}` },
         });
        const data = await res.json();
-      // if (!data.success) throw new Error(data.message || "Failed to fetch course");
+     
       setCourse(data.data); 
       } catch (err) {
         console.error(err);

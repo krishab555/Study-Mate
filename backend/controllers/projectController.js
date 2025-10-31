@@ -3,18 +3,27 @@ import { certificateModel} from "../models/certificateModel.js";
 import { CourseModel } from "../models/courseModel.js";
 import { createNotification } from "./notificationController.js";
 import { addActivity } from "./activityController.js";
+import { EnrollmentModel } from "../models/enrollmentModel.js";
 
 
 export const submitProjectController = async (req, res) => {
   try {
     const { courseId } = req.params;
-    const { gitLink } = req.body;
+    const studentId = req.user._id;
 
-    if (!courseId || !req.file) {
-      return res
-        .status(400)
-        .json({ message: "Course ID and PDF are required." });
-    }
+    console.log("req.user:", req.user);
+    console.log("req.file:", req.file);
+    console.log("req.body:", req.body);
+    console.log("Enrollment check:", studentId, courseId);
+    // console.log("Enrollment result:", enrollment);
+
+     
+
+    const pdfFile = req.file?.filename;
+    const gitLink = req.body.gitLink;
+
+    if (!pdfFile || !gitLink)
+      return res.status(400).json({ message: "Both PDF and Git link are required" });
     const course = await CourseModel.findById(courseId);
     if (!course) {
       return res.status(404).json({ message: "Course not found" });
@@ -22,12 +31,24 @@ export const submitProjectController = async (req, res) => {
 
     const newProject = await projectModel.create({
       course: courseId,
-      student: req.user.id,
-      projectFile: req.file.path,
-      gitLink: gitLink || "",
+      student:  studentId,
+      projectFile: pdfFile,
+      gitLink,
       status: "Pending",
       submittedAt: new Date(),
     });
+    const enrollment = await EnrollmentModel.findOne({
+      student: studentId,
+      course: courseId,
+      isActive: true,
+    });
+
+    if (!enrollment) {
+      return res.status(403).json({
+        success: false,
+        message: "You must be enrolled to submit a project",
+      });
+    }
     await createNotification({
       userId: req.user._id,
       message: `You submitted your project for "${course.title}".`,
@@ -57,7 +78,9 @@ export const submitProjectController = async (req, res) => {
       },
     });
   } catch (error) {
+    console.error("Error in submitProjectController:", error);
     res
+
       .status(500)
       .json({ message: "Error submitting project", error: error.message });
   }

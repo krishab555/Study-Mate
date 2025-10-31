@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
-const projectSchema = new mongoose.Schema(
-{
-   course: {
+const projectSchema = new mongoose.Schema({
+  course: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Course",
     required: true,
@@ -11,8 +10,12 @@ const projectSchema = new mongoose.Schema(
     ref: "User",
     required: true,
   },
+  gitLink: {
+    type: String,
+    required: true,
+  },
   projectFile: {
-    type: String, 
+    type: String,
     required: true,
   },
   status: {

@@ -35,6 +35,7 @@ export const getInstructorStats = async (req, res) => {
     
     const projectsSubmitted = await projectModel.countDocuments({
       course: { $in: courseIds },
+      status: { $in: ["submitted", "approved", "rejected"] },
     });
 
    
@@ -42,21 +43,21 @@ export const getInstructorStats = async (req, res) => {
       course: { $in: courseIds },
     }).distinct("_id");
 
-    // ✅ Count quiz attempts
-    const quizzesAttempted = await UserQuizModel.countDocuments({
-      quiz: { $in: quizIds },
-    });
+    // // Count quiz attempts
+    // const quizzesAttempted = await UserQuizModel.countDocuments({
+    //   quiz: { $in: quizIds },
+    // });
 
-    // ✅ Active students (students who enrolled + attempted something)
-    const activeStudents = await UserQuizModel.distinct("student", {
-      quiz: { $in: quizIds },
-    });
+    // //  Active students (students who enrolled + attempted something)
+    // const activeStudents = await UserQuizModel.distinct("student", {
+    //   quiz: { $in: quizIds },
+    // });
 
     res.json({
       studentsEnrolled,
       projectsSubmitted,
-      quizzesAttempted,
-      activeStudents: activeStudents.length,
+      // quizzesAttempted,
+      // activeStudents: activeStudents.length,
     });
   } catch (error) {
     console.error("Error fetching instructor stats:", error);

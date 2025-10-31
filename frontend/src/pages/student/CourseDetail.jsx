@@ -194,7 +194,7 @@ export default function CourseDetail() {
       <div style={{ padding: 20, textAlign: "center" }}>Course not found</div>
     );
   const handleStartLearning = () => {
-    navigate(`/student/course/${course._id}`);
+    navigate(`/student/courses/${course._id}`);
   };
 
   return (

@@ -156,7 +156,7 @@ export default function InstructorHome() {
             <div style={cardTitleStyle}>Projects Submitted</div>
             <span style={cardValueStyle}>{stats.projectsSubmitted || 0}</span>
           </div>
-          <div style={statCardStyle}>
+          {/* <div style={statCardStyle}>
             <FaBook style={iconStyle} />
             <div style={cardTitleStyle}>Quizzes Attempted</div>
             <span style={cardValueStyle}>{stats.quizzesAttempted || 0}</span>
@@ -165,7 +165,7 @@ export default function InstructorHome() {
             <FaUsers style={iconStyle} />
             <div style={cardTitleStyle}>Active Students</div>
             <span style={cardValueStyle}>{stats.activeStudents || 0}</span>
-          </div>
+          </div> */}
         </div>
 
         {/* Courses */}

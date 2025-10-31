@@ -2,19 +2,21 @@
 
 export const authorizeRoles = (...allowedRoles) => {
   return (req, res, next) => {
-     const userRole = req.user.role?.name || req.user.role || req.decoded.role;
-
-     console.log("User role from token:", userRole);
-     
-    if (!req.user) {
-        return res.status(401).json({
-            success: false,
-            message: "Unauthorized"
-        });
+     if (!req.user || !req.user.role) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
     }
+    
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized"
+      });
+    }
+    const userRole = req.user.role?.name || req.user.role;
     const allowed = allowedRoles.map((r) => r.toLowerCase());
-
-    if (!allowedRoles.includes(userRole)) {
+    
+    console.log("User role from token:", userRole);
+    if (!userRole || !allowed.includes(userRole.toLowerCase())) {
       return res.status(403).json({
         success: false,
         message: "Access denied",

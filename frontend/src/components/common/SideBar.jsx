@@ -27,7 +27,7 @@ const SideBar = () => {
     ],
     instructor: [
       { path: "/instructor/home", label: "Dashboard", icon: <FiGrid /> },
-      // { path: "/instructor/courses", label: "My Courses", icon: <FiBookOpen />,},
+      { path: "/instructor/projects-submitted", label: "Projects Submitted", icon: <FiBookOpen />,},
       { path: "/discussionForum", label: "Discussion Forum", icon: <FiMessageSquare />,},
       { path: "/instructor/create-quiz", label: "Create Quiz", icon: <FiBookOpen />,},
     ],

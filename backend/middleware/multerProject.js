@@ -11,11 +11,9 @@ const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, uploadPath);
   },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + file.originalname;
-    cb(null, uniqueSuffix);
-  },
+  filename: (req, file, cb) => cb(null, Date.now() + "-" + file.originalname),
 });
+
 
 // Only allow PDFs
 const fileFilter = (req, file, cb) => {
