@@ -106,16 +106,23 @@ export const updateCourseController = async (req, res) => {
 
     const userRole = req.user.role?.name || "";
     let instructorId;
-    if (course.instructor && course.instructor._id) {
-      instructorId = course.instructor._id.toString();
-    } else if (course.instructor) {
-      // If it's just an ObjectId (not populated)
-      instructorId = course.instructor.toString();
-    } else {
-      return res.status(400).json({
-        success: false,
-        message: "Course instructor information is missing",
-      });
+    if (userRole !== "Admin") {
+      if (course.instructor && course.instructor._id) {
+        instructorId = course.instructor._id.toString();
+      } else if (course.instructor) {
+        instructorId = course.instructor.toString();
+      } else {
+        return res.status(400).json({
+          success: false,
+          message: "Course instructor information is missing",
+        });
+      }
+      if (instructorId !== req.user._id.toString()) {
+        return res.status(403).json({
+          success: false,
+          message: "Not authorized to edit this course",
+        });
+      }
     }
 
     console.log("userRole:", userRole);
@@ -130,18 +137,7 @@ export const updateCourseController = async (req, res) => {
       });
     }
 
-    // const userRole = req.user.role?.name || "";
-    // const instructorId =
-    //   course.instructor?._id?.toString() || course.instructor?.toString();
-
-    // // Check authorization
-    // if (userRole !== "Admin" && instructorId !== req.user._id.toString()) {
-    //   return res.status(403).json({
-    //     success: false,
-    //     message: "Not authorized to edit this course",
-    //   });
-    // }
-
+  
     const pdfFile = req.files?.pdf?.[0];
     const imageFile = req.files?.image?.[0];
     const videoFile = req.files?.video?.[0];

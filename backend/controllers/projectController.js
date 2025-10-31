@@ -8,6 +8,8 @@ import { EnrollmentModel } from "../models/enrollmentModel.js";
 
 export const submitProjectController = async (req, res) => {
   try {
+   
+
     const { courseId } = req.params;
     const studentId = req.user._id;
 
@@ -97,7 +99,11 @@ export const reviewProjectController = async (req, res) => {
         .json({ message: "Invalid status. Must be 'Approved' or 'Rejected'." });
     }
 
-    const project = await projectModel.findById(id);
+    const project = await projectModel
+      .findById(id)
+      .populate("student", "name email")
+      .populate("course", "title");
+;
     if (!project) {
       return res.status(404).json({ message: "Project not found" });
     }
@@ -109,17 +115,19 @@ export const reviewProjectController = async (req, res) => {
    
     if (status === "Approved") {
       const certificateExists = await certificateModel.findOne({
-        student: project.student,
-        course: project.course,
-        
+        student: project.student._id,
+        course: project.course._id,
+        issuedAt: new Date(),
+        certificateUrl: "",
       });
 
       if (!certificateExists) {
         await certificateModel.create({
-          student: project.student,
-          course: project.course,
+          student: project.student._id,
+          course: project.course._id,
           issuedAt: new Date(),
-          certificateUrl: "", // optional: PDF URL
+          status: "PendingAdminApproval",
+          certificateUrl: "",
         });
       }
     }
@@ -148,7 +156,7 @@ export const getAllProjectsByInstructor = async (req, res) => {
     const courses = await CourseModel.find({ instructor: req.user.id }).select(
       "_id"
     );
-
+console.log("Instructor's courses:", courses);
     const projects = await projectModel
       .find({ course: { $in: courses.map((c) => c._id) } })
 

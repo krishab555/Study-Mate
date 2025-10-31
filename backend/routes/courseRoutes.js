@@ -30,8 +30,8 @@ courseRoutes.post(
   "/",
   authenticateUser,
   authorizeRoles("Admin"),
-  courseUploads, // ✅ multer runs first to parse FormData
-  createCourseController // ✅ now req.body and req.files exist
+  courseUploads, 
+  createCourseController 
 );
 
 courseRoutes.put(

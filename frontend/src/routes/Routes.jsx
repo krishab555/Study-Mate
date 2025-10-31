@@ -43,6 +43,7 @@ import QuizCourses from "../pages/student/QuizCourses";
 import TakeQuizByCourse from "../pages/student/TakeQuizByCourse";
 import SearchResults from "../components/SearchResults";
 import InstructorProjects from "../pages/instructor/InstructorProjects";
+import ManageCertificates from "../pages/admin/ManageCertificates";
 
 
 const PageRoutes = () => {
@@ -100,7 +101,7 @@ const PageRoutes = () => {
           <Route path="courses/:id" element={<CourseContent />} />
           <Route path="editcourse/:id" element={<EditCourse />} />
           <Route path="contact" element={<ContactUs />} />
-          <Route path="projects-submitted" element={<InstructorProjects/>} />
+          <Route path="projects-submitted" element={<InstructorProjects />} />
         </Route>
       </Route>
 
@@ -113,6 +114,7 @@ const PageRoutes = () => {
           <Route path="manage-courses" element={<AdminCourses />} />
           <Route path="contact" element={<AdminContact />} />
           <Route path="addcourse" element={<AddCourse />} />
+          <Route path="certificates" element={<ManageCertificates/>} />
         </Route>
       </Route>
 
