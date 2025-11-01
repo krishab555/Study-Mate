@@ -117,13 +117,14 @@ export default function ContactUs() {
           </div>
         </section>
       </SidebarLayout>
-      <Footer />
+     
 
       {/* Internal CSS */}
       <style>{`
         .contact-section {
-          padding: 40px 20px;
-          max-width: 1100px;
+          padding: 30px 20px;
+          max-width: 1200px;
+          margin-left:470px;
           margin: 0 auto;
           font-family: inherit;
           color: #020202;

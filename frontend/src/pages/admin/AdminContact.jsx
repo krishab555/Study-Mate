@@ -96,7 +96,7 @@ export default function AdminContact() {
           )}
         </section>
       </SidebarLayout>
-      <Footer />
+      
     </div>
   );
 }

@@ -48,7 +48,7 @@ const Certificate = () => {
 
   return (
     <div style={styles.container}>
-      <h2 style={styles.title}>🎓 My Certificates</h2>
+      <h2 style={styles.title}> My Certificates</h2>
 
       {certificates.length === 0 ? (
         <div style={styles.emptyBox}>
@@ -71,7 +71,7 @@ const Certificate = () => {
                   rel="noreferrer"
                   style={styles.viewLink}
                 >
-                  📄 View Certificate
+                   View Certificate
                 </a>
               )}
 

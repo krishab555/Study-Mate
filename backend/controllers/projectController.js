@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { projectModel } from "../models/projectModel.js";
 import { certificateModel} from "../models/certificateModel.js";
 import { CourseModel } from "../models/courseModel.js";
@@ -34,6 +35,7 @@ export const submitProjectController = async (req, res) => {
     const newProject = await projectModel.create({
       course: courseId,
       student:  studentId,
+      instructor: course.instructor,
       projectFile: pdfFile,
       gitLink,
       status: "Pending",
@@ -90,6 +92,8 @@ export const submitProjectController = async (req, res) => {
 
 export const reviewProjectController = async (req, res) => {
   try {
+    console.log(" Incoming project review request:", req.params, req.body);
+
     const { id } = req.params;
     const { status, feedback } = req.body;
 
@@ -98,11 +102,15 @@ export const reviewProjectController = async (req, res) => {
         .status(400)
         .json({ message: "Invalid status. Must be 'Approved' or 'Rejected'." });
     }
+if (!mongoose.Types.ObjectId.isValid(id)) {
+  return res.status(400).json({ message: "Invalid project ID" });
+}
 
     const project = await projectModel
       .findById(id)
       .populate("student", "name email")
-      .populate("course", "title");
+      .populate("instructor", "name email")
+      .populate("course", "title instructor");
 ;
     if (!project) {
       return res.status(404).json({ message: "Project not found" });
@@ -114,25 +122,43 @@ export const reviewProjectController = async (req, res) => {
 
    
     if (status === "Approved") {
+     
+      const studentId = project.student._id || project.student;
+      const courseId = project.course._id || project.course;
+      const instructorId = project.course.instructor._id || project.instructor;
+
+      console.log("🧾 Checking existing certificate for:", {
+        studentId,
+        courseId,
+        instructorId,
+      });
       const certificateExists = await certificateModel.findOne({
-        student: project.student._id,
-        course: project.course._id,
-        issuedAt: new Date(),
-        certificateUrl: "",
+        student: studentId,
+        course: courseId,
+        instructor: instructorId,
       });
 
       if (!certificateExists) {
-        await certificateModel.create({
-          student: project.student._id,
-          course: project.course._id,
-          issuedAt: new Date(),
-          status: "PendingAdminApproval",
-          certificateUrl: "",
-        });
+        try {
+          console.log(" Creating new certificate...");
+          await certificateModel.create({
+            student: project.student._id,
+            course: project.course._id,
+            instructor: project.course.instructor._id,
+            // issuedAt: new Date(),
+            status: "PendingAdminApproval",
+            certificateUrl: "",
+          });
+          console.log(" Certificate created!");
+        } catch (err) {
+          console.error(" Error creating certificate:", err);
+        }
+      } else {
+        console.log(" Certificate already exists.");
       }
     }
      await createNotification({
-       userId: project.student,
+       userId: project.student._id,
        message: `Your project for "${project.course.title}" was ${status}.`,
        type: "project_review",
      });
@@ -144,6 +170,7 @@ export const reviewProjectController = async (req, res) => {
         project,
       });
   } catch (error) {
+    console.error("Error in reviewProjectController:", error);
     res
       .status(500)
       .json({ message: "Error reviewing project", error: error.message });

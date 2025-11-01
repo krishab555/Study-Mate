@@ -155,7 +155,7 @@ const SideBar = () => {
 
 export const SidebarLayout = ({ children }) => {
   const sidebarWidth = 250; // sidebar width
-  const gap = 220; // desired gap (~2-3 inches)
+  const gap = 10; // desired gap (~2-3 inches)
   const totalOffset = sidebarWidth + gap;
 
   return (

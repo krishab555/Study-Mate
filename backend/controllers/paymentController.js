@@ -19,7 +19,7 @@ export const createStripeSession = async (req, res) => {
         .status(400)
         .json({ success: false, message: "Course ID and amount are required" });
     }
-    // 1️⃣ Create payment record in MongoDB
+    //  Create payment record in MongoDB
     const payment = await PaymentModel.create({
       student: req.user._id,
       course: courseId,
@@ -116,25 +116,25 @@ export const handleStripeWebhook = async (req, res) => {
         transactionId: session.id,
       });
       if (!existingPayment) {
-        // 1️⃣ Create payment record
+        //  Create payment record
         const payment = await PaymentModel.create({
           student: userId,
           course: courseId,
           payment: payment._id,
         });
 
-        // 2️⃣ Create enrollment record
+        //  Create enrollment record
         const enrollment = await EnrollmentModel.create({
           student: userId,
           course: courseId,
           payment: payment._id,
         });
 
-        // 3️⃣ Add student to course's students array
+        //  Add student to course's students array
         await CourseModel.findByIdAndUpdate(courseId, {
           $addToSet: { students: userId },
         });
-        // 4️⃣ Notifications
+        
         const course = await CourseModel.findById(courseId);
         await createNotification({
           userId,

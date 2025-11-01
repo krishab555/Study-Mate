@@ -11,7 +11,7 @@ const InstructorLayout = () => {
       <div >
         <Outlet />
       </div>
-      <Footer/>
+      
     </div>
   );
 };

@@ -10,6 +10,11 @@ const projectSchema = new mongoose.Schema({
     ref: "users",
     required: true,
   },
+  instructor: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "users",
+    required: true,
+  },
   gitLink: {
     type: String,
     required: true,

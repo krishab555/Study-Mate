@@ -628,7 +628,7 @@ export default function DiscussionForum() {
           )}
         </div>
       </div>
-      <Footer />
+      
     </div>
   );
 }

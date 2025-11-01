@@ -96,7 +96,9 @@ const CreateQuizze = () => {
   };
 
   return (
-    <div style={{ marginLeft: "280px", padding: "40px 30px", maxWidth: "800px" }}>
+    <div
+      style={{ marginLeft: "280px", padding: "40px 30px", maxWidth: "800px" }}
+    >
       <h2 style={{ textAlign: "center", marginBottom: "30px" }}>Create Quiz</h2>
 
       {/* Course Dropdown */}
@@ -105,7 +107,11 @@ const CreateQuizze = () => {
         <select
           value={selectedCourse}
           onChange={(e) => setSelectedCourse(e.target.value)}
-          style={{ padding: "8px 10px", marginLeft: "10px", borderRadius: "6px" }}
+          style={{
+            padding: "8px 10px",
+            marginLeft: "10px",
+            borderRadius: "6px",
+          }}
         >
           <option value="">-- Select your course --</option>
           {courses.map((course) => (
@@ -123,7 +129,13 @@ const CreateQuizze = () => {
           placeholder="Quiz Title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          style={{ width: "100%", padding: "10px", fontSize: "16px", borderRadius: "6px", border: "1px solid #ccc" }}
+          style={{
+            width: "100%",
+            padding: "10px",
+            fontSize: "16px",
+            borderRadius: "6px",
+            border: "1px solid #ccc",
+          }}
         />
       </div>
 
@@ -144,7 +156,13 @@ const CreateQuizze = () => {
             {questions.length > 1 && (
               <button
                 onClick={() => removeQuestion(q.id)}
-                style={{ background: "transparent", border: "none", color: "red", cursor: "pointer", fontSize: "18px" }}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  color: "red",
+                  cursor: "pointer",
+                  fontSize: "18px",
+                }}
                 title="Remove question"
               >
                 &times;
@@ -169,7 +187,14 @@ const CreateQuizze = () => {
           />
 
           {q.options.map((opt, i) => (
-            <div key={i} style={{ display: "flex", alignItems: "center", marginBottom: "10px" }}>
+            <div
+              key={i}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                marginBottom: "10px",
+              }}
+            >
               <input
                 type="radio"
                 name={`correct-answer-${q.id}`}
@@ -182,7 +207,13 @@ const CreateQuizze = () => {
                 value={opt}
                 onChange={(e) => updateOptionText(q.id, i, e.target.value)}
                 placeholder={`Option ${i + 1}`}
-                style={{ flex: 1, padding: "8px 10px", fontSize: "15px", borderRadius: "5px", border: "1px solid #ccc" }}
+                style={{
+                  flex: 1,
+                  padding: "8px 10px",
+                  fontSize: "15px",
+                  borderRadius: "5px",
+                  border: "1px solid #ccc",
+                }}
               />
             </div>
           ))}
@@ -195,7 +226,7 @@ const CreateQuizze = () => {
           onClick={addQuestion}
           style={{
             padding: "12px 20px",
-            backgroundColor: "#0984e3",
+            backgroundColor: "#365285ff",
             color: "white",
             border: "none",
             borderRadius: "8px",
@@ -209,7 +240,7 @@ const CreateQuizze = () => {
           onClick={handleSubmit}
           style={{
             padding: "12px 20px",
-            backgroundColor: "#6c5ce7",
+            backgroundColor: "#0a2a66",
             color: "white",
             border: "none",
             borderRadius: "8px",

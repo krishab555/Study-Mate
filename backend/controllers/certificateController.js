@@ -4,7 +4,7 @@ import { CourseModel } from "../models/courseModel.js";
 
 
 
-// ✅ Get all certificates for logged-in user
+// Get all certificates for logged-in user
 export const getMyCertificates = async (req, res) => {
   try {
     const certificates = await certificateModel.find({ student: req.user.id })
@@ -19,7 +19,7 @@ export const getMyCertificates = async (req, res) => {
   }
 };
 
-// ✅ Get one certificate by ID
+// Get one certificate by ID
 export const getCertificateById = async (req, res) => {
   console.log("req.user.id:", req.user.id);
   console.log("req.params.id:", req.params.id);
@@ -43,7 +43,7 @@ export const getCertificateById = async (req, res) => {
       .json({ message: "Error fetching certificate", error: error.message });
   }
 };
-//  Admin: Get all pending certificates
+//  Admin Get all pending certificates
 export const getPendingCertificates = async (req, res) => {
   try {
     const certificates = await certificateModel
@@ -60,7 +60,7 @@ export const getPendingCertificates = async (req, res) => {
   }
 };
 
-//  Admin: Approve or reject a certificate
+//  Admin approve or reject a certificate
 export const reviewCertificate = async (req, res) => {
   try {
     const { id } = req.params;

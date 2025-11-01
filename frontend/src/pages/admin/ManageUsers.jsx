@@ -51,7 +51,7 @@ export default function ManageUsers() {
 
   const renderActions = (user) => (
     <div style={{ display: "flex", gap: "5px" }}>
-      <button
+      {/* <button
         style={{
           padding: "5px 10px",
           backgroundColor: "#1e3a8a",
@@ -63,7 +63,7 @@ export default function ManageUsers() {
         onClick={() => alert("Edit functionality not implemented yet")}
       >
         Edit
-      </button>
+      </button> */}
       <button
         style={{
           padding: "5px 10px",
