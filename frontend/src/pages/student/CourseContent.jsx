@@ -95,11 +95,11 @@ console.log("token:", token);
       {/* Video Section */}
       <div style={{ marginBottom: "30px" }}>
         <h2>Course Material (Video)</h2>
-        {course.videos?.length > 0 ? (
+        {Array.isArray(course.videos) && course.videos.length > 0 ? (
           course.videos.map((video, idx) => (
             <a
               key={idx}
-              href={video.url}
+              href={`http://localhost:5000${video.url}`}
               target="_blank"
               rel="noopener noreferrer"
               style={{
@@ -127,7 +127,7 @@ console.log("token:", token);
         <h2>Course Material (PDF)</h2>
         {course.pdfUrl ? (
           <a
-            href={"localhost:5000" + course.pdfUrl}
+            href={`http://localhost:5000${course.pdfUrl}`}
             // target="_blank"
             // rel="noopener noreferrer"
             style={{
@@ -142,12 +142,11 @@ console.log("token:", token);
               marginBottom: "10px",
             }}
           >
-            {course.pdfUrl}
+            {course.pdfUrl.split("/").pop()}
           </a>
         ) : (
           <p>No PDFs uploaded yet.</p>
         )}
-        
       </div>
 
       {/* Project Submission */}

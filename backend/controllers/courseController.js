@@ -52,7 +52,14 @@ export const createCourseController = async (req, res) => {
     // console.log(req.files)
     const pdfUrl = pdfFile ? `/uploads/pdfs/${pdfFile.filename}` : null;
     const imageUrl = imageFile ? `/uploads/images/${imageFile.filename}` : null;
-    const videoUrl = videoFile ? `/uploads/videos/${videoFile.filename}` : null;
+    const videos = videoFile
+      ? [
+          {
+            title: videoFile.originalname,
+            url: `/uploads/videos/${videoFile.filename}`,
+          },
+        ]
+      : [];
 
     let finalPrice = 0;
     let paidStatus = false;
@@ -73,7 +80,7 @@ export const createCourseController = async (req, res) => {
       pdfUrl,
       banner: imageUrl,
 
-      videoUrl,
+      videos,
     });
     await createNotification({
       userId: instructorId,
@@ -105,7 +112,8 @@ export const updateCourseController = async (req, res) => {
     }
 
     const userRole = req.user.role?.name || "";
-    let instructorId;
+    let instructorId =
+      course.instructor?._id?.toString() || course.instructor?.toString();;
     if (userRole !== "Admin") {
       if (course.instructor && course.instructor._id) {
         instructorId = course.instructor._id.toString();
@@ -144,7 +152,17 @@ export const updateCourseController = async (req, res) => {
 
     if (pdfFile) reqBody.pdfUrl = `/uploads/pdfs/${pdfFile.filename}`;
     if (imageFile) reqBody.banner = `/uploads/images/${imageFile.filename}`;
-    if (videoFile) reqBody.videoUrl = `/uploads/videos/${videoFile.filename}`;
+   if (videoFile) {
+     reqBody.videos = [
+       {
+         title: videoFile.originalname,
+         url: `/uploads/videos/${videoFile.filename}`,
+       },
+     ];
+   } else if (!course.videos) {
+     reqBody.videos = []; // ensure videos is always an array
+   }
+
 
     if (reqBody.category) {
       if (reqBody.category.toLowerCase() === "basic") {

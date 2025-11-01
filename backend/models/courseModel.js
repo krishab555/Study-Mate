@@ -21,8 +21,14 @@ const courseSchema = new mongoose.Schema({
   pdfUrl: { type: String, default: null },
   banner: { type: String, default: null },
   createdAt: { type: Date, default: Date.now },
-  video: { type: String, default: null },
+   videos: [
+      {
+        title: { type: String },
+        url: { type: String },
+      },
+    ],
+  }, { timestamps: true }
 
-});
+);
 
 export const CourseModel = mongoose.model("courses", courseSchema);
