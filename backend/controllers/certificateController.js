@@ -21,11 +21,16 @@ export const getMyCertificates = async (req, res) => {
 
 // ✅ Get one certificate by ID
 export const getCertificateById = async (req, res) => {
+  console.log("req.user.id:", req.user.id);
+  console.log("req.params.id:", req.params.id);
+
   try {
     const certificate = await certificateModel.findOne({
       _id: req.params.id,
       student: req.user.id,
-    }).populate("course", "title");
+    }).populate("course", "title")
+    .populate("instructor", "name")
+    .populate("student", "name"); 
 
     if (!certificate) {
       return res.status(404).json({ message: "Certificate not found" });

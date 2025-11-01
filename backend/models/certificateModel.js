@@ -2,12 +2,17 @@ import mongoose from "mongoose";
 const certificateSchema = new mongoose.Schema({
   student: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "users", // References the User collection
+    ref: "users", 
     required: true,
   },
   course: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "courses", // References the Course collection
+    ref: "courses", 
+    required: true,
+  },
+  instructor: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "users", 
     required: true,
   },
   issuedAt: {

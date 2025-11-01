@@ -523,7 +523,7 @@ export default function DiscussionForum() {
                               <div style={styles.postTitle}>{post.title}</div>
                             </div>
                             {post.pinned && (
-                              <span style={styles.pinnedBadge}>📌 Pinned</span>
+                              <span style={styles.pinnedBadge}> Pinned</span>
                             )}
                           </div>
 
@@ -561,7 +561,7 @@ export default function DiscussionForum() {
                                 )
                               }
                             >
-                              💬 Comment
+                               Comment
                             </button>
                             {role === "Admin" && (
                               <button
@@ -572,7 +572,7 @@ export default function DiscussionForum() {
                                 onClick={() => handleDelete(post._id)}
                                 title="Delete this post"
                               >
-                                🗑 Delete
+                                 Delete
                               </button>
                             )}
                           </div>

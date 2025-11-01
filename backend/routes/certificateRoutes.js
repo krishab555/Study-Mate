@@ -14,7 +14,7 @@ const certificateRoutes = express.Router();
 certificateRoutes.get(
   "/my-certificates",
   authenticateUser,
-  authorizeRoles("User"),
+  authorizeRoles("Student"),
   getMyCertificates
 );
 
@@ -29,7 +29,7 @@ certificateRoutes.get(
 certificateRoutes.get(
   "/:id",
   authenticateUser,
-  authorizeRoles("User"),
+  authorizeRoles("Student"),
   getCertificateById
 );
 certificateRoutes.put(

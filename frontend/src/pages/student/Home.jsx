@@ -303,10 +303,10 @@ export default function Home() {
         </button>
       </div>
 
-      {/* Learning Time & My Activity Section */}
+      {/* Learning Time & My Activity Section
       <div style={styles.learningActivitySection}>
         {/* Learning Time */}
-        <div style={styles.learningTime}>
+        {/* <div style={styles.learningTime}>
           <h3 style={{ color: "#333", marginBottom: "15px" }}>Learning Time</h3>
           <div style={styles.progressCircle}>
             <div style={styles.progressInnerCircle}>
@@ -335,10 +335,10 @@ export default function Home() {
               Reading
             </p>
           </div>
-        </div>
+        </div> */}
 
         {/* My Activity */}
-        <div style={styles.activity}>
+        {/* <div style={styles.activity}>
           <h3 style={{ color: "#333", marginBottom: "20px" }}>My Activity</h3>
           <p style={styles.activityTitle}>This Week</p>
           <div style={styles.activityBars}>
@@ -358,7 +358,7 @@ export default function Home() {
             ))}
           </div>
         </div>
-      </div>
+      </div> */} 
 
       {/* Latest Courses */}
       <h3 style={styles.sectionTitle}>Latest Courses</h3>

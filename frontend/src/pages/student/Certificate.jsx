@@ -1,334 +1,3 @@
-// // // // // src/components/student/Certificate.jsx
-
-// // // // import React, { useEffect, useState } from "react";
-// // // // import axios from "axios";
-// // // // import { useNavigate } from "react-router-dom";
-
-// // // // const Certificate = () => {
-// // // //   const [certificates, setCertificates] = useState([]);
-// // // //   const [loading, setLoading] = useState(true);
-// // // //   const [error, setError] = useState("");
-// // // //   const navigate = useNavigate();
-
-// // // //   useEffect(() => {
-// // // //     const fetchCertificates = async () => {
-// // // //       try {
-// // // //         const response = await axios.get("/api/certificates/my-certificates", {
-// // // //           withCredentials: true, // send cookies or token for auth
-// // // //         });
-// // // //         setCertificates(response.data.certificates);
-// // // //         setLoading(false);
-// // // //       } catch (err) {
-// // // //         setError(err.response?.data?.message || "Failed to fetch certificates");
-// // // //         setLoading(false);
-// // // //       }
-// // // //     };
-
-// // // //     fetchCertificates();
-// // // //   }, []);
-
-// // // //   if (loading) return <p>Loading certificates...</p>;
-// // // //   if (error) return <p style={{ color: "red" }}>{error}</p>;
-
-// // // //   return (
-// // // //     <div style={{ padding: "20px" }}>
-// // // //       <h2>My Certificates</h2>
-// // // //       {certificates.length === 0 ? (
-// // // //         <p>No certificates found.</p>
-// // // //       ) : (
-// // // //         <ul style={{ listStyle: "none", padding: 0 }}>
-// // // //           {certificates.map((cert) => (
-// // // //             <li
-// // // //               key={cert._id}
-// // // //               style={{
-// // // //                 border: "1px solid #ccc",
-// // // //                 borderRadius: "8px",
-// // // //                 padding: "10px",
-// // // //                 marginBottom: "10px",
-// // // //               }}
-// // // //             >
-// // // //               <h3>Course: {cert.course.title}</h3>
-// // // //               <p>Issued At: {new Date(cert.issuedAt).toLocaleDateString()}</p>
-
-// // // //               {cert.certificateUrl && (
-// // // //                 <a
-// // // //                   href={cert.certificateUrl}
-// // // //                   target="_blank"
-// // // //                   rel="noreferrer"
-// // // //                   style={{ display: "inline-block", marginBottom: "10px" }}
-// // // //                 >
-// // // //                   📄 View Certificate
-// // // //                 </a>
-// // // //               )}
-// // // //               <br />
-// // // //               <button
-// // // //                 onClick={() => navigate(`/student/certificate/${cert._id}`)}
-// // // //               >
-// // // //                 View Details
-// // // //               </button>
-// // // //             </li>
-// // // //           ))}
-// // // //         </ul>
-// // // //       )}
-// // // //     </div>
-// // // //   );
-// // // // };
-
-// // // // export default Certificate;
-// // // import React, { useEffect, useState } from "react";
-// // // import axios from "axios";
-// // // import { useNavigate } from "react-router-dom";
-
-// // // const Certificate = () => {
-// // //   const [certificates, setCertificates] = useState([]);
-// // //   const [loading, setLoading] = useState(true);
-// // //   const [error, setError] = useState("");
-// // //   const navigate = useNavigate();
-
-// // //   useEffect(() => {
-// // //     const fetchCertificates = async () => {
-// // //       try {
-// // //         const response = await axios.get("/api/certificates/my-certificates", {
-// // //           withCredentials: true, // send cookies or token for auth
-// // //         });
-// // //         // Defensive check: make sure certificates is an array
-// // //         const certs = Array.isArray(response.data.certificates)
-// // //           ? response.data.certificates
-// // //           : [];
-// // //         setCertificates(certs);
-// // //         setLoading(false);
-// // //       } catch (err) {
-// // //         setError(err.response?.data?.message || "Failed to fetch certificates");
-// // //         setLoading(false);
-// // //       }
-// // //     };
-
-// // //     fetchCertificates();
-// // //   }, []);
-
-// // //   if (loading) return <p>Loading certificates...</p>;
-// // //   if (error) return <p style={{ color: "red" }}>{error}</p>;
-
-// // //   return (
-// // //     <div style={{ padding: "20px" }}>
-// // //       <h2>My Certificates</h2>
-// // //       {certificates.length === 0 ? (
-// // //         <p>No certificates found.</p>
-// // //       ) : (
-// // //         <ul style={{ listStyle: "none", padding: 0 }}>
-// // //           {certificates.map((cert) => (
-// // //             <li
-// // //               key={cert._id}
-// // //               style={{
-// // //                 border: "1px solid #ccc",
-// // //                 borderRadius: "8px",
-// // //                 padding: "10px",
-// // //                 marginBottom: "10px",
-// // //               }}
-// // //             >
-// // //               <h3>
-// // //                 Course: {cert.course ? cert.course.title : "No course info"}
-// // //               </h3>
-// // //               <p>
-// // //                 Issued At:{" "}
-// // //                 {cert.issuedAt
-// // //                   ? new Date(cert.issuedAt).toLocaleDateString()
-// // //                   : "N/A"}
-// // //               </p>
-
-// // //               {cert.certificateUrl ? (
-// // //                 <a
-// // //                   href={cert.certificateUrl}
-// // //                   target="_blank"
-// // //                   rel="noreferrer"
-// // //                   style={{ display: "inline-block", marginBottom: "10px" }}
-// // //                 >
-// // //                   📄 View Certificate
-// // //                 </a>
-// // //               ) : null}
-// // //               <br />
-// // //               <button
-// // //                 onClick={() => navigate(`/student/certificate/${cert._id}`)}
-// // //               >
-// // //                 View Details
-// // //               </button>
-// // //             </li>
-// // //           ))}
-// // //         </ul>
-// // //       )}
-// // //     </div>
-// // //   );
-// // // };
-
-// // // export default Certificate;
-// // import React, { useEffect, useState } from "react";
-// // import axios from "axios";
-// // import { useNavigate } from "react-router-dom";
-
-// // const Certificate = () => {
-// //   const [certificates, setCertificates] = useState([]);
-// //   const [loading, setLoading] = useState(true);
-// //   const [error, setError] = useState("");
-// //   const navigate = useNavigate();
-
-// //   useEffect(() => {
-// //     const fetchCertificates = async () => {
-// //       try {
-// //         const response = await axios.get("/api/certificates/my-certificates", {
-// //           withCredentials: true,
-// //         });
-// //         // Defensive: ensure certificates is an array or empty array fallback
-// //         const certs = Array.isArray(response.data.certificates)
-// //           ? response.data.certificates
-// //           : [];
-// //         setCertificates(certs);
-// //       } catch (err) {
-// //         setError(err.response?.data?.message || "Failed to fetch certificates");
-// //       } finally {
-// //         setLoading(false);
-// //       }
-// //     };
-
-// //     fetchCertificates();
-// //   }, []);
-
-// //   if (loading) return <p>Loading certificates...</p>;
-// //   if (error) return <p style={{ color: "red" }}>{error}</p>;
-
-// //   // Defensive: certificates might be undefined, so default to []
-// //   const safeCertificates = Array.isArray(certificates) ? certificates : [];
-
-// //   return (
-// //     <div style={{ padding: "20px" }}>
-// //       <h2>My Certificates</h2>
-// //       {safeCertificates.length === 0 ? (
-// //         <p>No certificates found.</p>
-// //       ) : (
-// //         <ul style={{ listStyle: "none", padding: 0 }}>
-// //           {safeCertificates.map((cert) => (
-// //             <li
-// //               key={cert._id}
-// //               style={{
-// //                 border: "1px solid #ccc",
-// //                 borderRadius: "8px",
-// //                 padding: "10px",
-// //                 marginBottom: "10px",
-// //               }}
-// //             >
-// //               <h3>
-// //                 Course: {cert.course ? cert.course.title : "No course info"}
-// //               </h3>
-// //               <p>
-// //                 Issued At:{" "}
-// //                 {cert.issuedAt
-// //                   ? new Date(cert.issuedAt).toLocaleDateString()
-// //                   : "N/A"}
-// //               </p>
-
-// //               {cert.certificateUrl ? (
-// //                 <a
-// //                   href={cert.certificateUrl}
-// //                   target="_blank"
-// //                   rel="noreferrer"
-// //                   style={{ display: "inline-block", marginBottom: "10px" }}
-// //                 >
-// //                   📄 View Certificate
-// //                 </a>
-// //               ) : null}
-// //               <br />
-// //               <button
-// //                 onClick={() => navigate(`/student/certificate/${cert._id}`)}
-// //               >
-// //                 View Details
-// //               </button>
-// //             </li>
-// //           ))}
-// //         </ul>
-// //       )}
-// //     </div>
-// //   );
-// // };
-
-// // export default Certificate;
-// import React, { useEffect, useState } from "react";
-// import axios from "axios";
-// import { useNavigate } from "react-router-dom";
-
-// const Certificate = () => {
-//   const [certificates, setCertificates] = useState([]);
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState("");
-//   const navigate = useNavigate();
-
-//   useEffect(() => {
-//     const fetchCertificates = async () => {
-//       try {
-//         const response = await axios.get("/api/certificates/my-certificates", {
-//           withCredentials: true,
-//         });
-//         console.log("Certificates fetched:", response.data.certificates);
-//         setCertificates(response.data.certificates);
-//         setLoading(false);
-//       } catch (err) {
-//         console.error("Error fetching certificates:", err);
-//         setError(err.response?.data?.message || "Failed to fetch certificates");
-//         setLoading(false);
-//       }
-//     };
-
-//     fetchCertificates();
-//   }, []);
-
-//   if (loading) return <p>Loading certificates...</p>;
-//   if (error) return <p style={{ color: "red" }}>{error}</p>;
-
-//   if (!certificates || certificates.length === 0) {
-//     return <p>No certificates found.</p>;
-//   }
-
-//   return (
-//     <div style={{ padding: "20px" }}>
-//       <h2>My Certificates</h2>
-//       <ul style={{ listStyle: "none", padding: 0 }}>
-//         {certificates.map((cert) => (
-//           <li
-//             key={cert._id}
-//             style={{
-//               border: "1px solid #ccc",
-//               borderRadius: "8px",
-//               padding: "10px",
-//               marginBottom: "10px",
-//             }}
-//           >
-//             <h3>Course: {cert.course?.title || "Unknown Course"}</h3>
-//             <p>Issued At: {new Date(cert.issuedAt).toLocaleDateString()}</p>
-
-//             {cert.certificateUrl && (
-//               <a
-//                 href={cert.certificateUrl}
-//                 target="_blank"
-//                 rel="noreferrer"
-//                 style={{ display: "inline-block", marginBottom: "10px" }}
-//               >
-//                 📄 View Certificate
-//               </a>
-//             )}
-//             <br />
-//             <button
-//               onClick={() => navigate(`/student/certificate/${cert._id}`)}
-//             >
-//               View Details
-//             </button>
-//           </li>
-//         ))}
-//       </ul>
-//     </div>
-//   );
-// };
-
-// export default Certificate;
-// src/components/student/Certificate.jsx
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -343,69 +12,152 @@ const Certificate = () => {
     const fetchCertificates = async () => {
       try {
         const response = await axios.get("/api/certificates/my-certificates", {
+          
+            method: 'GET',
+            headers:{
+              'Content-Type':'application/json',
+              'Authorization': `Bearer ${localStorage.getItem("token")}`,
+            },
+          
           withCredentials: true,
         });
-        console.log("Full response data:", response.data);
-
-        // Adjust this depending on your actual API response structure
-        // For example, if your response has: { success: true, data: [certificates] }
-        setCertificates(response.data.data || []);
-
+        console.log("Certificates fetched:", response.data);
+        setCertificates(response.data.certificates || []);
         setLoading(false);
       } catch (err) {
         setError(err.response?.data?.message || "Failed to fetch certificates");
         setLoading(false);
       }
     };
-
     fetchCertificates();
   }, []);
 
-  if (loading) return <p>Loading certificates...</p>;
-  if (error) return <p style={{ color: "red" }}>{error}</p>;
+  if (loading)
+    return (
+      <div style={styles.centerBox}>
+        <p style={{ color: "#555" }}>Loading certificates...</p>
+      </div>
+    );
+
+  if (error)
+    return (
+      <div style={styles.centerBox}>
+        <p style={{ color: "red" }}>{error}</p>
+      </div>
+    );
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>My Certificates</h2>
+    <div style={styles.container}>
+      <h2 style={styles.title}>🎓 My Certificates</h2>
+
       {certificates.length === 0 ? (
-        <p>No certificates found.</p>
+        <div style={styles.emptyBox}>
+          <p>No certificates found yet.</p>
+        </div>
       ) : (
-        <ul style={{ listStyle: "none", padding: 0 }}>
+        <div style={styles.grid}>
           {certificates.map((cert) => (
-            <li
-              key={cert._id}
-              style={{
-                border: "1px solid #ccc",
-                borderRadius: "8px",
-                padding: "10px",
-                marginBottom: "10px",
-              }}
-            >
-              <h3>Course: {cert.course.title}</h3>
-              <p>Issued At: {new Date(cert.issuedAt).toLocaleDateString()}</p>
+            <div key={cert._id} style={styles.card}>
+              <h3 style={styles.courseTitle}>{cert.course.title}</h3>
+              <p style={styles.date}>
+                Issued on:{" "}
+                <span>{new Date(cert.issuedAt).toLocaleDateString()}</span>
+              </p>
 
               {cert.certificateUrl && (
                 <a
                   href={cert.certificateUrl}
                   target="_blank"
                   rel="noreferrer"
-                  style={{ display: "inline-block", marginBottom: "10px" }}
+                  style={styles.viewLink}
                 >
                   📄 View Certificate
                 </a>
               )}
-              <br />
+
               <button
                 onClick={() => navigate(`/student/certificate/${cert._id}`)}
+                style={styles.button}
               >
                 View Details
               </button>
-            </li>
+            </div>
           ))}
-        </ul>
+        </div>
       )}
     </div>
   );
+};
+
+// 🎨 Inline Styles
+const styles = {
+  container: {
+    padding: "40px 20px",
+    paddingLeft: "280px",
+    backgroundColor: "#f9fafb",
+    minHeight: "100vh",
+  },
+  title: {
+    fontSize: "26px",
+    fontWeight: "600",
+    marginBottom: "30px",
+    color: "#333",
+  },
+  grid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+    gap: "20px",
+  },
+  card: {
+    backgroundColor: "#fff",
+    borderRadius: "12px",
+    padding: "20px",
+    boxShadow: "0 4px 10px rgba(0, 0, 0, 0.08)",
+    transition: "all 0.2s ease-in-out",
+  },
+  courseTitle: {
+    fontSize: "18px",
+    fontWeight: "600",
+    color: "#2c3e50",
+    marginBottom: "10px",
+  },
+  date: {
+    color: "#666",
+    fontSize: "14px",
+    marginBottom: "15px",
+  },
+  viewLink: {
+    display: "block",
+    marginBottom: "10px",
+    color: "#007bff",
+    textDecoration: "none",
+    fontWeight: "500",
+  },
+  button: {
+    backgroundColor: "#4CAF50",
+    color: "#fff",
+    border: "none",
+    borderRadius: "6px",
+    padding: "10px 16px",
+    cursor: "pointer",
+    fontSize: "14px",
+    fontWeight: "500",
+    transition: "0.2s ease",
+  },
+  emptyBox: {
+    background: "#fff",
+    border: "1px solid #ddd",
+    padding: "40px",
+    borderRadius: "8px",
+    textAlign: "center",
+    color: "#666",
+  },
+  centerBox: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "80vh",
+  },
 };
 
 export default Certificate;
