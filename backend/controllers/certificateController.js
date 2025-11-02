@@ -6,6 +6,8 @@ import { CourseModel } from "../models/courseModel.js";
 
 // Get all certificates for logged-in user
 export const getMyCertificates = async (req, res) => {
+  console.log("Logged-in user ID:", req.user.id || req.user._id);
+
   try {
     const certificates = await certificateModel.find({ student: req.user.id })
       .populate("course", "title")

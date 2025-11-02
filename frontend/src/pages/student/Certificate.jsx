@@ -11,16 +11,18 @@ const Certificate = () => {
   useEffect(() => {
     const fetchCertificates = async () => {
       try {
-        const response = await axios.get("/api/certificates/my-certificates", {
-          
-            method: 'GET',
-            headers:{
-              'Content-Type':'application/json',
-              'Authorization': `Bearer ${localStorage.getItem("token")}`,
+        const response = await axios.get(
+          "http://localhost:5000/api/certificates/my-certificates",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
-          
-          withCredentials: true,
-        });
+
+            withCredentials: true,
+          }
+        );
         console.log("Certificates fetched:", response.data);
         setCertificates(response.data.certificates || []);
         setLoading(false);
@@ -71,12 +73,16 @@ const Certificate = () => {
                   rel="noreferrer"
                   style={styles.viewLink}
                 >
-                   View Certificate
+                  View Certificate
                 </a>
               )}
 
               <button
-                onClick={() => navigate(`/student/certificate/${cert._id}`)}
+                onClick={() =>
+                  navigate(
+                    `/student/certificate/${cert._id}`
+                  )
+                }
                 style={styles.button}
               >
                 View Details

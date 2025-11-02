@@ -1,6 +1,6 @@
 import React from "react";
 import certificateBg from "../../assets/Certificate.png"; // your PNG certificate template
-// import logo from "../../assets/logo.png"; // replace with your actual logo
+import DesignBg from "../../assets/Design (2).png";
 
 
 const formatDate = (dateStr) => {
@@ -40,18 +40,18 @@ const CertificateTemplate = ({
         boxShadow: "0 0 20px rgba(0,0,0,0.2)",
       }}
     >
-      {/* Logo */}
-      {/* <img
-        src={logo}
+      {/* Logo */} 
+       <img
+        src={DesignBg}
         alt="Logo"
         style={{
           position: "absolute",
-          top: "20px",
-          left: "20px",
-          width: "100px",
-          height: "100px",
+          top: "30px",
+          left: "70px",
+          width: "200px",
+          height: "200px",
         }}
-      /> */}
+      />
 
       {/* Student Name */}
       <div
@@ -102,17 +102,26 @@ const CertificateTemplate = ({
       <div
         style={{
           position: "absolute",
-          bottom: "20%",
+          bottom: "15%",
           left: "50%",
           transform: "translateX(-50%)",
           fontSize: "20px",
           textAlign: "center",
         }}
       >
-        <strong>
-            InstructorName :
-            </strong>
-             <strong>{instructorName}</strong>
+       
+           <strong> InstructorName :</strong>
+            
+            <div
+    style={{
+      width: "150px",   
+      height: "1px",    
+      backgroundColor: "#000",
+      margin: "5px auto 0", 
+    }}
+    />
+            
+             {instructorName}
       </div>
     </div>
   );
