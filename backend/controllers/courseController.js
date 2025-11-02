@@ -42,7 +42,7 @@ export const createCourseController = async (req, res) => {
         .json({ success: false, message: "Only admin can create courses" });
     }
 
-    const { title, description, instructorId, price, isPaid, category, level } =
+    const { title, description, instructorId, price, isPaid, category, level,syllabus } =
       req.body;
     const pdfFile = req.files?.pdf?.[0];
     const imageFile = req.files?.image?.[0];
@@ -66,6 +66,14 @@ export const createCourseController = async (req, res) => {
     if (category.toLowerCase() === "advanced") {
       finalPrice = price || 100; // default price if none provided
       paidStatus = true;
+    } 
+    let syllabusArray = [];
+    if (syllabus) {
+      try {
+        syllabusArray = JSON.parse(syllabus);
+      } catch (err) {
+        console.warn("Invalid syllabus format:", err.message);
+      }
     }
 
     const course = await CourseModel.create({
@@ -77,6 +85,7 @@ export const createCourseController = async (req, res) => {
       isPaid: paidStatus,
       category,
       level,
+      syllabus: syllabusArray,
       pdfUrl,
       banner: imageUrl,
 
@@ -171,6 +180,17 @@ export const updateCourseController = async (req, res) => {
       } else if (reqBody.category.toLowerCase() === "advanced") {
         reqBody.isPaid = true;
         reqBody.price = reqBody.price ? Number(reqBody.price) : 100; // default
+      }
+    }
+    if (reqBody.syllabus) {
+      try {
+        reqBody.syllabus = JSON.parse(reqBody.syllabus);
+      } catch (err) {
+        console.warn("Invalid syllabus format in update:", err.message);
+        return res.status(400).json({
+          success: false,
+          message: "Syllabus must be a valid JSON array",
+        });
       }
     }
 

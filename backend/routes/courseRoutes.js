@@ -38,7 +38,7 @@ courseRoutes.put(
   "/:id",
   authenticateUser,
   authorizeRoles("Instructor", "Admin"),
-  
+  courseUploads,
   updateCourseController
 );
 

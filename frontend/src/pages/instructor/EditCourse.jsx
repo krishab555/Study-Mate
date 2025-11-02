@@ -14,12 +14,33 @@ export default function EditCourse() {
   const [imageFile, setImageFile] = useState(null);
   const [videoFile, setVideoFile] = useState(null);
   const [submitting, setSubmitting] = useState(false);
-
+  const [syllabusLevels, setSyllabusLevels] = useState(
+    course?.syllabus || [{ level: 1, content: "" }]
+  );
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
   const { showSuccess } = useModal();
 
+  const addSyllabusLevel = () => {
+    setSyllabusLevels((prev) => [
+      ...prev,
+      { level: prev.length + 1, content: "" },
+    ]);
+  };
 
+  const updateSyllabusContent = (index, value) => {
+    const newLevels = [...syllabusLevels];
+    newLevels[index].content = value;
+    setSyllabusLevels(newLevels);
+  };
+
+  useEffect(() => {
+    if (course?.syllabus?.length) {
+      setSyllabusLevels(course.syllabus);
+    } else {
+      setSyllabusLevels([{ level: 1, content: "" }]);
+    }
+  }, [course]);
   // Redirect non-instructor
   useEffect(() => {
     if (role !== "Instructor") {
@@ -34,6 +55,7 @@ export default function EditCourse() {
       try {
         const res = await fetch(`http://localhost:5000/api/courses/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
+          "Content-Type": "multipart/form-data",
         });
         const data = await res.json();
         if (data.success) {
@@ -215,6 +237,55 @@ export default function EditCourse() {
               <option value="Basic">Basic</option>
               <option value="Advanced">Advanced</option>
             </select>
+          </div>
+
+          {/* Syllabus */}
+          <div style={styles.formGroup}>
+            <label htmlFor="syllabus" style={styles.label}>
+              Syllabus <span style={{ color: "red" }}>*</span>
+            </label>
+
+            {syllabusLevels.map((item, index) => (
+              <div
+                key={index}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  marginBottom: "10px",
+                  position: "relative",
+                }}
+              >
+                <textarea
+                  placeholder={`Level ${item.level} content`}
+                  value={item.content}
+                  onChange={(e) => updateSyllabusContent(index, e.target.value)}
+                  style={{
+                    ...styles.textarea,
+                    flex: 1,
+                    minHeight: "40px", // small height
+                    paddingRight: "40px",
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={addSyllabusLevel}
+                  style={{
+                    position: "absolute",
+                    right: "5px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    padding: "4px 8px",
+                    backgroundColor: "#2563eb",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                  }}
+                >
+                  +
+                </button>
+              </div>
+            ))}
           </div>
 
           <div style={styles.formGroup}>

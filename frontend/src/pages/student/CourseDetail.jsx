@@ -5,6 +5,7 @@ import Navbar from "../../components/common/Navbar";
 import Footer from "../../components/common/Footer";
 import { SidebarLayout } from "../../components/common/SideBar";
 import { apiRequest } from "../../utils/api";
+import { FiChevronDown } from "react-icons/fi";
 
 const stripePromise = loadStripe(
   "pk_test_51SN5gnQyJLqGP2AyftMe6eacdb1aUSGwsoA1v08CvxHzFemvn9WSB4fd0KmX4nfbL6ZdlT45WuXzA4gNqWtpI1vS00wqwNy9bW"
@@ -21,6 +22,7 @@ export default function CourseDetail() {
   const [processing, setProcessing] = useState(false);
   const query = new URLSearchParams(location.search);
   const paymentSuccess = query.get("success") === "true";
+  const [openLevel, setOpenLevel] = useState(null);
   console.log(typeof paymentSuccess);
 
   // ✅ Auto-enroll student after successful payment
@@ -203,11 +205,13 @@ export default function CourseDetail() {
       <SidebarLayout>
         <div
           style={{
-            padding: "30px 20px",
+            padding: "60px 20px",
             maxWidth: "1200px",
-            margin: "0 auto",
             marginTop: "20px",
-            textAlign: "center",
+            textAlign: "left",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-start",
           }}
         >
           {/* Content */}
@@ -242,18 +246,17 @@ export default function CourseDetail() {
               >
                 Course Information
               </h2>
-
               <div style={{ marginBottom: "20px" }}>
-                <p
+                <h3
                   style={{
-                    fontSize: "16px",
+                    fontSize: "18px",
                     fontWeight: "600",
                     color: "#374151",
                     marginBottom: "8px",
                   }}
                 >
                   <strong>Title:</strong>
-                </p>
+                </h3>
                 <p
                   style={{
                     fontSize: "18px",
@@ -265,8 +268,7 @@ export default function CourseDetail() {
                   {course.title}
                 </p>
               </div>
-
-              <div style={{ marginBottom: "20px" }}>
+              {/* <div style={{ marginBottom: "20px" }}>
                 <p
                   style={{
                     fontSize: "16px",
@@ -287,19 +289,18 @@ export default function CourseDetail() {
                 >
                   {course.duration || "N/A"}
                 </p>
-              </div>
-
+              </div> */}
               <div style={{ marginBottom: "25px" }}>
-                <p
+                <h3
                   style={{
-                    fontSize: "16px",
+                    fontSize: "18px",
                     fontWeight: "600",
                     color: "#374151",
                     marginBottom: "12px",
                   }}
                 >
                   <strong>Course Description</strong>
-                </p>
+                </h3>
                 <p
                   style={{
                     fontSize: "16px",
@@ -312,6 +313,58 @@ export default function CourseDetail() {
                 </p>
               </div>
 
+              <div>
+                <h3
+                  style={{
+                    fontSize: "18px",
+                    fontWeight: "600",
+                    marginBottom: "10px",
+                  }}
+                >
+                  Syllabus
+                </h3>
+                {course.syllabus?.map((item, index) => (
+                  <div
+                    key={index}
+                    style={{
+                      border: "1px solid #e5e7eb",
+                      borderRadius: "8px",
+                      marginBottom: "8px",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <div
+                      onClick={() =>
+                        setOpenLevel(openLevel === index ? null : index)
+                      }
+                      style={{
+                        cursor: "pointer",
+                        padding: "10px 15px",
+                        background: "#f1f5f9",
+                        fontWeight: "600",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
+                      Level {item.level}
+                      <span>
+                        {openLevel === index ? "−" : <FiChevronDown />}
+                      </span>
+                    </div>
+                    {openLevel === index && (
+                      <div
+                        style={{
+                          padding: "10px 15px",
+                          backgroundColor: "#fff",
+                        }}
+                      >
+                        {item.content}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
               {/* How to Complete Section */}
               {course.howToComplete?.length > 0 && (
                 <div
@@ -350,7 +403,6 @@ export default function CourseDetail() {
                   </ol>
                 </div>
               )}
-
               {/* Action Button */}
               <div
                 style={{
@@ -468,7 +520,7 @@ export default function CourseDetail() {
               <div
                 style={{
                   width: "100%",
-                  height: "200px",
+                  height: "250px",
                   borderRadius: "16px",
                   overflow: "hidden",
                   backgroundColor: "#e5e7eb",
@@ -538,14 +590,15 @@ export default function CourseDetail() {
                       }}
                     />
                   ) : (
-                    <div
+                    <img
+                      src="/defaultProfile.jpg"
+                      alt="Default Instructor"
                       style={{
-                        color: "#9ca3af",
-                        fontSize: "48px",
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
                       }}
-                    >
-                      👨‍🏫
-                    </div>
+                    />
                   )}
                 </div>
                 <div style={{ padding: "20px", textAlign: "center" }}>

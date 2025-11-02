@@ -342,7 +342,6 @@ useEffect(() => {
       listStyle: "none",
       margin: 0,
       padding: 0,
-      // Added margin to push links to the right
       marginLeft: "auto",
       marginRight: "30px",
     },

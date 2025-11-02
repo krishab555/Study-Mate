@@ -14,9 +14,24 @@ export default function AddCourse() {
   const [submitting, setSubmitting] = useState(false);
   const [instructors, setInstructors] = useState([]);
   const [selectedInstructor, setSelectedInstructor] = useState("");
+  const [syllabusLevels, setSyllabusLevels] = useState([
+    { level: 1, content: "" },
+  ]);
   const navigate = useNavigate();
 
   const role = localStorage.getItem("role");
+  const addSyllabusLevel = () => {
+    setSyllabusLevels((prev) => [
+      ...prev,
+      { level: prev.length + 1, content: "" },
+    ]);
+  };
+
+  const updateSyllabusContent = (index, value) => {
+    const newLevels = [...syllabusLevels];
+    newLevels[index].content = value;
+    setSyllabusLevels(newLevels);
+  };
 
   useEffect(() => {
     if (role !== "Admin") {
@@ -54,8 +69,8 @@ export default function AddCourse() {
       !category ||
       !pdfFile ||
       !imageFile ||
-      !selectedInstructor ||
-      !syllabus
+      !selectedInstructor 
+      
     ) {
       alert("Please fill all required fields and select files");
       return;
@@ -68,7 +83,15 @@ export default function AddCourse() {
     formData.append("title", title);
     formData.append("description", description);
     formData.append("category", category);
-    formData.append("syllabus", syllabus); // <-- syllabus sent to backend
+    const filteredSyllabus = syllabusLevels.filter(
+      (level) => level.content.trim() !== ""
+    );
+    if (filteredSyllabus.length === 0) {
+      alert("Please add at least one syllabus level with content");
+      setSubmitting(false);
+      return;
+    }
+    formData.append("syllabus", JSON.stringify(filteredSyllabus)); 
     formData.append("instructorId", selectedInstructor);
     formData.append("pdf", pdfFile);
     formData.append("image", imageFile);
@@ -216,43 +239,73 @@ export default function AddCourse() {
               <option value="Advanced">Advanced</option>
             </select>
           </div>
+          {/* {category === "Advanced" && (
+            <div style={styles.formGroup}>
+              <label htmlFor="price" style={styles.label}>
+                Price (Rs) <span style={{ color: "red" }}>*</span>
+              </label>
+              <input
+                id="price"
+                type="number"
+                min="0"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                style={{ ...styles.input, width: "150px" }}
+                placeholder="Enter course price"
+                required={category === "Advanced"}
+              />
+            </div>
+          )} */}
 
           {/* Syllabus */}
           <div style={styles.formGroup}>
             <label htmlFor="syllabus" style={styles.label}>
-               Syllabus <span style={{ color: "red" }}>*</span>
+              Syllabus <span style={{ color: "red" }}>*</span>
             </label>
-            <textarea
-              id="syllabus"
-              placeholder="Enter course syllabus here"
-              value={syllabus}
-              onChange={(e) => setSyllabus(e.target.value)}
-              style={styles.textarea}
-              required
-            />
+
+            {syllabusLevels.map((item, index) => (
+              <div
+                key={index}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  marginBottom: "10px",
+                  position: "relative",
+                }}
+              >
+                <textarea
+                  placeholder={`Level ${item.level} content`}
+                  value={item.content}
+                  onChange={(e) => updateSyllabusContent(index, e.target.value)}
+                  style={{
+                    ...styles.textarea,
+                    flex: 1,
+                    minHeight: "40px", // small height
+                    paddingRight: "40px",
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={addSyllabusLevel}
+                  style={{
+                    position: "absolute",
+                    right: "5px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    padding: "4px 8px",
+                    backgroundColor: "#2563eb",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                  }}
+                >
+                  +
+                </button>
+              </div>
+            ))}
           </div>
 
-          {/* Syllabus Preview
-          <div
-            style={{
-              ...styles.formGroup,
-              border: "1px solid #ccc",
-              padding: "15px",
-              borderRadius: "8px",
-              backgroundColor: "#f9f9f9",
-            }}
-          >
-            <label style={styles.label}>Syllabus Preview:</label>
-            <div
-              style={{
-                whiteSpace: "pre-wrap",
-                minHeight: "60px",
-                color: "#333",
-              }}
-            >
-              {syllabus || "Syllabus will appear here..."}
-            </div>
-          </div> */}
 
           {/* Instructor */}
           <div style={styles.formGroup}>
