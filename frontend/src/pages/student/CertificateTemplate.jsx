@@ -58,14 +58,16 @@ const CertificateTemplate = ({
         style={{
           position: "absolute",
           top: "50%",
-          left: "48%",
+          left: "49%",
           transform: "translate(-50%, -50%)",
           fontSize: "38px",
           fontFamily: "cursive",
           textAlign: "center",
         }}
       >
-        {studentName}
+       <i>
+         {studentName}
+        </i>
       </div>
 
       {/* Course Paragraph */}
