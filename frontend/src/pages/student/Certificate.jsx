@@ -60,7 +60,7 @@ const Certificate = () => {
         <div style={styles.grid}>
           {certificates.map((cert) => (
             <div key={cert._id} style={styles.card}>
-              <h3 style={styles.courseTitle}>{cert.course.title}</h3>
+              <h3 style={styles.courseTitle}>{cert.course?.title}</h3>
               <p style={styles.date}>
                 Issued on:{" "}
                 <span>{new Date(cert.issuedAt).toLocaleDateString()}</span>

@@ -547,7 +547,7 @@ export default function DiscussionForum() {
                                     : "Pin this post"
                                 }
                               >
-                                📌 {post.pinned ? "Unpin" : "Pin"}
+                                 {post.pinned ? "Unpin" : "Pin"}
                               </button>
                             )}
                             <button
