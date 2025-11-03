@@ -10,7 +10,7 @@ const FAQMasterSchema = new mongoose.Schema(
     },
     course: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Course",
+      ref: "courses",
       required: function () {
         return this.type === "Course"; // Required only for Course FAQs
       },

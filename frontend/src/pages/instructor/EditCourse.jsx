@@ -83,9 +83,11 @@ export default function EditCourse() {
     formData.append("title", title);
     formData.append("description", description);
     formData.append("category", category);
+    formData.append("syllabus", JSON.stringify(syllabusLevels)); 
     if (pdfFile) formData.append("pdf", pdfFile);
     if (imageFile) formData.append("image", imageFile);
     if (videoFile) formData.append("video", videoFile);
+    
 
     try {
       const res = await fetch(`http://localhost:5000/api/courses/${id}`, {

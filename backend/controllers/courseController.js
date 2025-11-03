@@ -184,7 +184,20 @@ export const updateCourseController = async (req, res) => {
     }
     if (reqBody.syllabus) {
       try {
-        reqBody.syllabus = JSON.parse(reqBody.syllabus);
+        console.log(
+          " Received syllabus:",
+          reqBody.syllabus,
+          typeof reqBody.syllabus
+        );
+
+         if (typeof reqBody.syllabus === "string") {
+           reqBody.syllabus = JSON.parse(reqBody.syllabus);
+         }
+
+         // Validate: Must be an array
+         if (!Array.isArray(reqBody.syllabus)) {
+           throw new Error("Syllabus must be an array");
+         }
       } catch (err) {
         console.warn("Invalid syllabus format in update:", err.message);
         return res.status(400).json({

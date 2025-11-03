@@ -13,7 +13,10 @@ export default function FAQSubjects() {
       try {
         const res = await fetch("http://localhost:5000/api/faqs/subjects");
         const data = await res.json();
-        if (data.success) setSubjects(data.data);
+        console.log("Fetched FAQ subjects data from backend:", data);
+
+        if (data.success) {setSubjects(data.data);
+         console.log("FAQ subjects array (detailed):", JSON.stringify(data.data, null, 2));}
         else alert(data.message || "Failed to load subjects");
       } catch (err) {
         console.error(err);
@@ -100,9 +103,7 @@ export default function FAQSubjects() {
                   }}
                 >
                   <h3 style={{ fontSize: "1.2rem", color: "#0b2c5d" }}>
-                    {subject.type === "Course"
-                      ? subject.course?.title
-                      : subject.type}
+                    {subject.course?.title || subject.type || "Untitled"}
                   </h3>
                 </div>
               ))
