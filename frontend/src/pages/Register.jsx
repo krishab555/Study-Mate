@@ -122,6 +122,8 @@ export default function Register() {
             placeholder="Username"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            pattern="[A-Za-z\s]+"
+            title="Name can only contain letters and spaces"
             style={inputStyle}
             required
           />
@@ -139,8 +141,6 @@ export default function Register() {
             required
           />
         </div>
-
-       
 
         {/* Gender */}
         <div style={radioContainer}>
